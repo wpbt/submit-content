@@ -46,15 +46,22 @@ define( 'SUBMIT_CONTENT_DIRECTORY', plugin_dir_path( __FILE__ ) );
 define( 'SUBMIT_CONTENT_DIRECTORY_URL', plugin_dir_url( __FILE__ ) );
 
 /**
+ * Activation and Deactivation hooks
+ */
+register_activation_hook( __FILE__, 'wpbt_submitcontent_activate' );
+register_deactivation_hook( __FILE__, 'wpbt_submitcontent_deactivate' );
+
+
+/**
  * Plugin hooks
  */
 
-register_activation_hook( __FILE__, 'wpbt_submitcontent_activate' );
+add_action( 'admin_menu', 'wpbt_submitcontent_menu' );
 
-register_deactivation_hook( __FILE__, 'wpbt_submitcontent_deactivate' );
 
 /**
  * Plugin includes
  */
 require_once( SUBMIT_CONTENT_DIRECTORY . 'activate.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'deactivate.php' );
+require_once( SUBMIT_CONTENT_DIRECTORY . 'library/menu/menu.php' );
