@@ -1,0 +1,60 @@
+<?php
+/**
+ * Plugin Name: Submit Content
+ * Author: Bharat Thapa
+ * Author URI: https://bharatt.com.np
+ * Description: Submit posts, custom pots, pages, and media from frontend.
+ * License:     GPLv2 or later
+ * License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * Version: 0.1
+ * Text Domain: submitcontent
+ * Domain Path: /languages
+ * Requires at least: 4.9
+ * Requires PHP: 5.2.4
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License version 2, as published by the Free Software Foundation. You may NOT assume
+ * that you can use any other version of the GPL.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+/**
+ * Exit if accessed directly!
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'why though?' );
+}
+
+/**
+ * Plugin setup
+ * constant definitions:
+ * - Version
+ * - Plugin path
+ * - Plugin url
+ */
+
+define( 'SUBMIT_CONTENT_VERSION', 0.1 );
+define( 'SUBMIT_CONTENT_DIRECTORY', plugin_dir_path( __FILE__ ) );
+define( 'SUBMIT_CONTENT_DIRECTORY_URL', plugin_dir_url( __FILE__ ) );
+
+/**
+ * Plugin hooks
+ */
+
+register_activation_hook( __FILE__, 'wpbt_submitcontent_activate' );
+
+register_deactivation_hook( __FILE__, 'wpbt_submitcontent_deactivate' );
+
+/**
+ * Plugin includes
+ */
+require_once( SUBMIT_CONTENT_DIRECTORY . 'activate.php' );
+require_once( SUBMIT_CONTENT_DIRECTORY . 'deactivate.php' );
