@@ -57,6 +57,7 @@ register_deactivation_hook( __FILE__, 'wpbt_submitcontent_deactivate' );
  */
 
 add_action( 'admin_menu', 'wpbt_submitcontent_menu' );
+add_action( 'admin_enqueue_scripts', 'wpbt_submitcontent_admin_scripts' );
 
 
 /**
@@ -65,3 +66,4 @@ add_action( 'admin_menu', 'wpbt_submitcontent_menu' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'activate.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'deactivate.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/menu/menu.php' );
+require_once( SUBMIT_CONTENT_DIRECTORY . 'admin_assets/enqueue.php' );

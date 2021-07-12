@@ -32,4 +32,5 @@ function wpbt_submit_content_settings_page(){
     if( ! current_user_can( 'manage_options' ) ) exit;
 
     echo '<h1>' . esc_html( get_admin_page_title() ) . '</h1>';
+    
 }
