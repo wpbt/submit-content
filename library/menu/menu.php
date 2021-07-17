@@ -55,10 +55,10 @@ function wpbt_submitcontent_form_settings_page(){
             <table class="form-table" role="presentation">
                 <tbody>
                     <?php
-                        generate_input_field( 'checkbox', 'form_heading', 'Form heading', 'Add the title for the form' );
-                        generate_input_field( 'checkbox', 'form_description', 'Form description', 'Add the description for the form' );
-                        generate_input_field( 'checkbox', 'add_post_title_field', 'Post title', 'Add the field for post title' );
-                        generate_input_field( 'checkbox', 'add_post_content_field', 'Post content', 'Add the field for post content' );
+                        generate_input_field( 'checkbox', 'add_form_heading', 'Form heading', 'Add the title for the form' );
+                        generate_input_field( 'checkbox', 'add_form_description', 'Form description', 'Add the description for the form' );
+                        generate_input_field( 'checkbox', 'add_post_title', 'Post title', 'Add the field for post title' );
+                        generate_input_field( 'checkbox', 'add_post_content', 'Post content', 'Add the field for post content' );
                         generate_input_field( 'checkbox', 'add_post_featured_image', 'Featured image', 'Add the field for post featured image' );
                         generate_input_field( 'checkbox', 'add_post_categories', 'Post categories', 'Add the multi select field for post categories' );
                         generate_input_field( 'checkbox', 'add_post_tags', 'Post tags', 'Add the multi select field for post tags' );
