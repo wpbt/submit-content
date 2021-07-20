@@ -21,13 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return String Returns the field in table row structure.
  */
 
-function generate_input_field( $type, $name, $title, $content ){
+function generate_input_field( $type, $name, $title, $content, $value = '' ){
     echo "
         <tr class='". esc_attr( $name ) ."'>
             <th scope='row'>". esc_html__( $title, 'submitcontent' ) ."</th>
             <td>
                 <label for='". esc_attr( $name ) ."'>
-                <input name='". esc_attr( $name ) ."' type='$type' id='". esc_attr( $name ) ."' value='1'>
+                <input name='". esc_attr( $name ) ."' type='$type' id='". esc_attr( $name ) ."' value='". esc_attr( $value ) ."' />
                     ". esc_html__( $content, 'submitcontent' ) ."
                 </label>
             </td>

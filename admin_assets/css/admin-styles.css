@@ -6,3 +6,7 @@
 #wpbt-sc-generator td label {
   margin-bottom: 18px;
 }
+
+form#wpbt-sc-generator table tr[class*="_class"] {
+  display: none;
+}
