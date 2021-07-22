@@ -1,13 +1,10 @@
 'use strict';
 
 /**
- * create object literal
+ * application setup
  */
 
 let submitContentApp = {
-    /**
-     * Setup
-     */
     fields: [],
     data: {},
     init: function(){
@@ -75,19 +72,23 @@ let submitContentApp = {
                 action: submitContentApp.data.action,
                 options: submitContentApp.data.options
             },
-            beforeSend: function(xhr, settings){},
-            success: function(response){
-                console.log('ajax is successful!!!');
-                console.log(response);
-            },
-            error: function(error){},
-            complete: function(request, status){}
+            beforeSend: submitContentApp.beforeSend,
+            success: submitContentApp.success,
+            error: submitContentApp.error,
+            complete: submitContentApp.complete
         });
 
-    }
+    },
+    beforeSend: function(xhr, settings){},
+    success: function(response){
+        console.log('ajax is successful!!!');
+        console.log(response);
+    },
+    error: function(error){},
+    complete: function(request, status){}
 };
 
 /**
- * initialize the object literal!
+ * kick start application!
  */
 jQuery(document).ready(submitContentApp.init);
