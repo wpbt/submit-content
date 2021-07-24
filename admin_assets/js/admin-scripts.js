@@ -11,23 +11,27 @@ let submitContentApp = {
             form: jQuery('#wpbt-sc-generator'),
             button: jQuery('#wpbt-sc-generator').find('input[type="submit"]'),
             action: 'sc_generate_shortcode',
-            ajaxURL: scJSOBJ.ajax_url, // scJSOBJ is global variable!
+            ajaxURL: scJSOBJ.ajax_url,
             options: {},
         };
-
+        submitContentApp.handleSecurity(jQuery(submitContentApp.data.form).find('input#wpbt_sc_nonce'));
         jQuery(submitContentApp.data.form).find(':input').change(submitContentApp.handleInput);
         submitContentApp.data.button.click(submitContentApp.handleSubmit);
     },
+    handleSecurity: function(element){
+        let input = jQuery(element);
+        let inputKey = input.attr('name');
+        let value = input.val();
+        submitContentApp.updateOptions(inputKey, value);
+    },
     handleInput: function(){ 
         // 'this' refers to the input field
-        // variables declaration !!!
         let inputType = this.type || this.tagName.toLowerCase();
         let inputKey = jQuery(this).attr('name');
         let label = jQuery(this).attr('label');
         let id = jQuery(this).attr('id');
         let value = '';
         let taxonomies = {};
-        
         switch(inputType){
             case 'checkbox':
                 if(jQuery(this).prop('checked') == true){
@@ -35,7 +39,6 @@ let submitContentApp = {
                 } else {
                     value = 0;
                 }
-                
                 if( (inputKey === 'category') || (inputKey === 'tag') ) {
                     taxonomies = {
                         slug: id,
@@ -49,19 +52,11 @@ let submitContentApp = {
                 break;
             case 'text':
                 value = jQuery(this).val();
-                // update options!
                 submitContentApp.updateOptions(inputKey, value, false);
                 break;
             case 'textarea':
                 value = jQuery(this).val();
-                // update options!
                 submitContentApp.updateOptions(inputKey, value, false);
-                break;
-            case 'select':
-                // update options!
-                break;
-            case 'radio':
-                // update options!
                 break;
         }
     },

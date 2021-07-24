@@ -99,7 +99,8 @@ function wpbt_submitcontent_form_settings_page(){
             <table class="form-table" role="presentation">
                 <tbody>
                     <?php
-
+                        // generate security field!
+                        generate_input_field( 'hidden', 'wpbt_sc_nonce', '', wp_create_nonce( 'wpbtsc' ) );
                         generate_input_field( 'checkbox', 'add_form_heading', 'Form heading', 1 );
                         generate_input_field( 'text', 'add_form_heading_text', 'Heading text', '' );
                         generate_input_field( 'checkbox', 'add_form_description', 'Form description', 1 );

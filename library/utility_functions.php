@@ -68,10 +68,11 @@ function generate_input_field( $type, $name, $title, $value = '', $taxonomy = NU
  */
 
 function wpbt_submitcontent_validate_form( $form ){
-
-    print_r( $form['options'] );
-    // foreach( $form['options'] as $key => $value ){
-    //     if( $key == '')
-    // }
+    $errors = [];
+    $nonce = wp_create_nonce( 'wpbtsc' );
+    if( wp_verify_nonce( $nonce, $form['options']['wpbt_sc_nonce'] ) ){
+        _e( 'security check failed', 'submitcontent' );
+        wp_die();
+    }
 
 }
