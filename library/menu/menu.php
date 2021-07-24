@@ -41,6 +41,17 @@ function wpbt_submitcontent_settings_page(){
     if( ! current_user_can( 'manage_options' ) ) exit;
 
     echo '<h1>' . esc_html__( get_admin_page_title(), 'submitcontent' ) . '</h1>';
+
+    if( isset( $_GET['settings-updated'] ) ){
+        add_settings_error( 
+            'submitcontent',
+            'submitcontent',
+            __( 'options updated', 'submitcontent' ),
+            'success' 
+        );
+    }
+    settings_errors( 'submitcontent' );
+
     ?>
         <form action="options.php" method="post">
             <?php
@@ -60,25 +71,78 @@ function wpbt_submitcontent_form_settings_page(){
 
     echo '<h1>' . esc_html__( get_admin_page_title(), 'submitcontent' ) . '</h1>';
 
+    $sc_options = get_option( 'submitcontent_options' );
+    $wpbtsc_saveas = $sc_options['wpbtsc_saveas'];
+    $supported_taxonomies = get_object_taxonomies( $wpbtsc_saveas, 'object' );
+    $categories = [];
+    $tags = [];
+    foreach( $supported_taxonomies as $taxonomy ){
+        if( $taxonomy->hierarchical ){
+            $category_arr = [
+                'slug' => $taxonomy->name,
+                'name' => $taxonomy->label
+            ];
+            array_push( $categories, $category_arr );
+        } elseif( ! $taxonomy->hierarchical ) {
+            // skipping post_format types for post_type = 'post'
+            if( $taxonomy->name == 'post_format' ) continue;
+            $tag_arr = [
+                'slug' => $taxonomy->name,
+                'name' => $taxonomy->label 
+            ];
+            array_push( $tags, $tag_arr );
+        }
+    }
+
     ?>
         <form action="" method="post" id="wpbt-sc-generator">
             <table class="form-table" role="presentation">
                 <tbody>
                     <?php
-                        generate_input_field( 'checkbox', 'add_form_heading', 'Form heading', 'Add the title for the form', 1 );
-                        generate_input_field( 'text', 'add_form_heading_class', '', 'Add the class for form heading field (optional)' );
-                        generate_input_field( 'checkbox', 'add_form_description', 'Form description', 'Add the description for the form', 1 );
-                        generate_input_field( 'text', 'add_form_description_class', '', 'Add the class for form description field (optional)' );
-                        generate_input_field( 'checkbox', 'add_post_title', 'Post title', 'Add the field for post title', 1 );
-                        generate_input_field( 'text', 'add_post_title_class', '', 'Add the class for post title field (optional)' );
-                        generate_input_field( 'checkbox', 'add_post_content', 'Post content', 'Add the field for post content', 1 );
-                        generate_input_field( 'text', 'add_post_content_class', '', 'Add the class for post content field (optional)' );
-                        generate_input_field( 'checkbox', 'add_post_featured_image', 'Featured image', 'Add the field for post featured image', 1 );
-                        generate_input_field( 'text', 'add_post_featured_image_class', '', 'Add the class for featured image field (optional)' );
-                        generate_input_field( 'checkbox', 'add_post_categories', 'Post categories', 'Add the multi select field for post categories', 1 );
-                        generate_input_field( 'text', 'add_post_categories_class', '', 'Add the class for post categories field (optional)' );
-                        generate_input_field( 'checkbox', 'add_post_tags', 'Post tags', 'Add the multi select field for post tags', 1 );
-                        generate_input_field( 'text', 'add_post_tags_class', '', 'Add the class for post tag field (optional)' );
+
+                        generate_input_field( 'checkbox', 'add_form_heading', 'Form heading', 1 );
+                        generate_input_field( 'text', 'add_form_heading_text', 'Heading text', '' );
+                        generate_input_field( 'checkbox', 'add_form_description', 'Form description', 1 );
+                        generate_input_field( 'textarea', 'add_form_description_text', 'Description text', '' );
+
+                        if( post_type_supports( $wpbtsc_saveas, 'title' ) ){
+                            generate_input_field( 'checkbox', 'add_post_title', 'Post title', 1 );
+                        } else {
+                            generate_input_field( 'notice', 'notice', 'Post title', 'not supported for selected post type' );
+                        }
+
+                        if( post_type_supports( $wpbtsc_saveas, 'editor' ) ){
+                            generate_input_field( 'checkbox', 'add_post_content', 'Post content', 1 );
+                        } else {
+                            generate_input_field( 'notice', 'notice', 'Post content', 'not supported for selected post type' );
+                        }
+
+                        if( post_type_supports( $wpbtsc_saveas, 'thumbnail' ) ){
+                            generate_input_field( 'checkbox', 'add_post_featured_image', 'Featured image', 1 );
+                        } else {
+                            generate_input_field( 'notice', 'notice', 'Featured image', 'not supported for selected post type' );
+                        }
+
+                        if( !empty( $categories ) ){
+                            foreach( $categories as $category ){
+                                $name = $category['name'];
+                                $slug = $category['slug'];
+                                // this value is translated in generate_input_field() function.
+                                $content = 'Allow users to add ' . $wpbtsc_saveas . ' ' . $category['name'];
+                                generate_input_field( 'checkbox', $name, $content, $slug,  [ 'type' => 'category' ] );
+                            }
+                        }
+
+                        if( !empty( $tags ) ){
+                            foreach( $tags as $tag ){
+                                $name = $tag['name'];
+                                $slug = $tag['slug'];
+                                // this value is translated in generate_input_field() function.
+                                $content = 'Allow users to add ' . $wpbtsc_saveas . ' ' . $tag['name'];
+                                generate_input_field( 'checkbox', $name, $content, $slug,  [ 'type' => 'tag' ] );
+                            }
+                        }
+
                     ?>
                 </tbody>
             </table>
@@ -89,4 +153,3 @@ function wpbt_submitcontent_form_settings_page(){
         </form>
     <?php
 }
-

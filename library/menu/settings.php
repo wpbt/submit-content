@@ -11,13 +11,13 @@ function wpbt_submitcontent_settings(){
     register_setting(
         'submitcontent_options',
         'submitcontent_options',
-        // 'wpbtsc_validate'
+        'wpbtsc_validate'
     );
 
     add_settings_section(
         'wpbt_submitcontent_general_section',
         __( 'General settings', 'submitcontent' ),
-        null, // no need to display at the top of this section!
+        null, // no need to display anything at the top of this section!
         'submitcontent'
     );
 
@@ -84,7 +84,6 @@ function wpbtsc_saveas_callback( $args ){
 
     ?>
         <select name="submitcontent_options[<?php echo $args['id']; ?>]" id="<?php echo $args['id']; ?>">
-            <option value=""><?php esc_html_e( 'select', 'submitcontent' ) ?></option>
             <option value="post" <?php echo selected( $value, 'post' ); ?>><?php esc_html_e( 'post', 'submitcontent' ) ?></option>
             <?php
                 foreach( $post_types as $post_type ){
@@ -119,7 +118,6 @@ function wbptsc_default_status_callback( $args ){
     ];
     ?>
         <select name="submitcontent_options[<?php echo $args['id']; ?>]" id="<?php echo $args['id'] ?>">
-            <option value=""><?php esc_html_e( 'select', 'submitcontent' ) ?></option>
             <?php
                 foreach( $statuses as $key => $name ){
                     ?>
@@ -144,4 +142,30 @@ function wpbtsc_email_callback( $args ){
     ?>
         <input id="<?php echo $args['id']; ?>" type="checkbox" name="submitcontent_options[<?php echo $args['id']; ?>]" value="1" <?php echo checked( $value, 1 ); ?> />
     <?php
+}
+
+/**
+ * validation callback
+ * wpbtsc_validate
+ */
+
+function wpbtsc_validate( $input ){
+    // get default options
+    $option = get_option( 'submitcontent_options' );
+
+    if( ! $input['wpbtsc_saveas'] ){
+        // set default option
+        $input['wpbtsc_saveas'] = $option['wpbtsc_saveas'];
+    }
+
+    if( ! $input['wpbtsc_default_status'] ){
+        // set default option
+        $input['wpbtsc_default_status'] = $option['wpbtsc_default_status'];
+    }
+
+    if( ! $input['wpbtsc_send_admin_email'] ){
+        $input['wpbtsc_send_admin_email'] = '0';
+    }
+
+    return $input;
 }

@@ -5,7 +5,6 @@
  */
 
 let submitContentApp = {
-    fields: [],
     data: {},
     init: function(){
         submitContentApp.data = {
@@ -16,51 +15,90 @@ let submitContentApp = {
             options: {},
         };
 
-        jQuery(submitContentApp.data.form).find('input').change(submitContentApp.handleInput);
+        jQuery(submitContentApp.data.form).find(':input').change(submitContentApp.handleInput);
         submitContentApp.data.button.click(submitContentApp.handleSubmit);
     },
-    handleInput: function(){
+    handleInput: function(){ 
         // 'this' refers to the input field
-        let inputType = jQuery(this).attr('type');
+        // variables declaration !!!
+        let inputType = this.type || this.tagName.toLowerCase();
         let inputKey = jQuery(this).attr('name');
+        let label = jQuery(this).attr('label');
+        let id = jQuery(this).attr('id');
         let value = '';
+        let taxonomies = {};
+        
         switch(inputType){
             case 'checkbox':
                 if(jQuery(this).prop('checked') == true){
-                    value = 1;
+                    value = jQuery(this).val();
                 } else {
                     value = 0;
                 }
-                submitContentApp.updateOptions(inputKey, value);
-                jQuery('tr.' + inputKey + '_class').toggle();
+                
+                if( (inputKey === 'category') || (inputKey === 'tag') ) {
+                    taxonomies = {
+                        slug: id,
+                        name: label
+                    };
+                    submitContentApp.updateOptions(inputKey, '', false, taxonomies );
+                } else {
+                    submitContentApp.updateOptions(inputKey, value);
+                }
+                jQuery('tr.' + inputKey + '_text').toggle();
                 break;
             case 'text':
                 value = jQuery(this).val();
-                submitContentApp.updateOptions(inputKey, value, false);
                 // update options!
+                submitContentApp.updateOptions(inputKey, value, false);
                 break;
             case 'textarea':
                 value = jQuery(this).val();
-                submitContentApp.updateOptions(inputKey, value, false);
                 // update options!
+                submitContentApp.updateOptions(inputKey, value, false);
                 break;
-            case 'selet':
+            case 'select':
                 // update options!
                 break;
             case 'radio':
-                // nothing on this field
+                // update options!
                 break;
         }
     },
-    updateOptions: function(key, value, remove=true){
+    updateOptions: function(key, value, remove=true, taxonomies=null){
         if( key in submitContentApp.data.options ){
-            if( remove || ! value ){
+            // check if taxonomies are provieded!
+            if( taxonomies ){
+                // check if the taxonomy property is empty!
+                if(submitContentApp.data.options[key].length == 0){
+                    submitContentApp.data.options[key].push(taxonomies);
+                } else {
+                    // update/delete based on current value!
+                    for( let p in submitContentApp.data.options[key] ){
+                        if(
+                            (submitContentApp.data.options[key][p].slug == taxonomies.slug )
+                            &&
+                            (submitContentApp.data.options[key][p].name == taxonomies.name )
+                        ){
+                            // remove the taxonomy if its already added
+                            submitContentApp.data.options[key].splice(p, 1);
+                        } else {
+                            // add the taxonomy if its new.
+                            submitContentApp.data.options[key].push(taxonomies);
+                        }
+                    }
+                }
+            } else if( remove || ! value ){
                 delete submitContentApp.data.options[key];
             } else {
                 submitContentApp.data.options[key] = value;
             }
         } else {
-            submitContentApp.data.options[key] = value;
+            if( taxonomies ){
+                submitContentApp.data.options[key] = [taxonomies];
+            } else {
+                submitContentApp.data.options[key] = value;
+            }
         }
     },
     handleSubmit: function(event){

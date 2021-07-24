@@ -16,6 +16,17 @@ function wpbt_submitcontent_activate(){
         wp_die( 'This plugin requires WordPress version 4.9 or higher.' );
     }
 
+    /**
+     * install default options
+     */
+
+    $defaults = [
+        'wpbtsc_saveas' => 'post',
+        'wpbtsc_default_status' => 'draft',
+        'wpbtsc_send_admin_email' => '1'
+    ];
+    add_option( 'submitcontent_options', $defaults );
+
 }
 
 /**

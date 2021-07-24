@@ -1,12 +1,3 @@
-#wpbt-sc-generator table tbody tr td {
-  display: flex;
-  flex-direction: column;
-}
-
-#wpbt-sc-generator td label {
-  margin-bottom: 18px;
-}
-
-form#wpbt-sc-generator table tr[class*="_class"] {
+form#wpbt-sc-generator table tr[class*="_text"] {
   display: none;
 }

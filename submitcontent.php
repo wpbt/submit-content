@@ -73,3 +73,4 @@ add_action( 'admin_init', 'wpbt_submitcontent_settings' );
 add_action( 'admin_enqueue_scripts', 'wpbt_submitcontent_admin_scripts' );
 add_action( 'wp_ajax_sc_generate_shortcode', 'wpbt_generate_shortcode_ajax_callback' );
 
+add_shortcode( 'submitcontent', 'submitcontent_shortcode_callback' );
