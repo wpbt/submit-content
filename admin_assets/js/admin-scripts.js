@@ -70,16 +70,21 @@ let submitContentApp = {
                 } else {
                     // update/delete based on current value!
                     for( let p in submitContentApp.data.options[key] ){
-                        if(
-                            (submitContentApp.data.options[key][p].slug == taxonomies.slug )
-                            &&
-                            (submitContentApp.data.options[key][p].name == taxonomies.name )
-                        ){
-                            // remove the taxonomy if its already added
-                            submitContentApp.data.options[key].splice(p, 1);
-                        } else {
-                            // add the taxonomy if its new.
-                            submitContentApp.data.options[key].push(taxonomies);
+                        if( typeof submitContentApp.data.options[key][p] !== 'undefined' ){
+                            if( 
+                                (submitContentApp.data.options[key][p].slug == taxonomies.slug )
+                                &&
+                                (submitContentApp.data.options[key][p].name == taxonomies.name )
+                            ){
+                                // filter the taxonomy if its already exists
+                                let filtered = submitContentApp.data.options[key].filter(function(element){
+                                    return ( element.name != taxonomies.name ) && ( element.slug != taxonomies.slug );
+                                });
+                                submitContentApp.data.options[key] = filtered;
+                            } else {
+                                // add the taxonomy if its new to the array.
+                                submitContentApp.data.options[key].push(taxonomies);
+                            }
                         }
                     }
                 }

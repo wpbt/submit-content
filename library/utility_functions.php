@@ -69,10 +69,76 @@ function generate_input_field( $type, $name, $title, $value = '', $taxonomy = NU
 
 function wpbt_submitcontent_validate_form( $form ){
     $errors = [];
+    $data = [];
     $nonce = wp_create_nonce( 'wpbtsc' );
+
+    if( empty( $form ) || empty( $form['options'] ) ) return 'no data passed';
     if( wp_verify_nonce( $nonce, $form['options']['wpbt_sc_nonce'] ) ){
-        _e( 'security check failed', 'submitcontent' );
-        wp_die();
+        $errors['invalid_nonce'] = 'invalid nonce';
+        return $errors;
     }
+
+    // create variales.
+    $form_title = ( $form['options']['add_form_heading'] ) ? $form['options']['add_form_heading'] : '';
+    $for_title_text = ( $form['options']['add_form_heading_text'] ) ? $form['options']['add_form_heading_text'] : '';
+    $form_description = ( $form['options']['add_form_description'] ) ? $form['options']['add_form_description'] : '';
+    $form_description_text = ( $form['options']['add_form_description_text'] ) ? $form['options']['add_form_description_text'] : '';
+
+    $post_title = ( $form['options']['add_post_title'] ) ? $form['options']['add_post_title'] : '';
+    $data['add_post_content'] = ( $form['options']['add_post_content'] ) ? $form['options']['add_post_content'] : '';
+    $data['add_post_featured_image'] = ( $form['options']['add_post_featured_image'] ) ? $form['options']['add_post_featured_image'] : '';
+
+    // validate and sanitize form heading
+    if( $form_title == 1 ){
+        if( ! $for_title_text ){
+            $errors['add_form_heading_text'] = 'missing form heading';
+        } else {
+            $data['add_form_heading'] = '1';
+            $data['add_form_heading_text'] = sanitize_text_field( $for_title_text );
+        }
+    } else {
+        $data['add_form_heading'] = '';
+        $data['add_form_heading_text'] = '';
+    }
+
+    // validate and sanitize form description
+    if( $form_description == 1 ){
+        if( ! $form_description_text ){
+            $errors['add_form_description_text'] = 'missing form description';
+        } else {
+            $data['add_form_description'] = '1';
+            $data['add_form_description_text'] = sanitize_text_field( $form_description_text );
+        }
+    } else {
+        $data['add_form_description'] = '';
+        $data['add_form_description_text'] = '';
+    }
+
+    // validate post title
+    if( $post_title != '1' ){
+        $data['add_post_title'] = '';
+        $errors['add_post_title'] = 'post title should be enabled';
+    } else {
+        $data['add_post_title'] = '1';
+    }
+
+    // category
+    if( isset( $form['options']['category'] ) && ! empty(  $form['options']['category'] ) ){
+        $data['category'] = $form['options']['category'];
+    } else {
+        $data['category'] = [];
+    }
+
+    // tag
+    if( isset( $form['options']['tag'] ) && ! empty(  $form['options']['tag'] ) ){
+        $data['tag'] = $form['options']['tag'];
+    } else {
+        $data['tag'] = [];
+    }
+
+    return [
+        'errors' => $errors,
+        'data' => $data
+    ];
 
 }
