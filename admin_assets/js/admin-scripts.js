@@ -112,18 +112,42 @@ let submitContentApp = {
             },
             beforeSend: submitContentApp.beforeSend,
             success: submitContentApp.success,
-            error: submitContentApp.error,
             complete: submitContentApp.complete
         });
 
     },
-    beforeSend: function(xhr, settings){},
-    success: function(response){
-        console.log('ajax is successful!!!');
-        // let responseObj = JSON.parse(response);
-        console.log(response);
+    beforeSend: function(xhr, settings){
+        jQuery('.notice').remove();
     },
-    error: function(error){},
+    success: function(response){
+        let div = '';
+        let divStart = '<div class="notice notice-'+ response.type +' settings-error is-dismissible">';
+        let message = '';
+        let divClose = '<button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
+        if( response.type == 'success' ){
+            message = '<p><strong>'+ scJSOBJ.updateText +'</strong</p>';
+            div = divStart + message + divClose;
+            jQuery(div).insertBefore(submitContentApp.data.form);
+            // clear form fields!
+            jQuery(':input',submitContentApp.data.form).not(':button, :submit, :reset, :hidden')
+                                                            .val('')
+                                                            .prop('checked', false)
+                                                            .prop('selected', false);
+        } else if( response.type == 'error' ){
+            if( typeof response.data === 'object' && response.data !== null ){
+                for( let error in response.data ){
+                    message += '<p><strong>'+ response.data[error] + '</strong></p>';
+                }
+                div = divStart + message + divClose;
+                jQuery(div).insertBefore(submitContentApp.data.form);
+            }
+        }
+        setTimeout(function(){
+            jQuery('.is-dismissible').fadeOut(1000, function(){
+                jQuery(this).remove();
+            });
+        }, 3000);
+    },
     complete: function(request, status){}
 };
 
