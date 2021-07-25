@@ -120,6 +120,7 @@ let submitContentApp = {
     beforeSend: function(xhr, settings){},
     success: function(response){
         console.log('ajax is successful!!!');
+        // let responseObj = JSON.parse(response);
         console.log(response);
     },
     error: function(error){},

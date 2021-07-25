@@ -9,8 +9,68 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function wpbt_generate_shortcode_ajax_callback(){
-    
+    global $wpdb;
     $result = wpbt_submitcontent_validate_form( $_POST );
-    print_r( $result );
-    wp_die();
+    $errors = $result['errors'];
+    $data = $result['data'];
+
+    // handle errors!
+    if( ! empty( $errors ) ){
+        $response = [
+            'data' => $errors,
+            'type' => 'error'
+        ];
+        wp_send_json( $response );
+    }
+
+    // handle save
+    $table_name = $wpdb->prefix . 'submitcontent';
+    $shortcode_options = '';
+    $id = '';
+
+    if( ! is_serialized( $data ) ){
+        $shortcode_options = maybe_serialize( $data );
+    }
+    
+    $shortcode_name = '[submitcontent id="'. $id .'"]';
+    $sql = "INSERT INTO $table_name (shortcode_name, options) VALUES (%s, %s)";
+    $sql_query = $wpdb->prepare( $sql, $shortcode_name, $shortcode_options );
+    $result = $wpdb->query( $sql_query );
+    if( $result ){
+        $shortcode_name = '[submitcontent id="'. $wpdb->insert_id .'"]';
+        $update_sql = $wpdb->prepare( "UPDATE $table_name SET shortcode_name=%s WHERE id=%d", $shortcode_name, $wpdb->insert_id );
+        $update = $wpdb->query( $update_sql );
+        if( $update ){
+            $response = [
+                'data' => $shortcode_name,
+                'type' => 'success'
+            ];
+            wp_send_json( $response );
+        }
+    } else {
+        $response = [
+            'data' => $result,
+            'type' => 'error'
+        ];
+        wp_send_json( $response );
+    }
 }
+
+
+/*
+
+    // $result = $wpdb->insert(
+    //     $table_name,
+    //     [
+    //         'id' => '12',
+    //         'shortcode_name' => '[submitcontent id="1"]',
+    //         'options' => $shortcode_options
+    //     ],
+    //     [
+    //         '%d',
+    //         '%s',
+    //         '%s'
+    //     ]
+    // );
+
+ */

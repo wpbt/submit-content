@@ -72,9 +72,12 @@ function wpbt_submitcontent_validate_form( $form ){
     $data = [];
     $nonce = wp_create_nonce( 'wpbtsc' );
 
-    if( empty( $form ) || empty( $form['options'] ) ) return 'no data passed';
+    if( empty( $form ) || empty( $form['options'] ) ) {
+        $errors['empty_data'] = __( 'no data passed', 'submitcontent' );
+        return $errors;
+    }
     if( wp_verify_nonce( $nonce, $form['options']['wpbt_sc_nonce'] ) ){
-        $errors['invalid_nonce'] = 'invalid nonce';
+        $errors['invalid_nonce'] = __( 'invalid nonce', 'submitcontent' );
         return $errors;
     }
 
@@ -91,10 +94,10 @@ function wpbt_submitcontent_validate_form( $form ){
     // validate and sanitize form heading
     if( $form_title == 1 ){
         if( ! $for_title_text ){
-            $errors['add_form_heading_text'] = 'missing form heading';
+            $errors['add_form_heading_text'] = __( 'missing form heading', 'submitcontent' );
         } else {
             $data['add_form_heading'] = '1';
-            $data['add_form_heading_text'] = sanitize_text_field( $for_title_text );
+            $data['add_form_heading_text'] = __( sanitize_text_field( $for_title_text ), 'submitcontent' );
         }
     } else {
         $data['add_form_heading'] = '';
@@ -104,10 +107,10 @@ function wpbt_submitcontent_validate_form( $form ){
     // validate and sanitize form description
     if( $form_description == 1 ){
         if( ! $form_description_text ){
-            $errors['add_form_description_text'] = 'missing form description';
+            $errors['add_form_description_text'] = __( 'missing form description', 'submitcontent' );
         } else {
             $data['add_form_description'] = '1';
-            $data['add_form_description_text'] = sanitize_text_field( $form_description_text );
+            $data['add_form_description_text'] = __( sanitize_text_field( $form_description_text ), 'submitcontent' );
         }
     } else {
         $data['add_form_description'] = '';
@@ -117,7 +120,7 @@ function wpbt_submitcontent_validate_form( $form ){
     // validate post title
     if( $post_title != '1' ){
         $data['add_post_title'] = '';
-        $errors['add_post_title'] = 'post title should be enabled';
+        $errors['add_post_title'] = __( 'post title should be enabled', 'submitcontent' );
     } else {
         $data['add_post_title'] = '1';
     }
