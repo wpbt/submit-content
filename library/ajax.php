@@ -55,22 +55,3 @@ function wpbt_generate_shortcode_ajax_callback(){
         wp_send_json( $response );
     }
 }
-
-
-/*
-
-    // $result = $wpdb->insert(
-    //     $table_name,
-    //     [
-    //         'id' => '12',
-    //         'shortcode_name' => '[submitcontent id="1"]',
-    //         'options' => $shortcode_options
-    //     ],
-    //     [
-    //         '%d',
-    //         '%s',
-    //         '%s'
-    //     ]
-    // );
-
- */

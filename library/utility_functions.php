@@ -13,7 +13,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Generate an input field for the form!
+ * Generate and display an input field for the form!
+ * @param String $type  form field type 
+ * @param String $name form field name 
+ * @param String $title form field title
+ * @param String $value form field value
+ * @param Array $taxonomy multiple form fields
+ * @return Void  
  */
 
 function generate_input_field( $type, $name, $title, $value = '', $taxonomy = NULL ){
@@ -65,6 +71,8 @@ function generate_input_field( $type, $name, $title, $value = '', $taxonomy = NU
 
 /**
  * Validate form data
+ * @param Array @form Form data to velidate
+ * @return Array @response Contains errors and data
  */
 
 function wpbt_submitcontent_validate_form( $form ){
@@ -120,7 +128,7 @@ function wpbt_submitcontent_validate_form( $form ){
     // validate post title
     if( $post_title != '1' ){
         $data['add_post_title'] = '';
-        $errors['add_post_title'] = __( 'post title should be enabled', 'submitcontent' );
+        $errors['add_post_title'] = __( 'to accept content, at least post title should be enabled', 'submitcontent' );
     } else {
         $data['add_post_title'] = '1';
     }

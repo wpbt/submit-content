@@ -118,37 +118,38 @@ let submitContentApp = {
     },
     beforeSend: function(xhr, settings){
         jQuery('.notice').remove();
+        jQuery(submitContentApp.data.button).prop('disabled', true);
     },
-    success: function(response){
+    createResponseElement: function(response, message=null){
         let div = '';
         let divStart = '<div class="notice notice-'+ response.type +' settings-error is-dismissible">';
-        let message = '';
+        let text = '';
         let divClose = '<button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
-        if( response.type == 'success' ){
-            message = '<p><strong>'+ scJSOBJ.updateText +'</strong</p>';
-            div = divStart + message + divClose;
-            jQuery(div).insertBefore(submitContentApp.data.form);
-            // clear form fields!
-            jQuery(':input',submitContentApp.data.form).not(':button, :submit, :reset, :hidden')
-                                                            .val('')
-                                                            .prop('checked', false)
-                                                            .prop('selected', false);
-        } else if( response.type == 'error' ){
-            if( typeof response.data === 'object' && response.data !== null ){
-                for( let error in response.data ){
-                    message += '<p><strong>'+ response.data[error] + '</strong></p>';
-                }
-                div = divStart + message + divClose;
-                jQuery(div).insertBefore(submitContentApp.data.form);
-            }
+        if(message) {
+            text = '<p><strong>'+ message +'</strong</p>';
+            div = divStart + text + divClose;
         }
-        setTimeout(function(){
-            jQuery('.is-dismissible').fadeOut(1000, function(){
-                jQuery(this).remove();
-            });
-        }, 3000);
+        if( typeof response.data === 'object' && response.data !== null ){
+            for( let error in response.data ){
+                div += divStart + '<p><strong>'+ response.data[error] + '</strong></p>' +divClose;
+            }
+        }        
+        jQuery(div).insertBefore(submitContentApp.data.form);
     },
-    complete: function(request, status){}
+    success: function(response){
+        if(response.type == 'success'){
+            submitContentApp.createResponseElement(response, scJSOBJ.updateText);
+        } else if(response.type == 'error'){
+            submitContentApp.createResponseElement(response);
+        }
+        jQuery('.notice-dismiss').click(submitContentApp.removeResponseElement);
+    },
+    removeResponseElement: function(){
+        jQuery(this).parent('.is-dismissible').remove();
+    },
+    complete: function(request, status){
+        jQuery(submitContentApp.data.button).removeAttr('disabled');
+    }
 };
 
 /**
