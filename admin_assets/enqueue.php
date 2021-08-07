@@ -16,11 +16,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 function wpbt_submitcontent_admin_scripts( $hook ){
-
     if( 
         ( 'toplevel_page_submitcontent' == $hook )
         ||
         ( 'submit-content_page_sc-form-settings' == $hook )
+        ||
+        ( 'submit-content_page_sc-shortcodes' == $hook )
     ){
         // style
         wp_register_style( 'wpbt-sc-admin-style', SUBMIT_CONTENT_DIRECTORY_URL . 'admin_assets/css/admin-styles.css' );

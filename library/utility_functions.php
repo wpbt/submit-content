@@ -13,13 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Generate and display an input field for the form!
- * @param String $type  form field type 
- * @param String $name form field name 
- * @param String $title form field title
- * @param String $value form field value
- * @param Array $taxonomy multiple form fields
- * @return Void  
+ * Generate and display an input field for the form
+ * 
+ * @param string $type  form field type 
+ * @param string $name form field name 
+ * @param string $title form field title
+ * @param string $value form field value
+ * @param srray $taxonomy multiple form fields
+ * @return void  
  */
 
 function generate_input_field( $type, $name, $title, $value = '', $taxonomy = NULL ){
@@ -70,9 +71,10 @@ function generate_input_field( $type, $name, $title, $value = '', $taxonomy = NU
 }
 
 /**
- * Validate form data
- * @param Array @form Form data to velidate
- * @return Array @response Contains errors and data
+ * Validates and Generates a response
+ * 
+ * @param array @form Form data to velidate
+ * @return array @response Contains errors and data as keys
  */
 
 function wpbt_submitcontent_validate_form( $form ){
@@ -152,4 +154,29 @@ function wpbt_submitcontent_validate_form( $form ){
         'data' => $data
     ];
 
+}
+
+/**
+ * Generates a list
+ * 
+ * @param array $options Options array
+ * @return string echoes out lists built from options array
+ */
+
+function wpbt_submitcontent_generate_options( $options ){
+    if( $options && ! empty( $options ) ){
+
+        $form_title = $options['add_form_heading'];
+        $for_title_text = $options['add_form_heading_text'];
+        $form_description = $options['add_form_description'];
+        $form_description_text = $options['add_form_description_text'];
+        $post_title = $options['add_post_title'];
+        $post_content = $options['add_post_content'];
+
+
+
+        // if( $option == 'add_post_content' ){
+        //     echo '<li>' . . '</li>';
+        // }
+    }
 }

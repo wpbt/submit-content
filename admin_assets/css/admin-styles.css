@@ -2,3 +2,10 @@ form#wpbt-sc-generator table tr.wpbt_sc_nonce,
 form#wpbt-sc-generator table tr[class*="_text"] {
   display: none;
 }
+
+.sc-table {
+  width: 100%;
+}
+.sc-table tr th {
+  text-align: left;
+}

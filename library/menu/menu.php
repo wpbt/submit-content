@@ -27,6 +27,15 @@ function wpbt_submitcontent_menu(){
         'sc-form-settings',
         'wpbt_submitcontent_form_settings_page'
     );
+
+    add_submenu_page(
+        'submitcontent',
+        __( 'Manage Shortcodes', 'submitcontent' ),
+        __( 'Shortcodes', 'submitcontent' ),
+        'manage_options',
+        'sc-shortcodes',
+        'wpbt_submitcontent_shortcodes_page'
+    );
     
 }
 
@@ -152,5 +161,60 @@ function wpbt_submitcontent_form_settings_page(){
                 <input class="button button-primary" type="submit" name="wpbt_sc_shortcode" value="<?php esc_attr_e( 'Generate Shortcode', 'submitcontent' ); ?>">
             </p>
         </form>
+    <?php
+}
+
+function wpbt_submitcontent_shortcodes_page(){
+    global $wpdb;
+    // exit if user can not manage options!
+    if( ! current_user_can( 'manage_options' ) ) exit;
+
+    echo '<h1>' . esc_html__( get_admin_page_title(), 'submitcontent' ) . '</h1>';
+
+    /**
+     * Querying the database for displaying shortcodes.
+     */
+
+    $table_name = $wpdb->prefix . 'submitcontent';
+    $shortcodes = $wpdb->get_results( "SELECT shortcode_name, options FROM $table_name" );
+    
+    ?>
+        <table class="sc-table">
+            <thead>
+                <tr>
+                    <th><?php _e( 'ID', 'submitcontent' ); ?></th>
+                    <th><?php _e( 'Shortcode', 'submitcontent' ); ?></th>
+                    <th><?php _e( 'Options', 'submitcontent' ); ?></th>
+                    <th><?php _e( 'Action', 'submitcontent' ); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                    if( ! empty( $shortcodes ) ):
+                        $count = 1;
+                        foreach( $shortcodes as $shortcode ){
+                            $options = maybe_unserialize( $shortcode->options );
+                            // echo '<pre>';
+                            // var_dump( $options );
+                            // echo '</pre>';
+                            ?>
+                                <tr>
+                                    <td><?php _e( $count, 'submitcontent' ); ?></td>
+                                    <td><?php echo $shortcode->shortcode_name; ?></td>
+                                    <td><?php // wpbt_submitcontent_generate_options( $options ); ?></td>
+                                </tr> 
+                            <?php
+                            $count++;
+                        }
+                    else:
+                        ?>
+                            <tr>
+                                <td><?php _e( 'no shortcodes available yet!', 'submitcontent' ); ?></td>
+                            </tr>
+                        <?php
+                    endif;
+                ?>
+            </tbody>
+        </table>
     <?php
 }

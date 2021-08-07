@@ -41,8 +41,8 @@ function wpbt_submitcontent_create_table(){
 
     $sql = "CREATE TABLE $table_name (
         id bigint(20) NOT NULL AUTO_INCREMENT,
-        shortcode_name text NOT NULL,
-        options varchar(255) NOT NULL,
+        shortcode_name varchar(255) NOT NULL,
+        options text NOT NULL,
         PRIMARY KEY  (id)
     ) $charset_coallate";
 
