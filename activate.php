@@ -25,7 +25,12 @@ function wpbt_submitcontent_activate(){
         'wpbtsc_default_status' => 'draft',
         'wpbtsc_send_admin_email' => '1'
     ];
-    add_option( 'submitcontent_options', $defaults );
+    /**
+     * prevent automatic update of options during deactivation and activation!
+     */
+    if( get_option( 'submitcontent_options' ) ){
+        add_option( 'submitcontent_options', $defaults );
+    }
 
 }
 

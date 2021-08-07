@@ -157,7 +157,7 @@ function wpbt_submitcontent_validate_form( $form ){
 }
 
 /**
- * Generates a list
+ * Generates a options' list
  * 
  * @param array $options Options array
  * @return string echoes out lists built from options array
@@ -167,16 +167,100 @@ function wpbt_submitcontent_generate_options( $options ){
     if( $options && ! empty( $options ) ){
 
         $form_title = $options['add_form_heading'];
-        $for_title_text = $options['add_form_heading_text'];
+        $form_title_text = $options['add_form_heading_text'];
+
         $form_description = $options['add_form_description'];
         $form_description_text = $options['add_form_description_text'];
+
         $post_title = $options['add_post_title'];
         $post_content = $options['add_post_content'];
+        $featured_img = $options['add_post_featured_image'];
+        $categories = $options['category'];
+        $tags = $options['tag'];
 
+        echo '<ul>';
+        if( $form_title ){
+            ?>
+                <li><?php _e( 'Add form title: yes', 'submitcontent' ); ?></li>
+                <li><?php printf( esc_html__( 'Form title: %s', 'submitcontent' ), $form_title_text ); ?></li>
+            <?php
+        } else {
+            ?>
+                <li><?php _e( 'Add form title: no', 'submitcontent' ); ?></li>
+            <?php 
+        }
 
+        if( $form_description ){
+            ?>
+                <li><?php _e( 'Add form description: yes', 'submitcontent' ); ?></li>
+                <li><?php printf( esc_html__( 'Form description: %s', 'submitcontent' ), $form_description_text ); ?></li>
+            <?php
+        } else {
+            ?>
+                <li><?php _e( 'Add form description: no', 'submitcontent' ); ?></li>
+            <?php 
+        }
 
-        // if( $option == 'add_post_content' ){
-        //     echo '<li>' . . '</li>';
-        // }
+        if( $post_title ){
+            ?>
+                <li><?php _e( 'Allow post title: yes', 'submitcontent' ); ?></li>
+            <?php
+        }
+
+        if( $post_content ){
+            ?>
+                <li><?php _e( 'Allow post content: yes', 'submitcontent' ); ?></li>
+            <?php
+        } else {
+            ?>
+                <li><?php _e( 'Allow post content: no', 'submitcontent' ); ?></li>
+            <?php 
+        }
+
+        if( $featured_img ){
+            ?>
+                <li><?php _e( 'Set featured image: yes', 'submitcontent' ); ?></li>
+            <?php
+        } else {
+            ?>
+                <li><?php _e( 'Set featured image: no', 'submitcontent' ); ?></li>
+            <?php 
+        }
+
+        if( !empty( $categories ) ){
+            ?>
+                <li><?php _e( 'Allowed categorie(s):', 'submitcontent' ); ?></li>
+            <?php 
+            echo '<ul>';
+            foreach( $categories as $category ){
+                ?>
+                    <li><?php _e( $category['name'], 'submitcontent' ); ?></li>
+                <?php
+            }
+            echo '</ul>';
+        } else {
+            ?>
+                <li><?php _e( 'Allowed categorie(s): none', 'submitcontent' ); ?></li>
+            <?php 
+        }
+
+        if( !empty( $tags ) ){
+            ?>
+                <li><?php _e( 'Allowed tag(s):', 'submitcontent' ); ?></li>
+            <?php 
+            echo '<ul>';
+            foreach( $tags as $tag ){
+                ?>
+                    <li><?php _e( $tag['name'], 'submitcontent' ); ?></li>
+                <?php
+            }
+            echo '</ul>';
+        } else {
+            ?>
+                <li><?php _e( 'Allowed tag(s): none', 'submitcontent' ); ?></li>
+            <?php 
+        }
+        echo '</ul>';
+
     }
 }

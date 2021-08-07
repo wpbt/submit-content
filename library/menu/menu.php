@@ -176,7 +176,7 @@ function wpbt_submitcontent_shortcodes_page(){
      */
 
     $table_name = $wpdb->prefix . 'submitcontent';
-    $shortcodes = $wpdb->get_results( "SELECT shortcode_name, options FROM $table_name" );
+    $shortcodes = $wpdb->get_results( "SELECT id, shortcode_name, options FROM $table_name" );
     
     ?>
         <table class="sc-table">
@@ -194,22 +194,28 @@ function wpbt_submitcontent_shortcodes_page(){
                         $count = 1;
                         foreach( $shortcodes as $shortcode ){
                             $options = maybe_unserialize( $shortcode->options );
-                            // echo '<pre>';
-                            // var_dump( $options );
-                            // echo '</pre>';
                             ?>
                                 <tr>
                                     <td><?php _e( $count, 'submitcontent' ); ?></td>
                                     <td><?php echo $shortcode->shortcode_name; ?></td>
-                                    <td><?php // wpbt_submitcontent_generate_options( $options ); ?></td>
+                                    <td><?php wpbt_submitcontent_generate_options( $options ); ?></td>
+                                    <td>
+                                        <a class="button button-primary" href="#" scid="<?php echo $shortcode->id; ?>"><?php _e( 'Delete', 'submitcontent' ); ?></a>
+                                    </td>
                                 </tr> 
                             <?php
                             $count++;
                         }
                     else:
                         ?>
-                            <tr>
-                                <td><?php _e( 'no shortcodes available yet!', 'submitcontent' ); ?></td>
+                            <tr class="no-shortcodes">
+                                <td colspan="4">
+                                    <p><?php _e( 'You haven\'t created any shortcodes yet!', 'submitcontent' ); ?></p>
+                                    <p>
+                                        <?php _e( 'to create shortcodes, visit: ', 'submitcontent' ); ?>
+                                        <a href="<?php menu_page_url( 'sc-form-settings', true ); ?>"><?php _e( 'Create Shortcodes', 'submitcontent' ); ?></a>
+                                    </p>
+                                </td>
                             </tr>
                         <?php
                     endif;

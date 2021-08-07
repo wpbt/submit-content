@@ -4,8 +4,28 @@ form#wpbt-sc-generator table tr[class*="_text"] {
 }
 
 .sc-table {
+  border-collapse: collapse;
   width: 100%;
+  max-width: 1080px;
 }
 .sc-table tr th {
   text-align: left;
+}
+
+.sc-table td,
+.sc-table th {
+  border: 1px solid #999;
+  padding: 0.5rem;
+}
+
+.no-shortcodes {
+  text-align: center;
+}
+
+.sc-table tr td ul {
+  list-style: disc;
+  margin-left: 1rem;
+}
+.sc-table tr td ul ul {
+  list-style: lower-roman;
 }
