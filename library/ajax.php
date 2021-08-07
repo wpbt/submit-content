@@ -55,3 +55,18 @@ function wpbt_generate_shortcode_ajax_callback(){
         wp_send_json( $response );
     }
 }
+
+function wpbt_delete_shortcode_callback(){
+
+    global $wpdb;
+
+    if( ! wp_verify_nonce( $_POST['securityKey'], 'wpbt_delete_sc' ) ){
+        $response = [
+            'type' => 'error',
+            'data' => __( 'invalid nonce!', 'submitcontent' )
+        ];
+        wp_send_json( $response );
+    } 
+    wp_send_json( $_POST );
+    
+}

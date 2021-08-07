@@ -152,7 +152,32 @@ let submitContentApp = {
     }
 };
 
+let deleteShortcode = {
+    init: function(){
+        jQuery('.wpbt-delete-sc').click(deleteShortcode.handleDelete);
+    },
+    handleDelete: function(event){
+        event.preventDefault();
+        let shortcodeId = jQuery(this).attr('scid');
+        let nonceKey = jQuery(this).attr('nonceKey');
+        jQuery.ajax({
+            type: 'post',
+            url: scJSOBJ.ajax_url,
+            data: {
+                id: shortcodeId,
+                securityKey: nonceKey,
+                action: 'sc_delete_shortcode'
+            },
+            success: deleteShortcode.success
+        });
+    },
+    success: function(response){
+        console.log(response);
+    }
+};
+
 /**
  * kick start application!
  */
 jQuery(document).ready(submitContentApp.init);
+jQuery(document).ready(deleteShortcode.init);

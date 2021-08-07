@@ -197,10 +197,16 @@ function wpbt_submitcontent_shortcodes_page(){
                             ?>
                                 <tr>
                                     <td><?php _e( $count, 'submitcontent' ); ?></td>
-                                    <td><?php echo $shortcode->shortcode_name; ?></td>
+                                    <td class="wpbtsc-copy"><?php echo $shortcode->shortcode_name; ?></td>
                                     <td><?php wpbt_submitcontent_generate_options( $options ); ?></td>
                                     <td>
-                                        <a class="button button-primary" href="#" scid="<?php echo $shortcode->id; ?>"><?php _e( 'Delete', 'submitcontent' ); ?></a>
+                                        <a 
+                                            nonceKey="<?php echo wp_create_nonce( 'wpbt_delete_sc' ); ?>"
+                                            class="wpbt-delete-sc button button-primary"
+                                            href="#" scid="<?php echo $shortcode->id; ?>"
+                                        >
+                                            <?php _e( 'Delete', 'submitcontent' ); ?>
+                                        </a>
                                     </td>
                                 </tr> 
                             <?php

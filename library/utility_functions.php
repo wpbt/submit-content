@@ -80,13 +80,13 @@ function generate_input_field( $type, $name, $title, $value = '', $taxonomy = NU
 function wpbt_submitcontent_validate_form( $form ){
     $errors = [];
     $data = [];
-    $nonce = wp_create_nonce( 'wpbtsc' );
+
 
     if( empty( $form ) || empty( $form['options'] ) ) {
         $errors['empty_data'] = __( 'no data passed', 'submitcontent' );
         return $errors;
     }
-    if( wp_verify_nonce( $nonce, $form['options']['wpbt_sc_nonce'] ) ){
+    if( ! wp_verify_nonce( $form['options']['wpbt_sc_nonce'], 'wpbtsc' ) ){
         $errors['invalid_nonce'] = __( 'invalid nonce', 'submitcontent' );
         return $errors;
     }
@@ -166,17 +166,15 @@ function wpbt_submitcontent_validate_form( $form ){
 function wpbt_submitcontent_generate_options( $options ){
     if( $options && ! empty( $options ) ){
 
-        $form_title = $options['add_form_heading'];
-        $form_title_text = $options['add_form_heading_text'];
+        $form_title = ( $options['add_form_heading'] ) ? $options['add_form_heading'] : '';
+        $form_title_text = ( $options['add_form_heading_text'] ) ? $options['add_form_heading_text'] : '';
 
-        $form_description = $options['add_form_description'];
-        $form_description_text = $options['add_form_description_text'];
+        $form_description = ( $options['add_form_description'] ) ? $options['add_form_description'] : '';
+        $form_description_text = ( $options['add_form_description_text'] ) ? $options['add_form_description_text'] : '';
 
-        $post_title = $options['add_post_title'];
-        $post_content = $options['add_post_content'];
-        $featured_img = $options['add_post_featured_image'];
-        $categories = $options['category'];
-        $tags = $options['tag'];
+        $post_title = ( $options['add_post_title'] ) ? $options['add_post_title'] : '';
+        $post_content = ( $options['add_post_content'] ) ? $options['add_post_content'] : '';
+        $featured_img = ( $options['add_post_featured_image'] ) ? $options['add_post_featured_image'] : '';
 
         echo '<ul>';
         if( $form_title ){
@@ -227,12 +225,12 @@ function wpbt_submitcontent_generate_options( $options ){
             <?php 
         }
 
-        if( !empty( $categories ) ){
+        if( isset( $options['category'] ) && !empty( $options['category'] ) ){
             ?>
                 <li><?php _e( 'Allowed categorie(s):', 'submitcontent' ); ?></li>
             <?php 
             echo '<ul>';
-            foreach( $categories as $category ){
+            foreach( $options['category'] as $category ){
                 ?>
                     <li><?php _e( $category['name'], 'submitcontent' ); ?></li>
                 <?php
@@ -244,12 +242,12 @@ function wpbt_submitcontent_generate_options( $options ){
             <?php 
         }
 
-        if( !empty( $tags ) ){
+        if( isset( $options['tag'] ) && !empty( $options['tag'] ) ){
             ?>
                 <li><?php _e( 'Allowed tag(s):', 'submitcontent' ); ?></li>
             <?php 
             echo '<ul>';
-            foreach( $tags as $tag ){
+            foreach( $options['tag'] as $tag ){
                 ?>
                     <li><?php _e( $tag['name'], 'submitcontent' ); ?></li>
                 <?php

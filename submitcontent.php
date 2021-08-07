@@ -72,5 +72,6 @@ add_action( 'admin_menu', 'wpbt_submitcontent_menu' );
 add_action( 'admin_init', 'wpbt_submitcontent_settings' );
 add_action( 'admin_enqueue_scripts', 'wpbt_submitcontent_admin_scripts' );
 add_action( 'wp_ajax_sc_generate_shortcode', 'wpbt_generate_shortcode_ajax_callback' );
+add_action( 'wp_ajax_sc_delete_shortcode', 'wpbt_delete_shortcode_callback' );
 
 add_shortcode( 'submitcontent', 'submitcontent_shortcode_callback' );

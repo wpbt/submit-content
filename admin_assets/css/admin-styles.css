@@ -7,6 +7,7 @@ form#wpbt-sc-generator table tr[class*="_text"] {
   border-collapse: collapse;
   width: 100%;
   max-width: 1080px;
+  margin-top: 2rem;
 }
 .sc-table tr th {
   text-align: left;
