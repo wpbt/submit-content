@@ -172,7 +172,33 @@ let deleteShortcode = {
         });
     },
     success: function(response){
-        console.log(response);
+        let shortcodeId = response.data.rowid;
+        let message = response.data.message;
+        let container = '';
+        container += '<td colspan="4">';
+        container += '<p>';
+        container += message;
+        container += '</p>';
+        container += '</td>';
+        let rowToDelete = jQuery('tr#' + shortcodeId);
+        
+        jQuery(rowToDelete).html(container);
+        jQuery(rowToDelete).slideUp(function(){
+            jQuery(this).remove();
+        
+            let totalRows = jQuery('.sc-table tbody tr').length;
+            let shortcode_numbers = jQuery('.sc-table td.sc-sn');
+            for(let i = 1; i <= totalRows; i++){
+                jQuery(shortcode_numbers).each(function(){
+                    jQuery(this).text(i);
+                });
+            }
+            if(!totalRows){
+                let emptyMessage = response.data.tableEmpty;
+                jQuery('.sc-table tbody').append(emptyMessage);
+            }
+        });
+
     }
 };
 

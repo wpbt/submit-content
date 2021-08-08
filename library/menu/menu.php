@@ -182,7 +182,7 @@ function wpbt_submitcontent_shortcodes_page(){
         <table class="sc-table">
             <thead>
                 <tr>
-                    <th><?php _e( 'ID', 'submitcontent' ); ?></th>
+                    <th><?php _e( 'S.N.', 'submitcontent' ); ?></th>
                     <th><?php _e( 'Shortcode', 'submitcontent' ); ?></th>
                     <th><?php _e( 'Options', 'submitcontent' ); ?></th>
                     <th><?php _e( 'Action', 'submitcontent' ); ?></th>
@@ -195,15 +195,15 @@ function wpbt_submitcontent_shortcodes_page(){
                         foreach( $shortcodes as $shortcode ){
                             $options = maybe_unserialize( $shortcode->options );
                             ?>
-                                <tr>
-                                    <td><?php _e( $count, 'submitcontent' ); ?></td>
+                                <tr id="<?php echo esc_attr( $shortcode->id ); ?>">
+                                    <td class="sc-sn"><?php _e( $count, 'submitcontent' ); ?></td>
                                     <td class="wpbtsc-copy"><?php echo $shortcode->shortcode_name; ?></td>
                                     <td><?php wpbt_submitcontent_generate_options( $options ); ?></td>
                                     <td>
                                         <a 
                                             nonceKey="<?php echo wp_create_nonce( 'wpbt_delete_sc' ); ?>"
                                             class="wpbt-delete-sc button button-primary"
-                                            href="#" scid="<?php echo $shortcode->id; ?>"
+                                            href="#" scid="<?php echo esc_attr( $shortcode->id ); ?>"
                                         >
                                             <?php _e( 'Delete', 'submitcontent' ); ?>
                                         </a>
