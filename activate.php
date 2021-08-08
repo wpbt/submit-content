@@ -23,7 +23,8 @@ function wpbt_submitcontent_activate(){
     $defaults = [
         'wpbtsc_saveas' => 'post',
         'wpbtsc_default_status' => 'draft',
-        'wpbtsc_send_admin_email' => '1'
+        'wpbtsc_send_admin_email' => '1',
+        'wpbtsc_requires_login' => '1'
     ];
     /**
      * prevent automatic update of options during deactivation and activation!

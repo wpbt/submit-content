@@ -56,12 +56,19 @@ function wpbt_submitcontent_settings(){
             'label_for' =>  'wpbtsc_send_admin_email',
         ]
     );
-}
 
-/**
- * general settings callback
- * wpbtsc_saveas callback wpbtsc_saveas_callback
- */
+    add_settings_field(
+        'wpbtsc_requires_login',
+        __( 'Only loggedin users can submit', 'submitcontent' ),
+        'wpbtsc_requires_login_callback',
+        'submitcontent',
+        'wpbt_submitcontent_general_section',
+        [
+            'id' => 'wpbtsc_requires_login',
+            'label_for' =>  'wpbtsc_requires_login',
+        ]
+    );
+}
 
 function wpbtsc_saveas_callback( $args ){
 
@@ -95,11 +102,6 @@ function wpbtsc_saveas_callback( $args ){
         </select>
     <?php
 }
-
-/**
- * general settings callback
- * wpbtsc_default_status callback wbptsc_default_status_callback
- */
 
 function wbptsc_default_status_callback( $args ){
 
@@ -144,9 +146,23 @@ function wpbtsc_email_callback( $args ){
     <?php
 }
 
+function wpbtsc_requires_login_callback( $args ){
+
+    $options = get_option( 'submitcontent_options' );
+
+    if( !empty( $options ) && isset( $options[$args['id']] ) ){
+        $value = $options[$args['id']];
+    } else {
+        $value = '';
+    }
+
+    ?>
+        <input id="<?php echo $args['id']; ?>" type="checkbox" name="submitcontent_options[<?php echo $args['id']; ?>]" value="1" <?php echo checked( $value, 1 ); ?> />
+    <?php
+}
+
 /**
  * validation callback
- * wpbtsc_validate
  */
 
 function wpbtsc_validate( $input ){
@@ -165,6 +181,10 @@ function wpbtsc_validate( $input ){
 
     if( ! $input['wpbtsc_send_admin_email'] ){
         $input['wpbtsc_send_admin_email'] = '0';
+    }
+
+    if( ! $input['wpbtsc_requires_login'] ){
+        $input['wpbtsc_requires_login'] = '0';
     }
 
     return $input;
