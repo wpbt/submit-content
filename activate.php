@@ -28,7 +28,7 @@ function wpbt_submitcontent_activate(){
     /**
      * prevent automatic update of options during deactivation and activation!
      */
-    if( get_option( 'submitcontent_options' ) ){
+    if( ! get_option( 'submitcontent_options' ) ){
         add_option( 'submitcontent_options', $defaults );
     }
 
