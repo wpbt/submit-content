@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param string $name form field name 
  * @param string $title form field title
  * @param string $value form field value
- * @param srray $taxonomy multiple form fields
+ * @param array $taxonomy multiple form fields
  * @return void  
  */
 
@@ -78,14 +78,15 @@ function generate_input_field( $type, $name, $title, $value = '', $taxonomy = NU
  */
 
 function wpbt_submitcontent_validate_form( $form ){
+
     $errors = [];
     $data = [];
-
 
     if( empty( $form ) || empty( $form['options'] ) ) {
         $errors['empty_data'] = __( 'no data passed', 'submitcontent' );
         return $errors;
     }
+    
     if( ! wp_verify_nonce( $form['options']['wpbt_sc_nonce'], 'wpbtsc' ) ){
         $errors['invalid_nonce'] = __( 'invalid nonce', 'submitcontent' );
         return $errors;
@@ -160,7 +161,7 @@ function wpbt_submitcontent_validate_form( $form ){
  * Generates a options' list
  * 
  * @param array $options Options array
- * @return string echoes out lists built from options array
+ * @return void
  */
 
 function wpbt_submitcontent_generate_options( $options ){
@@ -261,4 +262,147 @@ function wpbt_submitcontent_generate_options( $options ){
         echo '</ul>';
 
     }
+}
+
+
+/**
+ * Generates a form
+ * 
+ * @param array $options Options array
+ * @return void
+ */
+function wpbtsc_output_form( $options ){
+
+    $form_title = ( $options['add_form_heading'] ) ? $options['add_form_heading'] : '';
+    $form_title_text = ( $options['add_form_heading_text'] ) ? $options['add_form_heading_text'] : '';
+
+    $form_description = ( $options['add_form_description'] ) ? $options['add_form_description'] : '';
+    $form_description_text = ( $options['add_form_description_text'] ) ? $options['add_form_description_text'] : '';
+
+    $post_title = ( $options['add_post_title'] ) ? $options['add_post_title'] : '';
+    $post_content = ( $options['add_post_content'] ) ? $options['add_post_content'] : '';
+    $featured_img = ( $options['add_post_featured_image'] ) ? $options['add_post_featured_image'] : '';
+
+    $form_type = ( $featured_img ) ? 'enctype="multipart/form-data"' : '';
+
+    $security_key = wp_create_nonce( 'wpbtsc_form_input' );
+
+    ?>
+        
+        <div class="form">
+            <?php
+                // form title
+                if( $form_title && $form_title_text ):
+                    printf( '<h2>%s</h2>', __( $form_title_text, 'submitcontent' ) );
+                endif;
+                // form description (short)
+                if( $form_description && $form_description_text  ):
+                    printf( '<p>%s</p>', __( $form_description_text, 'submitcontent' ) );
+                endif;
+            ?>
+            <form action="" method="post" <?php echo $form_type; ?>>
+                <input type="hidden" name="sc_security_id" value="<?php echo $security_key; ?>">
+                <p>
+                    <label for="wpbtsc_posttitle">
+                        <?php _e( 'Enter post title', 'submitcontent' ); ?>
+                    </label>
+                </p>
+                <p>
+                    <input type="text" id="wpbtsc_posttitle" name="wpbtsc_posttitle" value="">
+                </p>
+                <?php
+                    if( $post_content ):
+                ?>
+                        <p>
+                            <label for="wpbtsc_postcontent">
+                                <?php _e( 'Enter post content', 'submitcontent' ); ?>
+                            </label>
+                        </p>
+
+                        <p>
+                            <textarea name="wpbtsc_postcontent" id="wpbtsc_postcontent" cols="30" rows="10"></textarea>
+                        </p>
+                <?php
+                    endif;
+                    if( $featured_img ):
+                ?>
+                        <p>
+                            <label for="wpbtsc_featured_img"><?php _e( 'Choose featured image', 'submitcontent' ); ?></label>
+                        </p>
+
+                        <p>
+                            <input type="file" id="wpbtsc_featured_img" name="wpbtsc_featured_img">
+                        </p>
+                <?php
+                    endif;
+                    if( isset( $options['category'] ) && !empty( $options['category'] ) ):
+                ?>
+                    <?php
+                        printf( '<p>%s:</p>', __( 'Select taxonomies for the post', 'submitcontent' ) );
+                    ?>
+
+                    <?php 
+                        foreach( $options['category'] as $category ){
+                            printf( '<p>%s: </s>', __( $category['name'], 'submitcontent' ) );
+                            $terms = get_terms([
+                                'taxonomy' => $category['slug'],
+                                'hide_empty' => false
+                            ]);
+                            if( ! empty( $terms ) ){
+                                foreach( $terms as $term ){
+                                    ?>
+                                        <p>
+                                            <input 
+                                                type="checkbox"
+                                                id="<?php echo $term->slug; ?>"
+                                                name="<?php echo $category['slug']; ?>[]"
+                                                value="<?php echo $term->slug; ?>"
+                                                parent="<?php echo $term->parent; ?>"
+                                            >
+                                            <label for="<?php echo $term->slug; ?>"> <?php _e( $term->name, 'submitcontent' ); ?></label>
+                                        </p>
+                                    <?php
+                                }
+                            } else {
+                                printf( '<p>%s</p>', __( 'no data available at the moment', 'submitcontent' ) );
+                            }
+                        }
+                    ?>
+                <?php
+                    endif;
+                    if( isset( $options['tag'] ) && !empty( $options['tag'] ) ):
+                ?>
+                        <?php 
+                            foreach( $options['tag'] as $tag ){
+                                printf( '<p>%s: </s>', __( $tag['name'], 'submitcontent' ) );
+                                $terms = get_terms([
+                                    'taxonomy' => $tag['slug'],
+                                    'hide_empty' => false
+                                ]);
+                                if( ! empty( $terms ) ){
+                                    foreach( $terms as $term ){
+                                        ?>
+                                            <p>
+                                                <input
+                                                    type="checkbox"
+                                                    id="<?php echo $term->slug; ?>"
+                                                    name="<?php echo $tag['slug']; ?>[]"
+                                                    value="<?php echo $term->slug; ?>"
+                                                >
+                                                <label for="<?php echo $term->slug; ?>"> <?php _e( $term->name, 'submitcontent' ); ?></label>
+                                            </p>
+                                        <?php
+                                    }
+                                } else {
+                                    printf( '<p>%s</p>', __( 'no data available at the moment', 'submitcontent' ) );
+                                }
+                            }
+                        ?>
+                    <?php
+                        endif;
+                    ?>
+                <p><input type="submit" name="wpbtsc_submit_content" value="<?php _e( 'Submit', 'submitcontent' ); ?>"></p>
+            </form>
+        </div>
+    <?php
 }

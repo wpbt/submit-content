@@ -55,6 +55,7 @@ require_once( SUBMIT_CONTENT_DIRECTORY . 'library/menu/menu.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/menu/settings.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'admin_assets/enqueue.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/ajax.php' );
+require_once( SUBMIT_CONTENT_DIRECTORY . 'library/shortcode.php' );
 
 /**
  * Activation and Deactivation hooks
