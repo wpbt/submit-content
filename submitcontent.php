@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * constant definitions:
  * - Version
  * - Plugin path
- * - Plugin url
+ * - Plugin URL
  */
 
 define( 'SUBMIT_CONTENT_VERSION', 0.1 );
@@ -54,6 +54,7 @@ require_once( SUBMIT_CONTENT_DIRECTORY . 'library/utility_functions.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/menu/menu.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/menu/settings.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'admin_assets/enqueue.php' );
+require_once( SUBMIT_CONTENT_DIRECTORY . 'public_assets/enqueue.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/ajax.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/shortcode.php' );
 
@@ -69,10 +70,17 @@ register_deactivation_hook( __FILE__, 'wpbt_submitcontent_deactivate' );
  * Plugin hooks
  */
 
+// administrative menu & settings page hooks
 add_action( 'admin_menu', 'wpbt_submitcontent_menu' );
 add_action( 'admin_init', 'wpbt_submitcontent_settings' );
+// scripts hooks
 add_action( 'admin_enqueue_scripts', 'wpbt_submitcontent_admin_scripts' );
+add_action( 'wp_enqueue_scripts', 'wpbtsc_public_scripts' );
+// ajax hooks
 add_action( 'wp_ajax_sc_generate_shortcode', 'wpbt_generate_shortcode_ajax_callback' );
 add_action( 'wp_ajax_sc_delete_shortcode', 'wpbt_delete_shortcode_callback' );
+add_action( 'wp_ajax_wpbtsc_form_submission', 'wpbtsc_form_submission' );
+add_action( 'wp_ajax_nopriv_wpbtsc_form_submission', 'wpbtsc_form_submission' );
 
-add_shortcode( 'submitcontent', 'submitcontent_shortcode_callback' );
+// shortcode registration
+add_shortcode( 'submitcontent', 'wpbtsc_shortcode' );

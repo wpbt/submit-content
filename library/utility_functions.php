@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return void  
  */
 
-function generate_input_field( $type, $name, $title, $value = '', $taxonomy = NULL ){
+function wpbtsc_generate_input_field( $type, $name, $title, $value = '', $taxonomy = NULL ){
     if( $type == 'textarea' ){
         echo "
             <tr class='". esc_attr( $name ) ."'>
@@ -77,19 +77,25 @@ function generate_input_field( $type, $name, $title, $value = '', $taxonomy = NU
  * @return array @response Contains errors and data as keys
  */
 
-function wpbt_submitcontent_validate_form( $form ){
+function wpbtsc_validate_admin_form( $form ){
 
     $errors = [];
     $data = [];
 
     if( empty( $form ) || empty( $form['options'] ) ) {
         $errors['empty_data'] = __( 'no data passed', 'submitcontent' );
-        return $errors;
+        return [
+            'errors' => $errors,
+            'data' => $data
+        ];
     }
     
     if( ! wp_verify_nonce( $form['options']['wpbt_sc_nonce'], 'wpbtsc' ) ){
         $errors['invalid_nonce'] = __( 'invalid nonce', 'submitcontent' );
-        return $errors;
+        return [
+            'errors' => $errors,
+            'data' => $data
+        ];
     }
 
     // create variales.
@@ -158,13 +164,114 @@ function wpbt_submitcontent_validate_form( $form ){
 }
 
 /**
+ * Validates and Generates a response
+ * 
+ * @param array @form Form data to velidate
+ * @return array @response Contains errors and data as keys
+ */
+
+function wpbtsc_validate_public_form( $form ){
+
+    $errors = [];
+    $data = [];
+
+    // nonce validation
+    if( ! wp_verify_nonce( $form['form_data']['sc_security_id'], 'wpbtsc_form_input' ) ){
+        $errors['invalid_nonce'] = __( 'invalid nonce', 'submitcontent' );
+        return [
+            'errors' => $errors,
+            'data' => $data
+        ];
+    }
+
+    $post_title = ( $form['form_data']['wpbtsc_posttitle'] ) ? sanitize_text_field( $form['form_data']['wpbtsc_posttitle'] ) : '';
+    $post_content = ( $form['form_data']['wpbtsc_postcontent'] ) ? sanitize_textarea_field( $form['form_data']['wpbtsc_postcontent'] ) : '';
+
+    // title and content
+    if( $post_title ){
+        $data['post_title'] = __( $post_title, 'submitcontent' );
+    } else {
+        $errors['post_title'] = __( 'post title is required', 'submitcontent' );
+    }
+    if( $post_content ){
+        $data['post_content'] = __( $post_content, 'submitcontent' );
+    } else {
+        $errors['post_content'] = __( 'post content is required', 'submitcontent' );
+    }
+
+    // categories and tags
+    foreach( $form['form_data'] as $key => $value ){
+        if( gettype( $value ) == 'array' ){
+            $data[$key] = $value;
+        }
+    }
+    /**
+     * file (image) handling
+     */
+
+    $image_info = $form['wpbtsc_featured_img'];
+    $image_name = ( $image_info['name'] ) ? sanitize_file_name( $image_info['name'] ) : '';
+    $image_type = ( $image_info['type'] ) ? $image_info['type'] : '';
+    $temp_image_location = ( $image_info['tmp_name'] ) ? $image_info['tmp_name'] : '';
+    $image_size = ( $image_info['size'] ) ? $image_info['size'] : '';
+    $supported_file_types = [ 
+        'jpg',
+        'jpeg',
+        'jpe',
+        'png',
+        'pdf',
+        'webpp',
+        'doc',
+        'tiff',
+        'tif'
+    ];
+    $allowed_file_types = apply_filters( 'wpbtsc_supported_filetypes', $supported_file_types );
+    // size
+    if( $image_name && $image_size ){
+        $filesize_mb = ( $image_size / pow( 1024, 2 ) );
+        if( $filesize_mb > 5 ){
+            $errors['file_size'] = __( 'file too large', 'submitcontent' );
+        }
+    }
+    // name and type
+    if( $image_name ){
+        $is_mime_allowed = wp_check_filetype( $image_name );
+        if(
+            isset( $is_mime_allowed['ext'] ) &&
+            in_array(
+                strtolower( $is_mime_allowed['ext'] ),
+                $allowed_file_types
+            )
+        ){
+            $data['featured_image'] = [
+                'name' => $image_name,
+                'size' => $filesize_mb,
+                'tmp_url' => $temp_image_location
+            ];
+        } else {
+            $errors['unsupported_file_type'] = __( 'unsupported file type', 'submitcontent' );
+        }
+    } else {
+        $errors['featured_image'] = __( 'no featured image set', 'submitcontent' );
+    }
+    /**
+     * file (image) handling end
+     */
+    
+    return [
+        'errors' => $errors,
+        'data' => $data
+    ];
+}
+
+/**
  * Generates a options' list
  * 
  * @param array $options Options array
  * @return void
  */
 
-function wpbt_submitcontent_generate_options( $options ){
+function wpbtsc_generate_options( $options ){
     if( $options && ! empty( $options ) ){
 
         $form_title = ( $options['add_form_heading'] ) ? $options['add_form_heading'] : '';
@@ -300,39 +407,39 @@ function wpbtsc_output_form( $options ){
                     printf( '<p>%s</p>', __( $form_description_text, 'submitcontent' ) );
                 endif;
             ?>
-            <form action="" method="post" <?php echo $form_type; ?>>
+            <form action="" class="wpbtsc-form" method="post" <?php echo $form_type; ?>>
                 <input type="hidden" name="sc_security_id" value="<?php echo $security_key; ?>">
-                <p>
+                <div>
                     <label for="wpbtsc_posttitle">
                         <?php _e( 'Enter post title', 'submitcontent' ); ?>
                     </label>
-                </p>
-                <p>
+                </div>
+                <div>
                     <input type="text" id="wpbtsc_posttitle" name="wpbtsc_posttitle" value="">
-                </p>
+                </div>
                 <?php
                     if( $post_content ):
                 ?>
-                        <p>
+                        <div>
                             <label for="wpbtsc_postcontent">
                                 <?php _e( 'Enter post content', 'submitcontent' ); ?>
                             </label>
-                        </p>
+                        </div>
 
-                        <p>
+                        <div>
                             <textarea name="wpbtsc_postcontent" id="wpbtsc_postcontent" cols="30" rows="10"></textarea>
-                        </p>
+                        </div>
                 <?php
                     endif;
                     if( $featured_img ):
                 ?>
-                        <p>
+                        <div>
                             <label for="wpbtsc_featured_img"><?php _e( 'Choose featured image', 'submitcontent' ); ?></label>
-                        </p>
+                        </div>
 
-                        <p>
+                        <div>
                             <input type="file" id="wpbtsc_featured_img" name="wpbtsc_featured_img">
-                        </p>
+                        </div>
                 <?php
                     endif;
                     if( isset( $options['category'] ) && !empty( $options['category'] ) ):
@@ -349,9 +456,10 @@ function wpbtsc_output_form( $options ){
                                 'hide_empty' => false
                             ]);
                             if( ! empty( $terms ) ){
+                                printf( '<input type="hidden" name="%s[]" value="">', $category['slug'] );
                                 foreach( $terms as $term ){
                                     ?>
-                                        <p>
+                                        <div>
                                             <input 
                                                 type="checkbox"
                                                 id="<?php echo $term->slug; ?>"
@@ -360,7 +468,7 @@ function wpbtsc_output_form( $options ){
                                                 parent="<?php echo $term->parent; ?>"
                                             >
                                             <label for="<?php echo $term->slug; ?>"> <?php _e( $term->name, 'submitcontent' ); ?></label>
-                                        </p>
+                                        </div>
                                     <?php
                                 }
                             } else {
@@ -380,9 +488,10 @@ function wpbtsc_output_form( $options ){
                                     'hide_empty' => false
                                 ]);
                                 if( ! empty( $terms ) ){
+                                    printf( '<input type="hidden" name="%s[]" value="">', $tag['slug'] );
                                     foreach( $terms as $term ){
                                         ?>
-                                            <p>
+                                            <div>
                                                 <input
                                                     type="checkbox"
                                                     id="<?php echo $term->slug; ?>"
@@ -390,7 +499,7 @@ function wpbtsc_output_form( $options ){
                                                     value="<?php echo $term->slug; ?>"
                                                 >
                                                 <label for="<?php echo $term->slug; ?>"> <?php _e( $term->name, 'submitcontent' ); ?></label>
-                                            </p>
+                                            </div>
                                         <?php
                                     }
                                 } else {

@@ -8,9 +8,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'why though?' );
 }
 
+/**
+ * AJAX handler to generate and save shortcode
+ */
+
 function wpbt_generate_shortcode_ajax_callback(){
     global $wpdb;
-    $result = wpbt_submitcontent_validate_form( $_POST );
+    $result = wpbtsc_validate_admin_form( $_POST );
     $errors = $result['errors'];
     $data = $result['data'];
 
@@ -33,13 +37,24 @@ function wpbt_generate_shortcode_ajax_callback(){
     }
     
     $shortcode_name = '[submitcontent id="'. $id .'"]';
-    $sql = "INSERT INTO $table_name (shortcode_name, options) VALUES (%s, %s)";
-    $sql_query = $wpdb->prepare( $sql, $shortcode_name, $shortcode_options );
-    $result = $wpdb->query( $sql_query );
+    $result = $wpdb->query( 
+                    $wpdb->prepare(
+                        "INSERT INTO $table_name (shortcode_name, options) VALUES (%s, %s)",
+                        $shortcode_name,
+                        $shortcode_options
+                    )
+                );
+
     if( $result ){
         $shortcode_name = '[submitcontent id="'. $wpdb->insert_id .'"]';
-        $update_sql = $wpdb->prepare( "UPDATE $table_name SET shortcode_name=%s WHERE id=%d", $shortcode_name, $wpdb->insert_id );
-        $update = $wpdb->query( $update_sql );
+        $update = $wpdb->query( 
+                        $wpdb->prepare(
+                            "UPDATE $table_name SET shortcode_name=%s WHERE id=%d",
+                            $shortcode_name,
+                            $wpdb->insert_id
+                        )
+                    );
+
         if( $update ){
             $response = [
                 'data' => $shortcode_name,
@@ -55,6 +70,10 @@ function wpbt_generate_shortcode_ajax_callback(){
         wp_send_json( $response );
     }
 }
+
+/**
+ * AJAX handler to delete shortcode
+ */
 
 function wpbt_delete_shortcode_callback(){
 
@@ -104,5 +123,32 @@ function wpbt_delete_shortcode_callback(){
         ];
         wp_send_json( $response );
     }
+    
+}
+
+/**
+ * AJAX handler to process user form submission
+ */
+
+function wpbtsc_form_submission(){
+
+    $result = wpbtsc_validate_public_form( [
+        'wpbtsc_featured_img' => $_FILES['wpbtsc_featured_img'],
+        'form_data' => $_POST
+    ] );
+
+    $errors = $result['errors'];
+    $data = $result['data'];
+
+    // handle errors!
+    if( ! empty( $errors ) ){
+        $response = [
+            'data' => $errors,
+            'type' => 'error'
+        ];
+        wp_send_json( $response );
+    }
+
+    wp_send_json( $data );
     
 }

@@ -49,7 +49,7 @@ function wpbt_submitcontent_settings_page(){
     // exit if user can not manage options!
     if( ! current_user_can( 'manage_options' ) ) exit;
 
-    echo '<h1>' . esc_html__( get_admin_page_title(), 'submitcontent' ) . '</h1>';
+    printf( '<h1>%s</h1>', __( get_admin_page_title(), 'submitcontent' ) );
 
     if( isset( $_GET['settings-updated'] ) ){
         add_settings_error( 
@@ -78,7 +78,7 @@ function wpbt_submitcontent_form_settings_page(){
     // exit if user can not manage options!
     if( ! current_user_can( 'manage_options' ) ) exit;
 
-    echo '<h1>' . esc_html__( get_admin_page_title(), 'submitcontent' ) . '</h1>';
+    printf( '<h1>%s</h1>', __( get_admin_page_title(), 'submitcontent' ) );
 
     $sc_options = get_option( 'submitcontent_options' );
     $wpbtsc_saveas = $sc_options['wpbtsc_saveas'];
@@ -109,37 +109,37 @@ function wpbt_submitcontent_form_settings_page(){
                 <tbody>
                     <?php
                         // generate security field!
-                        generate_input_field( 'hidden', 'wpbt_sc_nonce', '', wp_create_nonce( 'wpbtsc' ) );
-                        generate_input_field( 'checkbox', 'add_form_heading', 'Form heading', 1 );
-                        generate_input_field( 'text', 'add_form_heading_text', 'Heading text', '' );
-                        generate_input_field( 'checkbox', 'add_form_description', 'Form description', 1 );
-                        generate_input_field( 'textarea', 'add_form_description_text', 'Description text', '' );
+                        wpbtsc_generate_input_field( 'hidden', 'wpbt_sc_nonce', '', wp_create_nonce( 'wpbtsc' ) );
+                        wpbtsc_generate_input_field( 'checkbox', 'add_form_heading', 'Form heading', 1 );
+                        wpbtsc_generate_input_field( 'text', 'add_form_heading_text', 'Heading text', '' );
+                        wpbtsc_generate_input_field( 'checkbox', 'add_form_description', 'Form description', 1 );
+                        wpbtsc_generate_input_field( 'textarea', 'add_form_description_text', 'Description text', '' );
 
                         if( post_type_supports( $wpbtsc_saveas, 'title' ) ){
-                            generate_input_field( 'checkbox', 'add_post_title', 'Post title', 1 );
+                            wpbtsc_generate_input_field( 'checkbox', 'add_post_title', 'Post title', 1 );
                         } else {
-                            generate_input_field( 'notice', 'notice', 'Post title', 'not supported for selected post type' );
+                            wpbtsc_generate_input_field( 'notice', 'notice', 'Post title', 'not supported for selected post type' );
                         }
 
                         if( post_type_supports( $wpbtsc_saveas, 'editor' ) ){
-                            generate_input_field( 'checkbox', 'add_post_content', 'Post content', 1 );
+                            wpbtsc_generate_input_field( 'checkbox', 'add_post_content', 'Post content', 1 );
                         } else {
-                            generate_input_field( 'notice', 'notice', 'Post content', 'not supported for selected post type' );
+                            wpbtsc_generate_input_field( 'notice', 'notice', 'Post content', 'not supported for selected post type' );
                         }
 
                         if( post_type_supports( $wpbtsc_saveas, 'thumbnail' ) ){
-                            generate_input_field( 'checkbox', 'add_post_featured_image', 'Featured image', 1 );
+                            wpbtsc_generate_input_field( 'checkbox', 'add_post_featured_image', 'Featured image', 1 );
                         } else {
-                            generate_input_field( 'notice', 'notice', 'Featured image', 'not supported for selected post type' );
+                            wpbtsc_generate_input_field( 'notice', 'notice', 'Featured image', 'not supported for selected post type' );
                         }
 
                         if( !empty( $categories ) ){
                             foreach( $categories as $category ){
                                 $name = $category['name'];
                                 $slug = $category['slug'];
-                                // this value is translated in generate_input_field() function.
+                                // this value is translated in wpbtsc_generate_input_field() function.
                                 $content = 'Allow users to add ' . $wpbtsc_saveas . ' ' . $category['name'];
-                                generate_input_field( 'checkbox', $name, $content, $slug,  [ 'type' => 'category' ] );
+                                wpbtsc_generate_input_field( 'checkbox', $name, $content, $slug,  [ 'type' => 'category' ] );
                             }
                         }
 
@@ -147,9 +147,9 @@ function wpbt_submitcontent_form_settings_page(){
                             foreach( $tags as $tag ){
                                 $name = $tag['name'];
                                 $slug = $tag['slug'];
-                                // this value is translated in generate_input_field() function.
+                                // this value is translated in wpbtsc_generate_input_field() function.
                                 $content = 'Allow users to add ' . $wpbtsc_saveas . ' ' . $tag['name'];
-                                generate_input_field( 'checkbox', $name, $content, $slug,  [ 'type' => 'tag' ] );
+                                wpbtsc_generate_input_field( 'checkbox', $name, $content, $slug,  [ 'type' => 'tag' ] );
                             }
                         }
 
@@ -169,7 +169,7 @@ function wpbt_submitcontent_shortcodes_page(){
     // exit if user can not manage options!
     if( ! current_user_can( 'manage_options' ) ) exit;
 
-    echo '<h1>' . esc_html__( get_admin_page_title(), 'submitcontent' ) . '</h1>';
+    printf( '<h1>%s</h1>', __( get_admin_page_title(), 'submitcontent' ) );
 
     /**
      * Querying the database for displaying shortcodes.
@@ -198,7 +198,7 @@ function wpbt_submitcontent_shortcodes_page(){
                                 <tr id="<?php echo esc_attr( $shortcode->id ); ?>">
                                     <td class="sc-sn"><?php _e( $count, 'submitcontent' ); ?></td>
                                     <td class="wpbtsc-copy"><?php echo $shortcode->shortcode_name; ?></td>
-                                    <td><?php wpbt_submitcontent_generate_options( $options ); ?></td>
+                                    <td><?php wpbtsc_generate_options( $options ); ?></td>
                                     <td>
                                         <a 
                                             nonceKey="<?php echo wp_create_nonce( 'wpbt_delete_sc' ); ?>"
@@ -213,6 +213,18 @@ function wpbt_submitcontent_shortcodes_page(){
                             $count++;
                         }
                     else:
+                        // printf(
+                        //     '<tr class="no-shortcodes">
+                        //             <td colspan="4">
+                        //                 <p>%s</p>
+                        //                 <p>%s: <a href="%s">%s</a></p>
+                        //             </td>
+                        //     </tr>',
+                        //     __( 'You haven\'t created any shortcodes yet!', 'submitcontent' ),
+                        //     __( 'to create shortcodes, visit', 'submitcontent' ),
+                        //     menu_page_url( 'sc-form-settings', true ),
+                        //     __( 'Create Shortcodes', 'submitcontent' )
+                        // );
                         ?>
                             <tr class="no-shortcodes">
                                 <td colspan="4">

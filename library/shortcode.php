@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return String $html outputs shortcode (form)
  */
 
-function submitcontent_shortcode_callback( $atts ){
+function wpbtsc_shortcode( $atts ){
 
     global $wpdb;
 
