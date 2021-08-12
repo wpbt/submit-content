@@ -188,15 +188,19 @@ function wpbtsc_validate_public_form( $form ){
     $post_content = ( $form['form_data']['wpbtsc_postcontent'] ) ? sanitize_textarea_field( $form['form_data']['wpbtsc_postcontent'] ) : '';
 
     // title and content
-    if( $post_title ){
-        $data['post_title'] = __( $post_title, 'submitcontent' );
-    } else {
-        $errors['post_title'] = __( 'post title is required', 'submitcontent' );
+    if( array_key_exists( 'wpbtsc_posttitle', $form['form_data'] ) ){
+        if( $post_title ){
+            $data['post_title'] = __( $post_title, 'submitcontent' );
+        } else {
+            $errors['post_title'] = __( 'post title is required', 'submitcontent' );
+        }
     }
-    if( $post_content ){
-        $data['post_content'] = __( $post_content, 'submitcontent' );
-    } else {
-        $errors['post_content'] = __( 'post content is required', 'submitcontent' );
+    if( array_key_exists( 'wpbtsc_postcontent', $form['form_data'] ) ){
+        if( $post_content ){
+            $data['post_content'] = __( $post_content, 'submitcontent' );
+        } else {
+            $errors['post_content'] = __( 'post content is required', 'submitcontent' );
+        }
     }
 
     // categories and tags
@@ -208,55 +212,64 @@ function wpbtsc_validate_public_form( $form ){
     /**
      * file (image) handling
      */
-
-    $image_info = $form['wpbtsc_featured_img'];
-    $image_name = ( $image_info['name'] ) ? sanitize_file_name( $image_info['name'] ) : '';
-    $image_type = ( $image_info['type'] ) ? $image_info['type'] : '';
-    $temp_image_location = ( $image_info['tmp_name'] ) ? $image_info['tmp_name'] : '';
-    $image_size = ( $image_info['size'] ) ? $image_info['size'] : '';
-    $supported_file_types = [ 
-        'jpg',
-        'jpeg',
-        'jpe',
-        'png',
-        'pdf',
-        'webpp',
-        'doc',
-        'tiff',
-        'tif'
-    ];
-    $allowed_file_types = apply_filters( 'wpbtsc_supported_filetypes', $supported_file_types );
-    // size
-    if( $image_name && $image_size ){
-        $filesize_mb = ( $image_size / pow( 1024, 2 ) );
-        if( $filesize_mb > 5 ){
-            $errors['file_size'] = __( 'file too large', 'submitcontent' );
-        }
-    }
-    // name and type
-    if( $image_name ){
-        $is_mime_allowed = wp_check_filetype( $image_name );
-        if(
-            isset( $is_mime_allowed['ext'] ) &&
-            in_array(
-                strtolower( $is_mime_allowed['ext'] ),
-                $allowed_file_types
-            )
-        ){
-            $data['featured_image'] = [
-                'name' => $image_name,
-                'size' => $filesize_mb,
-                'tmp_url' => $temp_image_location
-            ];
-        } else {
-            $errors['unsupported_file_type'] = __( 'unsupported file type', 'submitcontent' );
-        }
+    // die(gettype($form['wpbtsc_featured_img']));
+    if ( is_null( $form['wpbtsc_featured_img'] ) ){
+        return [
+            'errors' => $errors,
+            'data' => $data
+        ];
     } else {
-        $errors['featured_image'] = __( 'no featured image set', 'submitcontent' );
+
+        $image_info = $form['wpbtsc_featured_img'];
+        $image_name = ( $image_info['name'] ) ? sanitize_file_name( $image_info['name'] ) : '';
+        $image_type = ( $image_info['type'] ) ? $image_info['type'] : '';
+        $temp_image_location = ( $image_info['tmp_name'] ) ? $image_info['tmp_name'] : '';
+        $image_size = ( $image_info['size'] ) ? $image_info['size'] : '';
+        $supported_file_types = [ 
+            'jpg',
+            'jpeg',
+            'jpe',
+            'png',
+            'pdf',
+            'webpp',
+            'doc',
+            'tiff',
+            'tif'
+        ];
+        $allowed_file_types = apply_filters( 'wpbtsc_supported_filetypes', $supported_file_types );
+        // size
+        if( $image_name && $image_size ){
+            $filesize_mb = ( $image_size / pow( 1024, 2 ) );
+            if( $filesize_mb > 5 ){
+                $errors['file_size'] = __( 'file too large', 'submitcontent' );
+            }
+        }
+        // name and type
+        if( $image_name ){
+            $is_mime_allowed = wp_check_filetype( $image_name );
+            if(
+                isset( $is_mime_allowed['ext'] ) &&
+                in_array(
+                    strtolower( $is_mime_allowed['ext'] ),
+                    $allowed_file_types
+                )
+            ){
+                $data['featured_image'] = [
+                    'name' => $image_name,
+                    'size' => $filesize_mb,
+                    'tmp_url' => $temp_image_location
+                ];
+            } else {
+                $errors['unsupported_file_type'] = __( 'unsupported file type', 'submitcontent' );
+            }
+        } else {
+            $errors['featured_image'] = __( 'no featured image set', 'submitcontent' );
+        }
+        /**
+         * file (image) handling end
+         */
+
     }
-    /**
-     * file (image) handling end
-     */
     
     return [
         'errors' => $errors,
@@ -378,7 +391,7 @@ function wpbtsc_generate_options( $options ){
  * @param array $options Options array
  * @return void
  */
-function wpbtsc_output_form( $options ){
+function wpbtsc_output_form( $options, $form_id ){
 
     $form_title = ( $options['add_form_heading'] ) ? $options['add_form_heading'] : '';
     $form_title_text = ( $options['add_form_heading_text'] ) ? $options['add_form_heading_text'] : '';
@@ -393,6 +406,7 @@ function wpbtsc_output_form( $options ){
     $form_type = ( $featured_img ) ? 'enctype="multipart/form-data"' : '';
 
     $security_key = wp_create_nonce( 'wpbtsc_form_input' );
+    $form_id = 'sc-form-' . $form_id;
 
     ?>
         
@@ -407,8 +421,9 @@ function wpbtsc_output_form( $options ){
                     printf( '<p>%s</p>', __( $form_description_text, 'submitcontent' ) );
                 endif;
             ?>
-            <form action="" class="wpbtsc-form" method="post" <?php echo $form_type; ?>>
+            <form action="" id="<?php echo $form_id; ?>" class="wpbtsc-form" method="post" <?php echo $form_type; ?>>
                 <input type="hidden" name="sc_security_id" value="<?php echo $security_key; ?>">
+                <input type="hidden" name="form_id" value="<?php echo $form_id; ?>">
                 <div>
                     <label for="wpbtsc_posttitle">
                         <?php _e( 'Enter post title', 'submitcontent' ); ?>
@@ -464,7 +479,7 @@ function wpbtsc_output_form( $options ){
                                                 type="checkbox"
                                                 id="<?php echo $term->slug; ?>"
                                                 name="<?php echo $category['slug']; ?>[]"
-                                                value="<?php echo $term->slug; ?>"
+                                                value="<?php echo $term->term_id; ?>"
                                                 parent="<?php echo $term->parent; ?>"
                                             >
                                             <label for="<?php echo $term->slug; ?>"> <?php _e( $term->name, 'submitcontent' ); ?></label>
@@ -496,7 +511,7 @@ function wpbtsc_output_form( $options ){
                                                     type="checkbox"
                                                     id="<?php echo $term->slug; ?>"
                                                     name="<?php echo $tag['slug']; ?>[]"
-                                                    value="<?php echo $term->slug; ?>"
+                                                    value="<?php echo $term->term_id; ?>"
                                                 >
                                                 <label for="<?php echo $term->slug; ?>"> <?php _e( $term->name, 'submitcontent' ); ?></label>
                                             </div>
@@ -514,4 +529,74 @@ function wpbtsc_output_form( $options ){
             </form>
         </div>
     <?php
+}
+
+
+/**
+ * Creates posts array from data and backend options
+ * 
+ * @param array $data
+ * @return array Returns a post array
+ */
+
+function wpbtsc_create_posts_array( $data ){
+    
+    $post_array = [];
+    $categories = [];
+    $tags = [];
+    $keys = array_keys( $data );
+
+    $sc_options = get_option( 'submitcontent_options' );
+
+    $post_type = $sc_options['wpbtsc_saveas'];
+    $post_status = $sc_options['wpbtsc_default_status'];
+    $admin_email = get_option( 'admin_email' );
+    $admin_id = get_user_by( 'email', $admin_email );
+    $supported_taxonomies = get_object_taxonomies( $post_type, 'object' );
+    
+    
+    foreach( $supported_taxonomies as $taxonomy ){
+        if( $taxonomy->hierarchical ){
+            array_push( $categories, $taxonomy->name );
+        } elseif( ! $taxonomy->hierarchical ) {
+            // skipping post_format types for post_type = 'post'
+            if( $taxonomy->name == 'post_format' ) continue;
+            array_push( $tags, $taxonomy->name );
+        }
+    }
+
+    $post_array = [
+        'post_title' => wp_strip_all_tags( $data['post_title'] ),
+        'post_content' => $data['post_content'],
+        'post_status' => $post_status,
+        'post_type' => $post_type,
+        'post_author' => $admin_id->ID
+    ];
+
+    $hierarchical_tax = array_intersect( $categories, $keys );
+    $cats = [];
+    if( sizeof( $hierarchical_tax ) != 0 ){
+        foreach( $hierarchical_tax as $cat ){
+            $result = array_merge( $cats, $data[$cat] ); 
+        }
+        $result = array_filter( $result );
+        if( $result ){
+            $post_array['tax_input']['hierarchical_tax'] = $result;
+        }
+    }
+    
+    $non_hierarchical_tax = array_intersect( $tags, $keys );
+    $t = [];
+    unset( $result );
+    if( sizeof( $non_hierarchical_tax ) != 0 ){
+        foreach( $non_hierarchical_tax as $tag ){
+            $result = array_merge( $t, $data[$tag] );
+        }
+        $result = array_filter( $result );
+        if( $result ){
+            $post_array['tax_input']['non_hierarchical_tax'] = $result;
+        }
+    }
+
+    return $post_array;
 }

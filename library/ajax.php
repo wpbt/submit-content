@@ -139,16 +139,21 @@ function wpbtsc_form_submission(){
 
     $errors = $result['errors'];
     $data = $result['data'];
-
+    $data['form_id'] = $_POST['form_id'];
+    
     // handle errors!
     if( ! empty( $errors ) ){
         $response = [
             'data' => $errors,
-            'type' => 'error'
+            'type' => 'error',
+            'form_id' => $_POST['form_id'],
         ];
         wp_send_json( $response );
     }
 
-    wp_send_json( $data );
+    $post_array = wpbtsc_create_posts_array( $data );
+        
+    // wp_insert_post( $post_array );
+    wp_send_json( $post_array );
     
 }

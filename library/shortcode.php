@@ -37,7 +37,7 @@ function wpbtsc_shortcode( $atts ){
     if( ! $options ) return sprintf( '<p>%s</p>', __( 'invalid shortcode id provided', 'submitcontent' ) );
     $options = maybe_unserialize( $options->options );
     
-    wpbtsc_output_form( $options );
+    wpbtsc_output_form( $options, $atts['id'] );
 
     return $output = ob_get_clean();
 }
