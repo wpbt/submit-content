@@ -154,45 +154,51 @@ function wpbtsc_form_submission(){
     $post_array = wpbtsc_create_posts_array( $data );
         
     $post_id = wp_insert_post( $post_array, true );
+    
+    if( ! is_wp_error( $post_id ) ){
 
-    if( ! is_wp_error( $post_id ) && $data['featured_image'] ){
-        // These files need to be included as dependencies when on the front end.
-        require_once( ABSPATH . 'wp-admin/includes/image.php' );
-        require_once( ABSPATH . 'wp-admin/includes/file.php' );
-        require_once( ABSPATH . 'wp-admin/includes/media.php' );
-
-        
-        $attachment_id = media_handle_upload( 'wpbtsc_featured_img', $post_id );
-                
-        if( ! is_wp_error( $attachment_id ) ){
-            $featured_img_set = set_post_thumbnail( $post_id, $attachment_id );
-            if( $featured_img_set ){
-                $data['message'] = __( 'content submitted successfully', 'submitcontent' );
-                $response = [
-                    'data' => $data,
-                    'type' => 'success',
-                    'form_id' => $_POST['form_id'],
-                ];
+        if( is_null( $data['featured_image'] ) ){
+            // featured image is not available!
+            $response = [
+                'data' => __( 'content submitted successfully', 'submitcontent' ),
+                'type' => 'success',
+                'form_id' => $_POST['form_id'],
+            ];
+        } else {
+            // These files need to be included as dependencies when on the front end.
+            require_once( ABSPATH . 'wp-admin/includes/image.php' );
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+            require_once( ABSPATH . 'wp-admin/includes/media.php' );
+    
+            
+            $attachment_id = media_handle_upload( 'wpbtsc_featured_img', $post_id );
+                    
+            if( ! is_wp_error( $attachment_id ) ){
+                $featured_img_set = set_post_thumbnail( $post_id, $attachment_id );
+                if( $featured_img_set ){
+                    $response = [
+                        'data' => __( 'content submitted successfully', 'submitcontent' ),
+                        'type' => 'success',
+                        'form_id' => $_POST['form_id'],
+                    ];
+                } else {
+                    $response = [
+                        'data' => __( 'featured image not set', 'submitcontent' ),
+                        'type' => 'error',
+                        'form_id' => $_POST['form_id'],
+                    ];
+                }
             } else {
-                $data['message'] = __( 'featured image not set', 'submitcontent' );
                 $response = [
-                    'data' => $data,
+                    'data' => $attachment_id->get_error_message(),
                     'type' => 'error',
                     'form_id' => $_POST['form_id'],
                 ];
             }
-        } else {
-            $data['message'] = $attachment_id->get_error_message();
-            $response = [
-                'data' => $data,
-                'type' => 'error',
-                'form_id' => $_POST['form_id'],
-            ];
         }
     } else {
-        $data['message'] = $post_id->get_error_message();
         $response = [
-            'data' => $data,
+            'data' => $post_id->get_error_message(),
             'type' => 'error',
             'form_id' => $_POST['form_id'],
         ];
