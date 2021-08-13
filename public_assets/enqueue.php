@@ -19,7 +19,14 @@ function wpbtsc_public_scripts(){
     wp_enqueue_style( 'wpbtsc-public-style' );
     // script
     wp_register_script( 'wpbtsc-public-script', SUBMIT_CONTENT_DIRECTORY_URL . 'public_assets/js/public-scripts.js', [ 'jquery' ], '', true );
-    wp_localize_script( 'wpbtsc-public-script', 'scJSOBJ', [ 'ajax_url' => admin_url( 'admin-ajax.php' ) ] );
+    wp_localize_script(
+        'wpbtsc-public-script',
+        'scJSOBJ',
+        [
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'error_heading' => sprintf( '<h4>%s!</h4>', __( 'please fix following errors', 'submitcontent' ) )
+        ]
+    );
     wp_enqueue_script( 'wpbtsc-public-script' );
 
 }

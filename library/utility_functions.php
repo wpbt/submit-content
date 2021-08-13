@@ -411,7 +411,7 @@ function wpbtsc_output_form( $options, $form_id ){
 
     ?>
         
-        <div class="form">
+        <div class="sc-form">
             <?php
                 // form title
                 if( $form_title && $form_title_text ):

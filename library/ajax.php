@@ -156,11 +156,11 @@ function wpbtsc_form_submission(){
     $post_id = wp_insert_post( $post_array, true );
     
     if( ! is_wp_error( $post_id ) ){
-
+        $success_message = __( 'content submitted successfully!', 'submitcontent' );
         if( is_null( $data['featured_image'] ) ){
-            // featured image is not available!
+            // featured image is not available case!
             $response = [
-                'data' => __( 'content submitted successfully', 'submitcontent' ),
+                'data' => $success_message,
                 'type' => 'success',
                 'form_id' => $_POST['form_id'],
             ];
@@ -177,7 +177,7 @@ function wpbtsc_form_submission(){
                 $featured_img_set = set_post_thumbnail( $post_id, $attachment_id );
                 if( $featured_img_set ){
                     $response = [
-                        'data' => __( 'content submitted successfully', 'submitcontent' ),
+                        'data' => $success_message,
                         'type' => 'success',
                         'form_id' => $_POST['form_id'],
                     ];
