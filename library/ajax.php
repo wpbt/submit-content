@@ -153,7 +153,51 @@ function wpbtsc_form_submission(){
 
     $post_array = wpbtsc_create_posts_array( $data );
         
-    // wp_insert_post( $post_array );
-    wp_send_json( $post_array );
+    $post_id = wp_insert_post( $post_array, true );
+
+    if( ! is_wp_error( $post_id ) && $data['featured_image'] ){
+        // These files need to be included as dependencies when on the front end.
+        require_once( ABSPATH . 'wp-admin/includes/image.php' );
+        require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        require_once( ABSPATH . 'wp-admin/includes/media.php' );
+
+        
+        $attachment_id = media_handle_upload( 'wpbtsc_featured_img', $post_id );
+                
+        if( ! is_wp_error( $attachment_id ) ){
+            $featured_img_set = set_post_thumbnail( $post_id, $attachment_id );
+            if( $featured_img_set ){
+                $data['message'] = __( 'content submitted successfully', 'submitcontent' );
+                $response = [
+                    'data' => $data,
+                    'type' => 'success',
+                    'form_id' => $_POST['form_id'],
+                ];
+            } else {
+                $data['message'] = __( 'featured image not set', 'submitcontent' );
+                $response = [
+                    'data' => $data,
+                    'type' => 'error',
+                    'form_id' => $_POST['form_id'],
+                ];
+            }
+        } else {
+            $data['message'] = $attachment_id->get_error_message();
+            $response = [
+                'data' => $data,
+                'type' => 'error',
+                'form_id' => $_POST['form_id'],
+            ];
+        }
+    } else {
+        $data['message'] = $post_id->get_error_message();
+        $response = [
+            'data' => $data,
+            'type' => 'error',
+            'form_id' => $_POST['form_id'],
+        ];
+    }
+
+    wp_send_json( $response );
     
 }

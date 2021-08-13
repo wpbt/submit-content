@@ -212,7 +212,6 @@ function wpbtsc_validate_public_form( $form ){
     /**
      * file (image) handling
      */
-    // die(gettype($form['wpbtsc_featured_img']));
     if ( is_null( $form['wpbtsc_featured_img'] ) ){
         return [
             'errors' => $errors,
@@ -255,9 +254,11 @@ function wpbtsc_validate_public_form( $form ){
                 )
             ){
                 $data['featured_image'] = [
+                    'error' => $image_info['error'],
                     'name' => $image_name,
-                    'size' => $filesize_mb,
-                    'tmp_url' => $temp_image_location
+                    'size' => $image_size,
+                    'tmp_name' => $temp_image_location,
+                    'type' => $image_type
                 ];
             } else {
                 $errors['unsupported_file_type'] = __( 'unsupported file type', 'submitcontent' );
@@ -511,7 +512,7 @@ function wpbtsc_output_form( $options, $form_id ){
                                                     type="checkbox"
                                                     id="<?php echo $term->slug; ?>"
                                                     name="<?php echo $tag['slug']; ?>[]"
-                                                    value="<?php echo $term->term_id; ?>"
+                                                    value="<?php echo $term->slug; ?>"
                                                 >
                                                 <label for="<?php echo $term->slug; ?>"> <?php _e( $term->name, 'submitcontent' ); ?></label>
                                             </div>
@@ -567,21 +568,33 @@ function wpbtsc_create_posts_array( $data ){
 
     $post_array = [
         'post_title' => wp_strip_all_tags( $data['post_title'] ),
-        'post_content' => $data['post_content'],
         'post_status' => $post_status,
         'post_type' => $post_type,
         'post_author' => $admin_id->ID
     ];
 
+    if( $data['post_content'] ){
+        $post_array['post_content'] = $data['post_content'];
+    }
+    
     $hierarchical_tax = array_intersect( $categories, $keys );
     $cats = [];
     if( sizeof( $hierarchical_tax ) != 0 ){
         foreach( $hierarchical_tax as $cat ){
-            $result = array_merge( $cats, $data[$cat] ); 
+            $cats = array_merge( $cats, $data[$cat] ); 
         }
-        $result = array_filter( $result );
+
+        // so, converting them to integers
+        $result = array_filter( $cats, function( $id ){
+            if( $id ) return intval( $id );
+        } );
+
         if( $result ){
-            $post_array['tax_input']['hierarchical_tax'] = $result;
+            if( $post_type == 'post' ){
+                $post_array['post_category'] = $result;
+            } else {
+                $post_array['tax_input']['hierarchical_tax'] = $result;
+            }
         }
     }
     
@@ -590,11 +603,14 @@ function wpbtsc_create_posts_array( $data ){
     unset( $result );
     if( sizeof( $non_hierarchical_tax ) != 0 ){
         foreach( $non_hierarchical_tax as $tag ){
-            $result = array_merge( $t, $data[$tag] );
+            $t = array_merge( $t, $data[$tag] );
         }
-        $result = array_filter( $result );
-        if( $result ){
-            $post_array['tax_input']['non_hierarchical_tax'] = $result;
+        // so, converting them to integers
+        $result = array_filter( $t );
+        if( $post_type == 'post' ){
+            $post_array['tags_input'] = $result;
+        } else {
+            $post_array['tax_input']['hierarchical_tax'] = $result;
         }
     }
 
