@@ -202,6 +202,17 @@ function wpbtsc_validate_public_form( $form ){
         if( $secret_key ){
             $recaptcha_response = wp_remote_post( $recaptcha_verify_url, $args );
             $response_body = wp_remote_retrieve_body( $recaptcha_response );
+            $recaptcha_status = json_decode( $response_body, true );
+            $score = apply_filters( 'wpbtsc_score_threshold', 0.5 );
+
+            if(
+                ! $recaptcha_status['success'] ||
+                ( $recaptcha_status['score'] < $score ) ||
+                ( $recaptcha_status['action'] != 'submitcontent' )
+            ){
+                // a visitor will never see this message!
+                $errors['recaptcha_status'] = sprintf( '%s reCAPTCHA', __( 'invalid', 'submitcontent' ) );
+            }
         }
     }
 
