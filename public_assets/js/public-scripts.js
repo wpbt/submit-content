@@ -10,12 +10,11 @@ let scFromHandler = {
     },
     handleForm: function(event){
         event.preventDefault();
-        let formID = jQuery( this ).find( 'input[name="form_id"').val();
         let formData = new FormData(this);
         formData.append( 'action', 'wpbtsc_form_submission' );
 
         if( typeof grecaptcha != 'undefined' ){
-
+            let formID = jQuery( this ).find( 'input[name="form_id"').val();
             grecaptcha.ready( function() {
                 grecaptcha.execute( scJSOBJ.site_key, { action: 'submitcontent' } )
                             .then( function( token ){
