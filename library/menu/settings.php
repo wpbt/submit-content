@@ -125,13 +125,13 @@ function wpbtsc_validate( $input ){
     }
 
     if( ! $input['wpbtsc_recaptcha_sitekey'] ){
-        $input['wpbtsc_recaptcha_sitekey'] = $option['wpbtsc_recaptcha_sitekey'];
+        $input['wpbtsc_recaptcha_sitekey'] = '';
     } else {
         $input['wpbtsc_recaptcha_sitekey'] = sanitize_text_field( $input['wpbtsc_recaptcha_sitekey'] );
     }
 
     if( ! $input['wpbtsc_recaptcha_secretkey'] ){
-        $input['wpbtsc_recaptcha_secretkey'] = $option['wpbtsc_recaptcha_secretkey'];
+        $input['wpbtsc_recaptcha_secretkey'] = '';
     } else {
         $input['wpbtsc_recaptcha_secretkey'] = sanitize_text_field( $input['wpbtsc_recaptcha_secretkey'] );
     }
