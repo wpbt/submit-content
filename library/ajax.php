@@ -148,11 +148,11 @@ function wpbtsc_form_submission(){
             'type' => 'error',
             'form_id' => $_POST['form_id'],
         ];
+        
         wp_send_json( $response );
     }
-
-    $post_array = wpbtsc_create_posts_array( $data );
-        
+    
+    $post_array = wpbtsc_create_posts_array( $data );    
     $post_id = wp_insert_post( $post_array, true );
     
     if( ! is_wp_error( $post_id ) ){
@@ -203,7 +203,7 @@ function wpbtsc_form_submission(){
             'form_id' => $_POST['form_id'],
         ];
     }
-
+    
     wp_send_json( $response );
     
 }

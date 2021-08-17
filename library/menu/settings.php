@@ -17,9 +17,18 @@ function wpbt_submitcontent_settings(){
     add_settings_section(
         'wpbt_submitcontent_general_section',
         __( 'General settings', 'submitcontent' ),
-        null, // no need to display anything at the top of this section!
+        null,
         'submitcontent'
     );
+
+    add_settings_section(
+        'wpbt_submitcontent_security_section',
+        __( 'Form security settings', 'submitcontent' ),
+        'wpbtsc_security_section_callback',
+        'submitcontent'
+    );
+
+    // general section fields
 
     add_settings_field(
         'wpbtsc_saveas',
@@ -68,97 +77,33 @@ function wpbt_submitcontent_settings(){
             'label_for' =>  'wpbtsc_requires_login',
         ]
     );
-}
 
-function wpbtsc_saveas_callback( $args ){
+    // security fields
 
-    $options = get_option( 'submitcontent_options' );
-    
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
-
-    $post_types = get_post_types( 
+    add_settings_field(
+        'wpbtsc_recaptcha_sitekey',
+        __( 'Enter reCAPTCHA v3 site key', 'submitcontent' ),
+        'wpbtsc_sitekey_callback',
+        'submitcontent',
+        'wpbt_submitcontent_security_section',
         [
-            'public' => true,
-            '_builtin' => false
-        ],
-        'names',
-        'and'
+            'id' => 'wpbtsc_recaptcha_sitekey',
+            'label_for' =>  'wpbtsc_recaptcha_sitekey',
+        ]
     );
 
-    ?>
-        <select name="submitcontent_options[<?php echo $args['id']; ?>]" id="<?php echo $args['id']; ?>">
-            <option value="post" <?php echo selected( $value, 'post' ); ?>><?php esc_html_e( 'post', 'submitcontent' ) ?></option>
-            <?php
-                foreach( $post_types as $post_type ){
-                    ?>
-                        <option value="<?php echo $post_type; ?>" <?php echo selected( $value, $post_type ); ?>><?php esc_html_e( $post_type, 'submitcontent' ); ?></option>
-                    <?php
-                }
-            ?>
-        </select>
-    <?php
-}
+    add_settings_field(
+        'wpbtsc_recaptcha_secretkey',
+        __( 'Enter reCAPTCHA v3 secret key', 'submitcontent' ),
+        'wpbtsc_secretkey_callback',
+        'submitcontent',
+        'wpbt_submitcontent_security_section',
+        [
+            'id' => 'wpbtsc_recaptcha_secretkey',
+            'label_for' =>  'wpbtsc_recaptcha_secretkey',
+        ]
+    );
 
-function wbptsc_default_status_callback( $args ){
-
-    $options = get_option( 'submitcontent_options' );
-
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
-
-    $statuses = [
-        'draft' => __( 'Draft', 'submitcontent' ),
-        'pending' => __( 'Pending', 'submitcontent' ),
-        'publish' => __( 'Publish', 'submitcontent' ),
-    ];
-    ?>
-        <select name="submitcontent_options[<?php echo $args['id']; ?>]" id="<?php echo $args['id'] ?>">
-            <?php
-                foreach( $statuses as $key => $name ){
-                    ?>
-                        <option value="<?php echo $key; ?>" <?php echo selected( $value, $key ); ?>><?php esc_html_e( $name, 'submitcontent' ) ?></option>
-                    <?php
-                }
-            ?>
-        </select>
-    <?php
-}
-
-function wpbtsc_email_callback( $args ){
-
-    $options = get_option( 'submitcontent_options' );
-
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
-
-    ?>
-        <input id="<?php echo $args['id']; ?>" type="checkbox" name="submitcontent_options[<?php echo $args['id']; ?>]" value="1" <?php echo checked( $value, 1 ); ?> />
-    <?php
-}
-
-function wpbtsc_requires_login_callback( $args ){
-
-    $options = get_option( 'submitcontent_options' );
-
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
-
-    ?>
-        <input id="<?php echo $args['id']; ?>" type="checkbox" name="submitcontent_options[<?php echo $args['id']; ?>]" value="1" <?php echo checked( $value, 1 ); ?> />
-    <?php
 }
 
 /**
@@ -177,6 +122,18 @@ function wpbtsc_validate( $input ){
     if( ! $input['wpbtsc_default_status'] ){
         // set default option
         $input['wpbtsc_default_status'] = $option['wpbtsc_default_status'];
+    }
+
+    if( ! $input['wpbtsc_recaptcha_sitekey'] ){
+        $input['wpbtsc_recaptcha_sitekey'] = $option['wpbtsc_recaptcha_sitekey'];
+    } else {
+        $input['wpbtsc_recaptcha_sitekey'] = sanitize_text_field( $input['wpbtsc_recaptcha_sitekey'] );
+    }
+
+    if( ! $input['wpbtsc_recaptcha_secretkey'] ){
+        $input['wpbtsc_recaptcha_secretkey'] = $option['wpbtsc_recaptcha_secretkey'];
+    } else {
+        $input['wpbtsc_recaptcha_secretkey'] = sanitize_text_field( $input['wpbtsc_recaptcha_secretkey'] );
     }
 
     if( ! $input['wpbtsc_send_admin_email'] ){

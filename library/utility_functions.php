@@ -127,7 +127,7 @@ function wpbtsc_validate_admin_form( $form ){
             $errors['add_form_description_text'] = __( 'missing form description', 'submitcontent' );
         } else {
             $data['add_form_description'] = '1';
-            $data['add_form_description_text'] = __( sanitize_text_field( $form_description_text ), 'submitcontent' );
+            $data['add_form_description_text'] = __( sanitize_textarea_field( $form_description_text ), 'submitcontent' );
         }
     } else {
         $data['add_form_description'] = '';
@@ -182,6 +182,28 @@ function wpbtsc_validate_public_form( $form ){
             'errors' => $errors,
             'data' => $data
         ];
+    }
+
+    // validate reCAPTCHA
+    $token = ( $form['form_data']['wpbtsc_token'] ) ? trim( $form['form_data']['wpbtsc_token'] ) : '';
+
+    if( $token ){
+        $wpbtsc_options = get_option( 'submitcontent_options' );
+        $secret_key = $wpbtsc_options['wpbtsc_recaptcha_secretkey'];
+        $user_address = $_SERVER['REMOTE_ADDR'];
+        $recaptcha_verify_url = 'https://www.google.com/recaptcha/api/siteverify';
+        $args = [
+            'body' => [
+                'secret' => $secret_key,
+                'response' => $token,
+                'remoteip' => $user_address,
+            ]
+
+        ];
+        if( $secret_key ){
+            $recaptcha_response = wp_remote_post( $recaptcha_verify_url, $args );
+            $response_body = wp_remote_retrieve_body( $recaptcha_response );
+        }
     }
 
     $post_title = ( $form['form_data']['wpbtsc_posttitle'] ) ? sanitize_text_field( $form['form_data']['wpbtsc_posttitle'] ) : '';
@@ -526,7 +548,13 @@ function wpbtsc_output_form( $options, $form_id ){
                     <?php
                         endif;
                     ?>
-                <p><input type="submit" name="wpbtsc_submit_content" value="<?php _e( 'Submit', 'submitcontent' ); ?>"></p>
+                <p>
+                    <input
+                        type="submit"
+                        name="wpbtsc_submit_content"
+                        value="<?php _e( 'Submit', 'submitcontent' ); ?>"
+                    >
+                </p>
             </form>
         </div>
     <?php

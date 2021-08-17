@@ -53,6 +53,7 @@ require_once( SUBMIT_CONTENT_DIRECTORY . 'deactivate.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/utility_functions.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/menu/menu.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/menu/settings.php' );
+require_once( SUBMIT_CONTENT_DIRECTORY . 'library/menu/settings-field-callbacks.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'admin_assets/enqueue.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'public_assets/enqueue.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/ajax.php' );
