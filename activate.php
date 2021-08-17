@@ -27,6 +27,7 @@ function wpbt_submitcontent_activate(){
         'wpbtsc_requires_login' => '1',
         'wpbtsc_recaptcha_sitekey' => '',
         'wpbtsc_recaptcha_secretkey' => '',
+        'wpbtsc_email_override' => '',
     ];
     /**
      * prevent automatic update of options during deactivation and re-activation!

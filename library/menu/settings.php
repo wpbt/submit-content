@@ -14,6 +14,7 @@ function wpbt_submitcontent_settings(){
         'wpbtsc_validate'
     );
 
+    // general section
     add_settings_section(
         'wpbt_submitcontent_general_section',
         __( 'General settings', 'submitcontent' ),
@@ -21,10 +22,19 @@ function wpbt_submitcontent_settings(){
         'submitcontent'
     );
 
+    // securit section
     add_settings_section(
         'wpbt_submitcontent_security_section',
         __( 'Form security settings', 'submitcontent' ),
         'wpbtsc_security_section_callback',
+        'submitcontent'
+    );
+
+    // email section
+    add_settings_section(
+        'wpbtsc_email_section',
+        __( 'Email settings', 'submitcontent' ),
+        null,
         'submitcontent'
     );
 
@@ -88,7 +98,7 @@ function wpbt_submitcontent_settings(){
         'wpbt_submitcontent_security_section',
         [
             'id' => 'wpbtsc_recaptcha_sitekey',
-            'label_for' =>  'wpbtsc_recaptcha_sitekey',
+            'label_for' =>  'wpbtsc_recaptcha_sitekey'
         ]
     );
 
@@ -101,6 +111,32 @@ function wpbt_submitcontent_settings(){
         [
             'id' => 'wpbtsc_recaptcha_secretkey',
             'label_for' =>  'wpbtsc_recaptcha_secretkey',
+        ]
+    );
+
+    // email section fields
+
+    add_settings_field(
+        'wpbtsc_email_override',
+        __( 'Send email to (default is admin email)', 'submitcontent' ),
+        'wpbtsc_email_override_callback',
+        'submitcontent',
+        'wpbtsc_email_section',
+        [
+            'id' => 'wpbtsc_email_override',
+            'label_for' =>  'wpbtsc_email_override',
+        ]
+    );
+
+    add_settings_field(
+        'wpbtsc_email_template',
+        __( 'Email template', 'submitcontent' ),
+        'wpbtsc_email_template_callback',
+        'submitcontent',
+        'wpbtsc_email_section',
+        [
+            'id' => 'wpbtsc_email_template',
+            'label_for' =>  'wpbtsc_email_template',
         ]
     );
 
@@ -124,6 +160,7 @@ function wpbtsc_validate( $input ){
         $input['wpbtsc_default_status'] = $option['wpbtsc_default_status'];
     }
 
+    // reCAPTCHA keys
     if( ! $input['wpbtsc_recaptcha_sitekey'] ){
         $input['wpbtsc_recaptcha_sitekey'] = '';
     } else {
@@ -134,6 +171,12 @@ function wpbtsc_validate( $input ){
         $input['wpbtsc_recaptcha_secretkey'] = '';
     } else {
         $input['wpbtsc_recaptcha_secretkey'] = sanitize_text_field( $input['wpbtsc_recaptcha_secretkey'] );
+    }
+
+    if( ! $input['wpbtsc_email_override'] ){
+        $input['wpbtsc_email_override'] = '';
+    } else {
+        $input['wpbtsc_email_override'] = sanitize_email( $input['wpbtsc_email_override'] );
     }
 
     if( ! $input['wpbtsc_send_admin_email'] ){

@@ -111,7 +111,7 @@ function wpbtsc_security_section_callback(){
     printf(
         '<p><strong>%s: %s</strong></p>',
         __( 'Note', 'submitcontent' ),
-        __( 'to implement Google\'s v3 reCAPTCHA service, enter both site key and security key', 'submitcontent' ),
+        __( 'To implement Google\'s v3 reCAPTCHA service, enter both site key and secret key', 'submitcontent' ),
     );
 }
 
@@ -145,3 +145,34 @@ function wpbtsc_secretkey_callback( $args ){
     <?php
 }
 
+/**
+ * Email section settings field callbacks
+ */
+
+function wpbtsc_email_override_callback( $args ){
+    $options = get_option( 'submitcontent_options' );
+
+    if( !empty( $options ) && isset( $options[$args['id']] ) ){
+        $value = $options[$args['id']];
+    } else {
+        $value = '';
+    }
+    ?>
+        <input id="<?php echo $args['id']; ?>" type="text" name="submitcontent_options[<?php echo $args['id']; ?>]" value="<?php echo trim( $value ); ?>">
+    <?php
+}
+
+function wpbtsc_email_template_callback( $args ){
+    $options = get_option( 'submitcontent_options' );
+
+    if( !empty( $options ) && isset( $options[$args['id']] ) ){
+        $value = $options[$args['id']];
+    } else {
+        $value = '';
+    }
+    ?>
+        <textarea id="<?php echo $args['id']; ?>" name="submitcontent_options[<?php echo $args['id']; ?>]" id="" cols="50" rows="12"><?php echo trim( $value ); ?></textarea>
+        <p><?php _e( 'Available tags:', 'submitcontent' ); ?></p>
+        <pre>{admin_name}, {user_name}, {post_title}, {post_edit_url}, {site_logo}, {site_name}</pre>
+    <?php
+}
