@@ -183,7 +183,7 @@ function wpbtsc_validate( $input ){
     if( ! $input['wpbtsc_email_template'] ){
         $input['wpbtsc_email_template'] = '';
     } else {
-        $input['wpbtsc_email_template'] = sanitize_text_field( $input['wpbtsc_email_template'] );
+        $input['wpbtsc_email_template'] = sanitize_textarea_field( $input['wpbtsc_email_template'] );
     }
 
     if( ! $input['wpbtsc_send_admin_email'] ){

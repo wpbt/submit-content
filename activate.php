@@ -20,15 +20,7 @@ function wpbt_submitcontent_activate(){
      * install default options
      */
     $email_template = sprintf(
-        '%s {admin_name},
-        
-        {user_name} %s {post_title}.
-        %s: {post_edit_url}
-
-        %s,
-        {site_name}
-        {site_logo}
-        ',
+        "%s {admin_name},\n\n{user_name} %s {post_title}.\n%s: {post_edit_url}\n\n%s,\n{site_name}\n{site_logo}",
         __( 'Dear', 'submitcontent' ),
         __( 'has submitted a', 'submitcontent' ),
         __( 'Please moderate the post at', 'submitcontent' ),

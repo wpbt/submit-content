@@ -171,9 +171,9 @@ function wpbtsc_email_template_callback( $args ){
         $value = '';
     }
     ?>
-        <textarea id="<?php echo $args['id']; ?>" name="submitcontent_options[<?php echo $args['id']; ?>]" id="" cols="50" rows="12"><?php echo trim( $value ); ?></textarea>
+        <textarea id="<?php echo $args['id']; ?>" name="submitcontent_options[<?php echo $args['id']; ?>]" id="" cols="50" rows="12"><?php echo esc_html( $value ); ?></textarea>
         <p><?php _e( 'Available tags:', 'submitcontent' ); ?></p>
         <pre>{admin_name}, {user_name}, {post_title}, {post_edit_url}, {site_logo}, {site_name}</pre>
-        <p><strong><?php _e( 'Leave email template empty to disable email sending.', 'submitcontent' ); ?></strong></p>
+        <p><strong><?php _e( 'Note: Leave email template empty to disable email sending.', 'submitcontent' ); ?></strong></p>
     <?php
 }
