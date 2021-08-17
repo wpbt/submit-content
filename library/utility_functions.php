@@ -198,7 +198,6 @@ function wpbtsc_validate_public_form( $form ){
                 'response' => $token,
                 'remoteip' => $user_address,
             ]
-
         ];
         if( $secret_key ){
             $recaptcha_response = wp_remote_post( $recaptcha_verify_url, $args );

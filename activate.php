@@ -29,7 +29,7 @@ function wpbt_submitcontent_activate(){
         'wpbtsc_recaptcha_secretkey' => '',
     ];
     /**
-     * prevent automatic update of options during deactivation and activation!
+     * prevent automatic update of options during deactivation and re-activation!
      */
     if( ! get_option( 'submitcontent_options' ) ){
         add_option( 'submitcontent_options', $defaults );

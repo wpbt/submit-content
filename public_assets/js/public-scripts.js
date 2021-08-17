@@ -8,7 +8,6 @@ let scFromHandler = {
     init: function(){
         jQuery( 'form.wpbtsc-form' ).submit( scFromHandler.handleForm );
     },
-
     handleForm: function(event){
         event.preventDefault();
         let formID = jQuery( this ).find( 'input[name="form_id"').val();
@@ -75,8 +74,7 @@ let scFromHandler = {
             jQuery( this ).remove();
         } );
 
-    },
-
+    }
 };
 
 jQuery( document ).ready( scFromHandler.init );
