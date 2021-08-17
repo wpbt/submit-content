@@ -426,6 +426,18 @@ function wpbtsc_generate_options( $options ){
  */
 function wpbtsc_output_form( $options, $form_id ){
 
+    $wpbtsc_options = get_option( 'submitcontent_options' );
+    if( $wpbtsc_options['wpbtsc_requires_login'] && ! is_user_logged_in() ){
+        $message = ( get_option( 'users_can_register' ) ) ? 
+                        sprintf( 'To register, please visit: %s', wp_register( '', '', false ) ) :
+                        __( 'Registration not allowed at this time.', 'submitcontent' );
+        return printf(
+            '<div><p>%s. %s</p></div>',
+            __( 'Sorry, only registered users can submit the form', 'submitcontent' ),
+            $message
+        );
+    }
+    
     $form_title = ( $options['add_form_heading'] ) ? $options['add_form_heading'] : '';
     $form_title_text = ( $options['add_form_heading_text'] ) ? $options['add_form_heading_text'] : '';
 

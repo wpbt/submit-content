@@ -46,7 +46,6 @@ let scFromHandler = {
     success: function( response ){
         if( response.type  == 'error' ) scFromHandler.showErrorMessage( response.data, response.form_id );
         if( response.type  == 'success' ) scFromHandler.showSuccessMessage( response.data, response.form_id );
-        console.log( response );
     },
     showErrorMessage: function( data, form_id ){
 
