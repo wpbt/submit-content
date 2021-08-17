@@ -19,7 +19,21 @@ function wpbt_submitcontent_activate(){
     /**
      * install default options
      */
+    $email_template = sprintf(
+        '%s {admin_name},
+        
+        {user_name} %s {post_title}.
+        %s: {post_edit_url}
 
+        %s,
+        {site_name}
+        {site_logo}
+        ',
+        __( 'Dear', 'submitcontent' ),
+        __( 'has submitted a', 'submitcontent' ),
+        __( 'Please moderate the post at', 'submitcontent' ),
+        __( 'Regards', 'submitcontent' )
+    );
     $defaults = [
         'wpbtsc_saveas' => 'post',
         'wpbtsc_default_status' => 'draft',
@@ -28,6 +42,7 @@ function wpbt_submitcontent_activate(){
         'wpbtsc_recaptcha_sitekey' => '',
         'wpbtsc_recaptcha_secretkey' => '',
         'wpbtsc_email_override' => '',
+        'wpbtsc_email_template' => $email_template,
     ];
     /**
      * prevent automatic update of options during deactivation and re-activation!

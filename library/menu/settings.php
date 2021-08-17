@@ -173,10 +173,17 @@ function wpbtsc_validate( $input ){
         $input['wpbtsc_recaptcha_secretkey'] = sanitize_text_field( $input['wpbtsc_recaptcha_secretkey'] );
     }
 
+    // email fields
     if( ! $input['wpbtsc_email_override'] ){
         $input['wpbtsc_email_override'] = '';
     } else {
         $input['wpbtsc_email_override'] = sanitize_email( $input['wpbtsc_email_override'] );
+    }
+
+    if( ! $input['wpbtsc_email_template'] ){
+        $input['wpbtsc_email_template'] = '';
+    } else {
+        $input['wpbtsc_email_template'] = sanitize_text_field( $input['wpbtsc_email_template'] );
     }
 
     if( ! $input['wpbtsc_send_admin_email'] ){
