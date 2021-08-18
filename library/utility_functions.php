@@ -666,3 +666,53 @@ function wpbtsc_create_posts_array( $data ){
 
     return $post_array;
 }
+
+/**
+ * Sends an email to specified address (admin email or custom email).
+ * 
+ * @param int $post_id
+ * @param string $post_title
+ * @return void Sends an email or not
+ */
+
+function wpbtsc_send_email( $post_id, $post_title ){
+
+    $sc_options = get_option( 'submitcontent_options' );
+    
+    if( $sc_options['wpbtsc_email_template'] ){
+
+        $admin_email = get_option( 'admin_email' );
+        $edit_post_link = get_edit_post_link( $post_id, '&' );
+        $to = ( $sc_options['wpbtsc_email_override'] ) ? $sc_options['wpbtsc_email_override'] : $admin_email;
+        $user_name = '';
+        $body = $sc_options['wpbtsc_email_template'];
+        $site_name = get_bloginfo( 'name' );
+        $headers = [];
+
+        if( is_user_logged_in() ){
+            $current_user = wp_get_current_user();         
+            $user_name = $current_user->display_name;
+        } else {
+            $user_name = __( 'Visitor', 'submitcontent' );
+        }
+        
+        $token_values = [
+            $user_name,
+            $post_title,
+            esc_url_raw( $edit_post_link ),
+            $site_name
+        ];
+        $token_ids = [
+            '{user_name}',
+            '{post_title}',
+            '{post_edit_url}',
+            '{site_name}'
+        ];
+
+        $message_body = str_replace( $token_ids, $token_values, $body );
+        $subject = __( 'Post Submitted', 'submitcontent' );
+        $headers[] = 'From: '. $site_name .' <'. $admin_email .'>';
+        wp_mail( $to, $subject, $message_body, $headers );
+        // no error handling at the moment! 
+    }
+}

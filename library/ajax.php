@@ -164,6 +164,7 @@ function wpbtsc_form_submission(){
                 'type' => 'success',
                 'form_id' => $_POST['form_id'],
             ];
+            wpbtsc_send_email( $post_id, $post_array['post_title'] );
         } else {
             // These files need to be included as dependencies when on the front end.
             require_once( ABSPATH . 'wp-admin/includes/image.php' );
@@ -181,6 +182,7 @@ function wpbtsc_form_submission(){
                         'type' => 'success',
                         'form_id' => $_POST['form_id'],
                     ];
+                    wpbtsc_send_email( $post_id, $post_array['post_title'] );
                 } else {
                     $response = [
                         'data' => __( 'featured image not set', 'submitcontent' ),
