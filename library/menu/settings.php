@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'why though?' );
 }
 
-function wpbt_submitcontent_settings(){
+function wpbtsc_register_settings(){
     register_setting(
         'submitcontent_options',
         'submitcontent_options',

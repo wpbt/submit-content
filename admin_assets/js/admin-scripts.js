@@ -133,7 +133,7 @@ let submitContentApp = {
             for( let error in response.data ){
                 div += divStart + '<p><strong>' + response.data[error] + '</strong></p>' + divClose;
             }
-        }        
+        }
         jQuery( div ).insertBefore( submitContentApp.data.form );
     },
     success: function( response ){
@@ -147,8 +147,11 @@ let submitContentApp = {
     removeResponseElement: function(){
         jQuery( this ).parent( '.is-dismissible' ).remove();
     },
-    complete: function( request, status ){
+    complete: function(){
         jQuery( submitContentApp.data.button ).removeAttr( 'disabled' );
+        jQuery( 'html, body' ).animate({
+            scrollTop: 0
+        }, 750 );
     }
 };
 

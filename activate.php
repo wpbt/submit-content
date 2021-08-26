@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'why though?' );
 }
 
-function wpbt_submitcontent_activate(){
+function wpbtsc_compatibility_check_and_install_defaults(){
     global $wp_version;
 
     /**
@@ -20,8 +20,8 @@ function wpbt_submitcontent_activate(){
      * install default options
      */
     $email_template = sprintf(
-        "%s {admin_name},\n\n\n{user_name} %s: {post_title}.\n%s: {post_edit_url}\n\n\n%s,\n{site_name}\n{site_logo}",
-        __( 'Dear', 'submitcontent' ),
+        "%s,\n\n\n{user_name} %s: {post_title}.\n%s: {post_edit_url}\n\n\n%s,\n{site_name}\n{site_logo}",
+        __( 'Dear Admin', 'submitcontent' ),
         __( 'has submitted a post titled', 'submitcontent' ),
         __( 'Please moderate the post at', 'submitcontent' ),
         __( 'Regards', 'submitcontent' )
@@ -49,7 +49,7 @@ function wpbt_submitcontent_activate(){
  * create database table
  */
 
-function wpbt_submitcontent_create_table(){
+function wpbtsc_create_dbtable(){
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'submitcontent';

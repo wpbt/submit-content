@@ -3,7 +3,7 @@
  * Plugin Name: Submit Content
  * Author: Bharat Thapa
  * Author URI: https://bharatt.com.np
- * Description: Submit posts, custom pots, pages, and media from frontend.
+ * Description: Submit posts, custom pots, from frontend.
  * License:     GPLv2 or later
  * License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Version: 0.1
@@ -48,6 +48,7 @@ define( 'SUBMIT_CONTENT_DIRECTORY_URL', plugin_dir_url( __FILE__ ) );
 /**
  * Plugin includes
  */
+
 require_once( SUBMIT_CONTENT_DIRECTORY . 'activate.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'deactivate.php' );
 require_once( SUBMIT_CONTENT_DIRECTORY . 'library/utility_functions.php' );
@@ -62,24 +63,23 @@ require_once( SUBMIT_CONTENT_DIRECTORY . 'library/shortcode.php' );
 /**
  * Activation and Deactivation hooks
  */
-register_activation_hook( __FILE__, 'wpbt_submitcontent_activate' );
-register_activation_hook( __FILE__, 'wpbt_submitcontent_create_table' );
-register_deactivation_hook( __FILE__, 'wpbt_submitcontent_deactivate' );
-
+register_activation_hook( __FILE__, 'wpbtsc_compatibility_check_and_install_defaults' );
+register_activation_hook( __FILE__, 'wpbtsc_create_dbtable' );
+register_deactivation_hook( __FILE__, 'wpbtsc_deactivate' );
 
 /**
  * Plugin hooks
  */
 
 // administrative menu & settings page hooks
-add_action( 'admin_menu', 'wpbt_submitcontent_menu' );
-add_action( 'admin_init', 'wpbt_submitcontent_settings' );
+add_action( 'admin_menu', 'wpbtsc_register_menu' );
+add_action( 'admin_init', 'wpbtsc_register_settings' );
 // scripts hooks
-add_action( 'admin_enqueue_scripts', 'wpbt_submitcontent_admin_scripts' );
+add_action( 'admin_enqueue_scripts', 'wpbtsc_admin_scripts' );
 add_action( 'wp_enqueue_scripts', 'wpbtsc_public_scripts' );
 // ajax hooks
-add_action( 'wp_ajax_sc_generate_shortcode', 'wpbt_generate_shortcode_ajax_callback' );
-add_action( 'wp_ajax_sc_delete_shortcode', 'wpbt_delete_shortcode_callback' );
+add_action( 'wp_ajax_sc_generate_shortcode', 'wpbtsc_generate_shortcode_callback' );
+add_action( 'wp_ajax_sc_delete_shortcode', 'wpbtsc_delete_shortcode_callback' );
 add_action( 'wp_ajax_wpbtsc_form_submission', 'wpbtsc_form_submission' );
 add_action( 'wp_ajax_nopriv_wpbtsc_form_submission', 'wpbtsc_form_submission' );
 

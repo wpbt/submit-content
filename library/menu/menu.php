@@ -8,14 +8,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
-function wpbt_submitcontent_menu(){
+function wpbtsc_register_menu(){
 
     add_menu_page(
         __( 'Submit Content Settings', 'submitcontent' ),
         __( 'Submit Content', 'submitcontent' ),
         'manage_options',
         'submitcontent',
-        'wpbt_submitcontent_settings_page',
+        'wpbtsc_settings_page',
         'dashicons-admin-generic'
     );
 
@@ -25,7 +25,7 @@ function wpbt_submitcontent_menu(){
         __( 'Form Settings', 'submitcontent' ),
         'manage_options',
         'sc-form-settings',
-        'wpbt_submitcontent_form_settings_page'
+        'wpbtsc_form_settings_page'
     );
 
     add_submenu_page(
@@ -34,7 +34,7 @@ function wpbt_submitcontent_menu(){
         __( 'Shortcodes', 'submitcontent' ),
         'manage_options',
         'sc-shortcodes',
-        'wpbt_submitcontent_shortcodes_page'
+        'wpbtsc_shortcodes_page'
     );
     
 }
@@ -44,7 +44,7 @@ function wpbt_submitcontent_menu(){
  * Settings page callback
  */
 
-function wpbt_submitcontent_settings_page(){
+function wpbtsc_settings_page(){
 
     // exit if user can not manage options!
     if( ! current_user_can( 'manage_options' ) ) exit;
@@ -64,7 +64,6 @@ function wpbt_submitcontent_settings_page(){
     ?>
         <form action="options.php" method="post">
             <?php
-                // output security fields for the registered setting "wporg_options"
                 settings_fields( 'submitcontent_options' );
                 do_settings_sections( 'submitcontent' );
                 submit_button( __( 'Save Settings', 'submitcontent' ) );
@@ -73,7 +72,7 @@ function wpbt_submitcontent_settings_page(){
     <?php
 }
 
-function wpbt_submitcontent_form_settings_page(){
+function wpbtsc_form_settings_page(){
 
     // exit if user can not manage options!
     if( ! current_user_can( 'manage_options' ) ) exit;
@@ -164,7 +163,7 @@ function wpbt_submitcontent_form_settings_page(){
     <?php
 }
 
-function wpbt_submitcontent_shortcodes_page(){
+function wpbtsc_shortcodes_page(){
     global $wpdb;
     // exit if user can not manage options!
     if( ! current_user_can( 'manage_options' ) ) exit;
@@ -213,18 +212,6 @@ function wpbt_submitcontent_shortcodes_page(){
                             $count++;
                         }
                     else:
-                        // printf(
-                        //     '<tr class="no-shortcodes">
-                        //             <td colspan="4">
-                        //                 <p>%s</p>
-                        //                 <p>%s: <a href="%s">%s</a></p>
-                        //             </td>
-                        //     </tr>',
-                        //     __( 'You haven\'t created any shortcodes yet!', 'submitcontent' ),
-                        //     __( 'to create shortcodes, visit', 'submitcontent' ),
-                        //     menu_page_url( 'sc-form-settings', true ),
-                        //     __( 'Create Shortcodes', 'submitcontent' )
-                        // );
                         ?>
                             <tr class="no-shortcodes">
                                 <td colspan="4">

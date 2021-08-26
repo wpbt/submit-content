@@ -6,6 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'why though?' );
 }
 
-function wpbt_submitcontent_deactivate(){
+function wpbtsc_deactivate(){
     
 }

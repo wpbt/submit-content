@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return Null 
  */
 
-function wpbt_submitcontent_admin_scripts( $hook ){
+function wpbtsc_admin_scripts( $hook ){
     if( 
         ( 'toplevel_page_submitcontent' == $hook )
         ||
@@ -24,12 +24,12 @@ function wpbt_submitcontent_admin_scripts( $hook ){
         ( 'submit-content_page_sc-shortcodes' == $hook )
     ){
         // style
-        wp_register_style( 'wpbt-sc-admin-style', SUBMIT_CONTENT_DIRECTORY_URL . 'admin_assets/css/admin-styles.css' );
-        wp_enqueue_style( 'wpbt-sc-admin-style' );
+        wp_register_style( 'wpbtsc-admin-style', SUBMIT_CONTENT_DIRECTORY_URL . 'admin_assets/css/admin-styles.css' );
+        wp_enqueue_style( 'wpbtsc-admin-style' );
         // script
-        wp_register_script( 'wpbt-sc-admin-script', SUBMIT_CONTENT_DIRECTORY_URL . 'admin_assets/js/admin-scripts.js', [ 'jquery' ], '', true );
-        wp_localize_script( 'wpbt-sc-admin-script', 'scJSOBJ', [ 'ajax_url' => admin_url( 'admin-ajax.php' ), 'updateText' => __( 'shortcode created successfully', 'submitcontent' ) ] );
-        wp_enqueue_script( 'wpbt-sc-admin-script' );
+        wp_register_script( 'wpbtsc-admin-script', SUBMIT_CONTENT_DIRECTORY_URL . 'admin_assets/js/admin-scripts.js', [ 'jquery' ], '', true );
+        wp_localize_script( 'wpbtsc-admin-script', 'scJSOBJ', [ 'ajax_url' => admin_url( 'admin-ajax.php' ), 'updateText' => __( 'shortcode created successfully', 'submitcontent' ) ] );
+        wp_enqueue_script( 'wpbtsc-admin-script' );
     }
 
 }

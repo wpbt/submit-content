@@ -12,16 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * AJAX handler to generate and save shortcode
  */
 
-function wpbt_generate_shortcode_ajax_callback(){
+function wpbtsc_generate_shortcode_callback(){
     global $wpdb;
     $result = wpbtsc_validate_admin_form( $_POST );
-    $errors = $result['errors'];
-    $data = $result['data'];
 
     // handle errors!
-    if( ! empty( $errors ) ){
+    if( ! empty( $result['errors'] ) ){
         $response = [
-            'data' => $errors,
+            'data' => $result['errors'],
             'type' => 'error'
         ];
         wp_send_json( $response );
@@ -32,8 +30,8 @@ function wpbt_generate_shortcode_ajax_callback(){
     $shortcode_options = '';
     $id = '';
 
-    if( ! is_serialized( $data ) ){
-        $shortcode_options = maybe_serialize( $data );
+    if( ! is_serialized( $result['data'] ) ){
+        $shortcode_options = maybe_serialize( $result['data'] );
     }
     
     $shortcode_name = '[submitcontent id="'. $id .'"]';
@@ -75,7 +73,7 @@ function wpbt_generate_shortcode_ajax_callback(){
  * AJAX handler to delete shortcode
  */
 
-function wpbt_delete_shortcode_callback(){
+function wpbtsc_delete_shortcode_callback(){
 
     global $wpdb;
 
@@ -131,49 +129,46 @@ function wpbt_delete_shortcode_callback(){
  */
 
 function wpbtsc_form_submission(){
-
     $result = wpbtsc_validate_public_form( [
         'wpbtsc_featured_img' => $_FILES['wpbtsc_featured_img'],
         'form_data' => $_POST
     ] );
-
-    $errors = $result['errors'];
-    $data = $result['data'];
-    $data['form_id'] = $_POST['form_id'];
     
     // handle errors!
-    if( ! empty( $errors ) ){
+    if( ! empty( $result['errors'] ) ){
         $response = [
-            'data' => $errors,
+            'data' => $result['errors'],
             'type' => 'error',
             'form_id' => $_POST['form_id'],
         ];
-        
         wp_send_json( $response );
     }
     
-    $post_array = wpbtsc_create_posts_array( $data );    
+    $post_array = wpbtsc_create_posts_array( $result['data'] );    
     $post_id = wp_insert_post( $post_array, true );
     
     if( ! is_wp_error( $post_id ) ){
         $success_message = __( 'content submitted successfully!', 'submitcontent' );
-        if( is_null( $data['featured_image'] ) ){
-            // featured image is not available case!
+        if( is_null( $result['data']['featured_image'] ) ){
+            // form doesn't have featured image field case!
             $response = [
                 'data' => $success_message,
                 'type' => 'success',
                 'form_id' => $_POST['form_id'],
             ];
-            wpbtsc_send_email( $post_id, $post_array['post_title'] );
+            $wpbtsc_options = get_option( 'submitcontent_options' );
+            if( $wpbtsc_options['wpbtsc_send_admin_email'] ){
+                wpbtsc_send_email( $post_id, $post_array['post_title'] );
+            }
+                
         } else {
             // These files need to be included as dependencies when on the front end.
             require_once( ABSPATH . 'wp-admin/includes/image.php' );
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
             require_once( ABSPATH . 'wp-admin/includes/media.php' );
     
-            
             $attachment_id = media_handle_upload( 'wpbtsc_featured_img', $post_id );
-                    
+            
             if( ! is_wp_error( $attachment_id ) ){
                 $featured_img_set = set_post_thumbnail( $post_id, $attachment_id );
                 if( $featured_img_set ){
@@ -182,7 +177,10 @@ function wpbtsc_form_submission(){
                         'type' => 'success',
                         'form_id' => $_POST['form_id'],
                     ];
-                    wpbtsc_send_email( $post_id, $post_array['post_title'] );
+                    $wpbtsc_options = get_option( 'submitcontent_options' );
+                    if( $wpbtsc_options['wpbtsc_send_admin_email'] ){
+                        wpbtsc_send_email( $post_id, $post_array['post_title'] );
+                    }
                 } else {
                     $response = [
                         'data' => __( 'featured image not set', 'submitcontent' ),
@@ -205,7 +203,5 @@ function wpbtsc_form_submission(){
             'form_id' => $_POST['form_id'],
         ];
     }
-    
     wp_send_json( $response );
-    
 }

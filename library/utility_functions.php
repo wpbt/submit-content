@@ -210,7 +210,6 @@ function wpbtsc_validate_public_form( $form ){
                 ( $recaptcha_status['score'] < $score ) ||
                 ( $recaptcha_status['action'] != 'submitcontent' )
             ){
-                // a visitor will never see this message!
                 $errors['recaptcha_status'] = sprintf( '%s reCAPTCHA', __( 'invalid', 'submitcontent' ) );
             }
         }
@@ -280,10 +279,8 @@ function wpbtsc_validate_public_form( $form ){
             $is_mime_allowed = wp_check_filetype( $image_name );
             if(
                 isset( $is_mime_allowed['ext'] ) &&
-                in_array(
-                    strtolower( $is_mime_allowed['ext'] ),
-                    $allowed_file_types
-                )
+                in_array( strtolower( $is_mime_allowed['ext'] ), $allowed_file_types
+            )
             ){
                 $data['featured_image'] = [
                     'error' => $image_info['error'],
@@ -301,9 +298,8 @@ function wpbtsc_validate_public_form( $form ){
         /**
          * file (image) handling end
          */
-
     }
-    
+
     return [
         'errors' => $errors,
         'data' => $data
@@ -333,55 +329,55 @@ function wpbtsc_generate_options( $options ){
         echo '<ul>';
         if( $form_title ){
             ?>
-                <li><?php _e( 'Add form title: yes', 'submitcontent' ); ?></li>
+                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Add form title', 'submitcontent' ), __( 'yes', 'submitcontent' ) ); ?></li>
                 <li><?php printf( esc_html__( 'Form title: %s', 'submitcontent' ), $form_title_text ); ?></li>
             <?php
         } else {
             ?>
-                <li><?php _e( 'Add form title: no', 'submitcontent' ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Add form title', 'submitcontent' ), __( 'no', 'submitcontent' ) ); ?></li>
             <?php 
         }
 
         if( $form_description ){
             ?>
-                <li><?php _e( 'Add form description: yes', 'submitcontent' ); ?></li>
+                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Add form description', 'submitcontent' ), __( 'yes', 'submitcontent' ) ); ?></li>
                 <li><?php printf( esc_html__( 'Form description: %s', 'submitcontent' ), $form_description_text ); ?></li>
             <?php
         } else {
             ?>
-                <li><?php _e( 'Add form description: no', 'submitcontent' ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Add form description', 'submitcontent' ), __( 'no', 'submitcontent' ) ); ?></li>
             <?php 
         }
 
         if( $post_title ){
             ?>
-                <li><?php _e( 'Allow post title: yes', 'submitcontent' ); ?></li>
+                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Allow post title', 'submitcontent' ), __( 'yes', 'submitcontent' ) ); ?></li>
             <?php
         }
 
         if( $post_content ){
             ?>
-                <li><?php _e( 'Allow post content: yes', 'submitcontent' ); ?></li>
+                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Allow post content', 'submitcontent' ), __( 'yes', 'submitcontent' ) ); ?></li>
             <?php
         } else {
             ?>
-                <li><?php _e( 'Allow post content: no', 'submitcontent' ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Allow post content', 'submitcontent' ), __( 'no', 'submitcontent' ) ); ?></li>
             <?php 
         }
 
         if( $featured_img ){
             ?>
-                <li><?php _e( 'Set featured image: yes', 'submitcontent' ); ?></li>
+                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Set featured image', 'submitcontent' ), __( 'yes', 'submitcontent' ) ); ?></li>
             <?php
         } else {
             ?>
-                <li><?php _e( 'Set featured image: no', 'submitcontent' ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Set featured image', 'submitcontent' ), __( 'no', 'submitcontent' ) ); ?></li>
             <?php 
         }
 
         if( isset( $options['category'] ) && !empty( $options['category'] ) ){
             ?>
-                <li><?php _e( 'Allowed categorie(s):', 'submitcontent' ); ?></li>
+                <li><?php _e( 'Allowed category:', 'submitcontent' ); ?></li>
             <?php 
             echo '<ul>';
             foreach( $options['category'] as $category ){
@@ -392,7 +388,7 @@ function wpbtsc_generate_options( $options ){
             echo '</ul>';
         } else {
             ?>
-                <li><?php _e( 'Allowed categorie(s): none', 'submitcontent' ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Allowed category', 'submitcontent' ), __( 'none', 'submitcontent' ) ); ?></li>
             <?php 
         }
 
@@ -409,7 +405,7 @@ function wpbtsc_generate_options( $options ){
             echo '</ul>';
         } else {
             ?>
-                <li><?php _e( 'Allowed tag(s): none', 'submitcontent' ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Allowed tag(s)', 'submitcontent' ), __( 'none', 'submitcontent' ) ); ?></li>
             <?php 
         }
         echo '</ul>';
@@ -710,7 +706,7 @@ function wpbtsc_send_email( $post_id, $post_title ){
         ];
 
         $message_body = str_replace( $token_ids, $token_values, $body );
-        $subject = __( 'Post Submitted', 'submitcontent' );
+        $subject = __( 'Submit Content', 'submitcontent' );
         $headers[] = 'From: '. $site_name .' <'. $admin_email .'>';
         wp_mail( $to, $subject, $message_body, $headers );
         // no error handling at the moment! 

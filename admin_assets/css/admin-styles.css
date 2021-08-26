@@ -27,6 +27,21 @@ form#wpbt-sc-generator table tr[class*="_text"] {
   list-style: disc;
   margin-left: 1rem;
 }
+
 .sc-table tr td ul ul {
   list-style: lower-roman;
+}
+
+.sc-success-badge {
+  background: #28a745;
+  border-radius: 12px;
+  color: #fff;
+  padding: 0px 14px 4px 14px;
+}
+
+.sc-error-badge {
+  background: #dc3545;
+  border-radius: 12px;
+  color: #fff;
+  padding: 0px 14px 4px 14px;
 }
