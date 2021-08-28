@@ -15,13 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function wpbtsc_saveas_callback( $args ){
 
     $options = get_option( 'submitcontent_options' );
-    
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
-
+    $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
     $post_types = get_post_types( 
         [
             'public' => true,
@@ -46,15 +40,8 @@ function wpbtsc_saveas_callback( $args ){
 }
 
 function wbptsc_default_status_callback( $args ){
-
     $options = get_option( 'submitcontent_options' );
-
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
-
+    $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
     $statuses = [
         'draft' => __( 'Draft', 'submitcontent' ),
         'pending' => __( 'Pending', 'submitcontent' ),
@@ -74,32 +61,42 @@ function wbptsc_default_status_callback( $args ){
 }
 
 function wpbtsc_email_callback( $args ){
-
     $options = get_option( 'submitcontent_options' );
-
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
-
+    $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
     ?>
         <input id="<?php echo $args['id']; ?>" type="checkbox" name="submitcontent_options[<?php echo $args['id']; ?>]" value="1" <?php echo checked( $value, 1 ); ?> />
     <?php
 }
 
 function wpbtsc_requires_login_callback( $args ){
-
     $options = get_option( 'submitcontent_options' );
-
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
-
+    $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
     ?>
         <input id="<?php echo $args['id']; ?>" type="checkbox" name="submitcontent_options[<?php echo $args['id']; ?>]" value="1" <?php echo checked( $value, 1 ); ?> />
+    <?php
+}
+
+function wpbtsc_posttitle_length_callback( $args ){
+    $options = get_option( 'submitcontent_options' );
+    $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
+    ?>
+        <input id="<?php echo $args['id']; ?>" type="number" name="submitcontent_options[<?php echo $args['id']; ?>]" value="<?php echo trim( intval( $value ) ); ?>">
+    <?php
+}
+
+function wpbtsc_content_length_callback( $args ){
+    $options = get_option( 'submitcontent_options' );
+    $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
+    ?>
+        <input id="<?php echo $args['id']; ?>" type="number" name="submitcontent_options[<?php echo $args['id']; ?>]" value="<?php echo trim( intval( $value ) ); ?>">
+    <?php
+}
+
+function wpbtsc_max_image_size_callback( $args ){
+    $options = get_option( 'submitcontent_options' );
+    $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
+    ?>
+        <input id="<?php echo $args['id']; ?>" type="text" name="submitcontent_options[<?php echo $args['id']; ?>]" value="<?php echo trim( $value ); ?>">
     <?php
 }
 

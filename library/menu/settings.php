@@ -39,7 +39,6 @@ function wpbtsc_register_settings(){
     );
 
     // general section fields
-
     add_settings_field(
         'wpbtsc_saveas',
         __( 'Save content as: ', 'submitcontent' ),
@@ -88,8 +87,43 @@ function wpbtsc_register_settings(){
         ]
     );
 
-    // security fields
+    add_settings_field(
+        'wpbtsc_posttitle_length',
+        __( 'Minimum post title length', 'submitcontent' ),
+        'wpbtsc_posttitle_length_callback',
+        'submitcontent',
+        'wpbt_submitcontent_general_section',
+        [
+            'id' => 'wpbtsc_posttitle_length',
+            'label_for' =>  'wpbtsc_posttitle_length'
+        ]
+    );
 
+    add_settings_field(
+        'wpbtsc_content_length',
+        __( 'Minimum post content length', 'submitcontent' ),
+        'wpbtsc_content_length_callback',
+        'submitcontent',
+        'wpbt_submitcontent_general_section',
+        [
+            'id' => 'wpbtsc_content_length',
+            'label_for' =>  'wpbtsc_content_length'
+        ]
+    );
+
+    add_settings_field(
+        'wpbtsc_max_image_size',
+        __( 'Maximum allowed image size (in Mb)', 'submitcontent' ),
+        'wpbtsc_max_image_size_callback',
+        'submitcontent',
+        'wpbt_submitcontent_general_section',
+        [
+            'id' => 'wpbtsc_max_image_size',
+            'label_for' =>  'wpbtsc_max_image_size'
+        ]
+    );
+
+    // security fields
     add_settings_field(
         'wpbtsc_recaptcha_sitekey',
         __( 'Enter reCAPTCHA v3 site key', 'submitcontent' ),
@@ -115,7 +149,6 @@ function wpbtsc_register_settings(){
     );
 
     // email section fields
-
     add_settings_field(
         'wpbtsc_email_override',
         __( 'Send email to (default is admin email)', 'submitcontent' ),
@@ -139,7 +172,6 @@ function wpbtsc_register_settings(){
             'label_for' =>  'wpbtsc_email_template',
         ]
     );
-
 }
 
 /**
@@ -148,17 +180,46 @@ function wpbtsc_register_settings(){
 
 function wpbtsc_validate( $input ){
     // get default options
-    $option = get_option( 'submitcontent_options' );
+    $wpbtsc_options = get_option( 'submitcontent_options' );
 
     if( ! $input['wpbtsc_saveas'] ){
         // set default option
-        $input['wpbtsc_saveas'] = $option['wpbtsc_saveas'];
+        $input['wpbtsc_saveas'] = $wpbtsc_options['wpbtsc_saveas'];
     }
 
     if( ! $input['wpbtsc_default_status'] ){
         // set default option
-        $input['wpbtsc_default_status'] = $option['wpbtsc_default_status'];
+        $input['wpbtsc_default_status'] = $wpbtsc_options['wpbtsc_default_status'];
     }
+
+    // sanitize post title length field
+    $filter_options = [
+        'options' => [
+            'default' => $wpbtsc_options['wpbtsc_posttitle_length'],
+            'min_range' => 1
+        ]
+    ];
+    $input['wpbtsc_posttitle_length'] = filter_var( $input['wpbtsc_posttitle_length'], FILTER_VALIDATE_INT, $filter_options );
+
+    // sanitize content length field
+    unset( $filter_options );
+    $filter_options = [
+        'options' => [
+            'default' => $wpbtsc_options['wpbtsc_content_length'],
+            'min_range' => 1
+        ]
+    ];
+    $input['wpbtsc_content_length'] = filter_var( $input['wpbtsc_content_length'], FILTER_VALIDATE_INT, $filter_options );
+
+    // sanitize image size field 
+    unset( $filter_options );
+    $filter_options = [
+        'options' => [
+            'default' => $wpbtsc_options['wpbtsc_max_image_size'],
+            'min_range' => 1
+        ]
+    ];
+    $input['wpbtsc_max_image_size'] = filter_var( $input['wpbtsc_max_image_size'], FILTER_VALIDATE_FLOAT, $filter_options );
 
     // reCAPTCHA keys
     if( ! $input['wpbtsc_recaptcha_sitekey'] ){

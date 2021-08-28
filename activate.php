@@ -29,6 +29,9 @@ function wpbtsc_compatibility_check_and_install_defaults(){
     $defaults = [
         'wpbtsc_saveas' => 'post',
         'wpbtsc_default_status' => 'draft',
+        'wpbtsc_posttitle_length' => 5,
+        'wpbtsc_content_length' => 15,
+        'wpbtsc_max_image_size' => 5,
         'wpbtsc_send_admin_email' => '1',
         'wpbtsc_requires_login' => '1',
         'wpbtsc_recaptcha_sitekey' => '',
