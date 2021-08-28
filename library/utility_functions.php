@@ -601,7 +601,6 @@ function wpbtsc_create_posts_array( $data ){
     $admin_id = get_user_by( 'email', $admin_email );
     $supported_taxonomies = get_object_taxonomies( $post_type, 'object' );
     
-    
     foreach( $supported_taxonomies as $taxonomy ){
         if( $taxonomy->hierarchical ){
             array_push( $categories, $taxonomy->name );
@@ -616,7 +615,8 @@ function wpbtsc_create_posts_array( $data ){
         'post_title' => wp_strip_all_tags( $data['post_title'] ),
         'post_status' => $post_status,
         'post_type' => $post_type,
-        'post_author' => $admin_id->ID
+        'post_author' => $admin_id->ID,
+        'tax_input' => []
     ];
 
     if( $data['post_content'] ){
@@ -624,39 +624,16 @@ function wpbtsc_create_posts_array( $data ){
     }
     
     $hierarchical_tax = array_intersect( $categories, $keys );
-    $cats = [];
     if( sizeof( $hierarchical_tax ) != 0 ){
         foreach( $hierarchical_tax as $cat ){
-            $cats = array_merge( $cats, $data[$cat] ); 
-        }
-
-        // so, converting them to integers
-        $result = array_filter( $cats, function( $id ){
-            if( $id ) return intval( $id );
-        } );
-
-        if( $result ){
-            if( $post_type == 'post' ){
-                $post_array['post_category'] = $result;
-            } else {
-                $post_array['tax_input']['hierarchical_tax'] = $result;
-            }
+            $post_array['tax_input'] = wpbtsc_array_push( $post_array['tax_input'], $cat, $data[$cat], 'id' );
         }
     }
     
     $non_hierarchical_tax = array_intersect( $tags, $keys );
-    $t = [];
-    unset( $result );
     if( sizeof( $non_hierarchical_tax ) != 0 ){
         foreach( $non_hierarchical_tax as $tag ){
-            $t = array_merge( $t, $data[$tag] );
-        }
-        // so, converting them to integers
-        $result = array_filter( $t );
-        if( $post_type == 'post' ){
-            $post_array['tags_input'] = $result;
-        } else {
-            $post_array['tax_input']['hierarchical_tax'] = $result;
+            $post_array['tax_input'] = wpbtsc_array_push( $post_array['tax_input'], $tag, $data[$tag], 'slug' );
         }
     }
 
@@ -711,4 +688,40 @@ function wpbtsc_send_email( $post_id, $post_title ){
         wp_mail( $to, $subject, $message_body, $headers );
         // no error handling at the moment! 
     }
+}
+
+/**
+ * Creates and validates (existance) taxonomies array
+ * 
+ * @param array $tax_input
+ * @param string $key
+ * @param array $val
+ * @param bool $get_by
+ * 
+ * @return array
+ */
+function wpbtsc_array_push( $tax_input, $key, $val, $get_by ){
+    $ids = [];
+    if( is_array( $val ) && sizeof( $val ) != 0 ){
+        foreach( $val as $id ){
+            if( $id ){
+                if( $get_by == 'id' ){
+                    $term_id = intval( $id );
+                    $term_exists = get_term_by( 'ID', $term_id, $key );
+                    if( $term_exists ){
+                        array_push( $ids, intval( $id ) );
+                    }
+                }
+                if( $get_by == 'slug' ){
+                    $term_exists = get_term_by( 'slug', $id, $key );
+                    if( $term_exists ){
+                        array_push( $ids, $id );
+                    }
+                }
+            }
+        }
+    }
+
+    $tax_input[$key] = $ids;
+    return $tax_input;
 }

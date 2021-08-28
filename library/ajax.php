@@ -144,9 +144,9 @@ function wpbtsc_form_submission(){
         wp_send_json( $response );
     }
     
-    $post_array = wpbtsc_create_posts_array( $result['data'] );    
+    $post_array = wpbtsc_create_posts_array( $result['data'] );
     $post_id = wp_insert_post( $post_array, true );
-    
+
     if( ! is_wp_error( $post_id ) ){
         $success_message = __( 'content submitted successfully!', 'submitcontent' );
         if( is_null( $result['data']['featured_image'] ) ){
@@ -160,15 +160,15 @@ function wpbtsc_form_submission(){
             if( $wpbtsc_options['wpbtsc_send_admin_email'] ){
                 wpbtsc_send_email( $post_id, $post_array['post_title'] );
             }
-                
+
         } else {
             // These files need to be included as dependencies when on the front end.
             require_once( ABSPATH . 'wp-admin/includes/image.php' );
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
             require_once( ABSPATH . 'wp-admin/includes/media.php' );
-    
+
             $attachment_id = media_handle_upload( 'wpbtsc_featured_img', $post_id );
-            
+
             if( ! is_wp_error( $attachment_id ) ){
                 $featured_img_set = set_post_thumbnail( $post_id, $attachment_id );
                 if( $featured_img_set ){
