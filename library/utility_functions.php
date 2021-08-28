@@ -174,6 +174,7 @@ function wpbtsc_validate_public_form( $form ){
 
     $errors = [];
     $data = [];
+    $wpbtsc_options = get_option( 'submitcontent_options' );
 
     // nonce validation
     if( ! wp_verify_nonce( $form['form_data']['sc_security_id'], 'wpbtsc_form_input' ) ){
@@ -188,7 +189,6 @@ function wpbtsc_validate_public_form( $form ){
     $token = ( $form['form_data']['wpbtsc_token'] ) ? trim( $form['form_data']['wpbtsc_token'] ) : '';
 
     if( $token ){
-        $wpbtsc_options = get_option( 'submitcontent_options' );
         $secret_key = $wpbtsc_options['wpbtsc_recaptcha_secretkey'];
         $user_address = $_SERVER['REMOTE_ADDR'];
         $recaptcha_verify_url = 'https://www.google.com/recaptcha/api/siteverify';
@@ -221,14 +221,22 @@ function wpbtsc_validate_public_form( $form ){
     // title and content
     if( array_key_exists( 'wpbtsc_posttitle', $form['form_data'] ) ){
         if( $post_title ){
-            $data['post_title'] = __( $post_title, 'submitcontent' );
+            if( strlen( trim( $post_title ) ) < $wpbtsc_options['wpbtsc_posttitle_length'] ){
+                $errors['post_title'] = sprintf( '%s %d %s', __( 'post title should be at least', 'submitcontent' ), $wpbtsc_options['wpbtsc_posttitle_length'], __( 'characters long', 'submitcontent' ) );
+            } else {
+                $data['post_title'] = __( $post_title, 'submitcontent' );
+            }
         } else {
             $errors['post_title'] = __( 'post title is required', 'submitcontent' );
         }
     }
     if( array_key_exists( 'wpbtsc_postcontent', $form['form_data'] ) ){
         if( $post_content ){
-            $data['post_content'] = __( $post_content, 'submitcontent' );
+            if( strlen( trim( $post_content ) ) < $wpbtsc_options['wpbtsc_content_length'] ){
+                $errors['post_content'] = sprintf( '%s %d %s', __( 'post content should be at least', 'submitcontent' ), $wpbtsc_options['wpbtsc_content_length'], __( 'characters long', 'submitcontent' ) );
+            } else {
+                $data['post_content'] = __( $post_content, 'submitcontent' );
+            }
         } else {
             $errors['post_content'] = __( 'post content is required', 'submitcontent' );
         }
@@ -270,8 +278,8 @@ function wpbtsc_validate_public_form( $form ){
         // size
         if( $image_name && $image_size ){
             $filesize_mb = ( $image_size / pow( 1024, 2 ) );
-            if( $filesize_mb > 5 ){
-                $errors['file_size'] = __( 'file too large', 'submitcontent' );
+            if( $filesize_mb > $wpbtsc_options['wpbtsc_max_image_size'] ){
+                $errors['file_size'] = sprintf( '%s %01.1f Mb', __( 'file should be smaller than or equal to', 'submitcontent' ), $wpbtsc_options['wpbtsc_max_image_size'] );
             }
         }
         // name and type
@@ -626,14 +634,14 @@ function wpbtsc_create_posts_array( $data ){
     $hierarchical_tax = array_intersect( $categories, $keys );
     if( sizeof( $hierarchical_tax ) != 0 ){
         foreach( $hierarchical_tax as $cat ){
-            $post_array['tax_input'] = wpbtsc_array_push( $post_array['tax_input'], $cat, $data[$cat], 'id' );
+            $post_array['tax_input'] = wpbtsc_create_taxonomy_array( $post_array['tax_input'], $cat, $data[$cat], 'id' );
         }
     }
     
     $non_hierarchical_tax = array_intersect( $tags, $keys );
     if( sizeof( $non_hierarchical_tax ) != 0 ){
         foreach( $non_hierarchical_tax as $tag ){
-            $post_array['tax_input'] = wpbtsc_array_push( $post_array['tax_input'], $tag, $data[$tag], 'slug' );
+            $post_array['tax_input'] = wpbtsc_create_taxonomy_array( $post_array['tax_input'], $tag, $data[$tag], 'slug' );
         }
     }
 
@@ -700,7 +708,7 @@ function wpbtsc_send_email( $post_id, $post_title ){
  * 
  * @return array
  */
-function wpbtsc_array_push( $tax_input, $key, $val, $get_by ){
+function wpbtsc_create_taxonomy_array( $tax_input, $key, $val, $get_by ){
     $ids = [];
     if( is_array( $val ) && sizeof( $val ) != 0 ){
         foreach( $val as $id ){
