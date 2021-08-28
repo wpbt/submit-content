@@ -257,55 +257,59 @@ function wpbtsc_validate_public_form( $form ){
             'data' => $data
         ];
     } else {
-
         $image_info = $form['wpbtsc_featured_img'];
-        $image_name = ( $image_info['name'] ) ? sanitize_file_name( $image_info['name'] ) : '';
-        $image_type = ( $image_info['type'] ) ? $image_info['type'] : '';
-        $temp_image_location = ( $image_info['tmp_name'] ) ? $image_info['tmp_name'] : '';
-        $image_size = ( $image_info['size'] ) ? $image_info['size'] : '';
-        $supported_file_types = [ 
-            'jpg',
-            'jpeg',
-            'jpe',
-            'png',
-            'pdf',
-            'webpp',
-            'doc',
-            'tiff',
-            'tif'
-        ];
-        $allowed_file_types = apply_filters( 'wpbtsc_supported_filetypes', $supported_file_types );
-        // size
-        if( $image_name && $image_size ){
-            $filesize_mb = ( $image_size / pow( 1024, 2 ) );
-            if( $filesize_mb > $wpbtsc_options['wpbtsc_max_image_size'] ){
-                $errors['file_size'] = sprintf( '%s %01.1f Mb', __( 'file should be smaller than or equal to', 'submitcontent' ), $wpbtsc_options['wpbtsc_max_image_size'] );
-            }
-        }
-        // name and type
-        if( $image_name ){
-            $is_mime_allowed = wp_check_filetype( $image_name );
-            if(
-                isset( $is_mime_allowed['ext'] ) &&
-                in_array( strtolower( $is_mime_allowed['ext'] ), $allowed_file_types
-            )
-            ){
-                $data['featured_image'] = [
-                    'error' => $image_info['error'],
-                    'name' => $image_name,
-                    'size' => $image_size,
-                    'tmp_name' => $temp_image_location,
-                    'type' => $image_type
-                ];
-            } else {
-                $errors['unsupported_file_type'] = __( 'unsupported file type', 'submitcontent' );
-            }
+        $image_upload_error = $image_info['error'];
+        if( $image_upload_error == '1' ){
+            $errors['file_size'] = sprintf( '%s %01.1f Mb', __( 'this host doesn\'t allow file of the current size. Please reduce the file size to', 'submitcontent' ), $wpbtsc_options['wpbtsc_max_image_size'] );
         } else {
-            $errors['featured_image'] = __( 'no featured image set', 'submitcontent' );
+            $image_name = ( $image_info['name'] ) ? sanitize_file_name( $image_info['name'] ) : '';
+            $image_type = ( $image_info['type'] ) ? $image_info['type'] : '';
+            $temp_image_location = ( $image_info['tmp_name'] ) ? $image_info['tmp_name'] : '';
+            $image_size = ( $image_info['size'] ) ? $image_info['size'] : '';
+            $supported_file_types = [ 
+                'jpg',
+                'jpeg',
+                'jpe',
+                'png',
+                'pdf',
+                'webpp',
+                'doc',
+                'tiff',
+                'tif'
+            ];
+            $allowed_file_types = apply_filters( 'wpbtsc_supported_filetypes', $supported_file_types );
+            // size
+            if( $image_name && $image_size ){
+                $filesize_mb = fdiv( $image_size, pow( 1024, 2 ) );
+                if( $filesize_mb > $wpbtsc_options['wpbtsc_max_image_size'] ){
+                    $errors['file_size'] = sprintf( '%s %01.1f Mb', __( 'file should be smaller than or equal to', 'submitcontent' ), $wpbtsc_options['wpbtsc_max_image_size'] );
+                }
+            }
+            // name and type
+            if( $image_name ){
+                $is_mime_allowed = wp_check_filetype( $image_name );
+                if(
+                    isset( $is_mime_allowed['ext'] ) &&
+                    in_array( strtolower( $is_mime_allowed['ext'] ), $allowed_file_types
+                )
+                ){
+                    $data['featured_image'] = [
+                        'error' => $image_info['error'],
+                        'name' => $image_name,
+                        'size' => $image_size,
+                        'tmp_name' => $temp_image_location,
+                        'type' => $image_type
+                    ];
+                } else {
+                    $errors['unsupported_file_type'] = __( 'unsupported file type', 'submitcontent' );
+                }
+            } else {
+                $errors['featured_image'] = __( 'featured image is required', 'submitcontent' );
+            }
+            /**
+             * file (image) handling end
+             */
         }
-        /**
-         * file (image) handling end
-         */
     }
 
     return [
