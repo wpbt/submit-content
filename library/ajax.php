@@ -107,7 +107,7 @@ function wpbtsc_delete_shortcode_callback(){
                                     <p>". __( 'You haven\'t created any shortcodes yet!', 'submitcontent' ) . "</p>
                                     <p>".
                                         __( 'to create shortcodes, visit: ', 'submitcontent' )
-                                        ."<a href='" . $menuUrl ."'>". __( 'Create Shortcodes', 'submitcontent' ) ."</a>
+                                        ."<a href='" . esc_url( $menuUrl ) ."'>". __( 'Create Shortcodes', 'submitcontent' ) ."</a>
                                     </p>
                                 </td>
                             </tr>";
