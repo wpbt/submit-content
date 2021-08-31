@@ -27,11 +27,11 @@ function wpbtsc_saveas_callback( $args ){
 
     ?>
         <select name="submitcontent_options[<?php echo $args['id']; ?>]" id="<?php echo $args['id']; ?>">
-            <option value="post" <?php echo selected( $value, 'post' ); ?>><?php esc_html_e( 'post', 'submitcontent' ) ?></option>
+            <option value="post" <?php echo selected( $value, 'post' ); ?>><?php esc_html_e( 'post', 'submit-content' ) ?></option>
             <?php
                 foreach( $post_types as $post_type ){
                     ?>
-                        <option value="<?php echo $post_type; ?>" <?php echo selected( $value, $post_type ); ?>><?php esc_html_e( $post_type, 'submitcontent' ); ?></option>
+                        <option value="<?php echo $post_type; ?>" <?php echo selected( $value, $post_type ); ?>><?php esc_html_e( $post_type, 'submit-content' ); ?></option>
                     <?php
                 }
             ?>
@@ -43,16 +43,16 @@ function wbptsc_default_status_callback( $args ){
     $options = get_option( 'submitcontent_options' );
     $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
     $statuses = [
-        'draft' => __( 'Draft', 'submitcontent' ),
-        'pending' => __( 'Pending', 'submitcontent' ),
-        'publish' => __( 'Publish', 'submitcontent' ),
+        'draft' => __( 'Draft', 'submit-content' ),
+        'pending' => __( 'Pending', 'submit-content' ),
+        'publish' => __( 'Publish', 'submit-content' ),
     ];
     ?>
         <select name="submitcontent_options[<?php echo $args['id']; ?>]" id="<?php echo $args['id'] ?>">
             <?php
                 foreach( $statuses as $key => $name ){
                     ?>
-                        <option value="<?php echo $key; ?>" <?php echo selected( $value, $key ); ?>><?php esc_html_e( $name, 'submitcontent' ) ?></option>
+                        <option value="<?php echo $key; ?>" <?php echo selected( $value, $key ); ?>><?php esc_html_e( $name, 'submit-content' ) ?></option>
                     <?php
                 }
             ?>
@@ -107,8 +107,8 @@ function wpbtsc_max_image_size_callback( $args ){
 function wpbtsc_security_section_callback(){
     printf(
         '<p><strong>%s: %s</strong></p>',
-        __( 'Note', 'submitcontent' ),
-        __( 'To implement Google\'s v3 reCAPTCHA service, enter both site key and secret key', 'submitcontent' ),
+        esc_html__( 'Note', 'submit-content' ),
+        esc_html__( 'To implement Google\'s v3 reCAPTCHA service, enter both site key and secret key', 'submit-content' ),
     );
 }
 
@@ -169,8 +169,8 @@ function wpbtsc_email_template_callback( $args ){
     }
     ?>
         <textarea id="<?php echo $args['id']; ?>" name="submitcontent_options[<?php echo $args['id']; ?>]" id="" cols="50" rows="12"><?php echo esc_html( $value ); ?></textarea>
-        <p><?php _e( 'Available tags:', 'submitcontent' ); ?></p>
+        <p><?php _e( 'Available tags:', 'submit-content' ); ?></p>
         <span>{user_name}, {post_title}, {post_edit_url}, {site_name}</span>
-        <p><strong><?php _e( 'Note: Leaving email template empty will disable email.', 'submitcontent' ); ?></strong></p>
+        <p><strong><?php _e( 'Note: Leaving email template empty will disable email.', 'submit-content' ); ?></strong></p>
     <?php
 }

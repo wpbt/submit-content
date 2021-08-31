@@ -17,7 +17,7 @@ function wpbtsc_register_settings(){
     // general section
     add_settings_section(
         'wpbt_submitcontent_general_section',
-        __( 'General settings', 'submitcontent' ),
+        __( 'General settings', 'submit-content' ),
         null,
         'submitcontent'
     );
@@ -25,7 +25,7 @@ function wpbtsc_register_settings(){
     // securit section
     add_settings_section(
         'wpbt_submitcontent_security_section',
-        __( 'Form security settings', 'submitcontent' ),
+        __( 'Form security settings', 'submit-content' ),
         'wpbtsc_security_section_callback',
         'submitcontent'
     );
@@ -33,7 +33,7 @@ function wpbtsc_register_settings(){
     // email section
     add_settings_section(
         'wpbtsc_email_section',
-        __( 'Email settings', 'submitcontent' ),
+        __( 'Email settings', 'submit-content' ),
         null,
         'submitcontent'
     );
@@ -41,7 +41,7 @@ function wpbtsc_register_settings(){
     // general section fields
     add_settings_field(
         'wpbtsc_saveas',
-        __( 'Save content as: ', 'submitcontent' ),
+        __( 'Save content as: ', 'submit-content' ),
         'wpbtsc_saveas_callback', 
         'submitcontent',
         'wpbt_submitcontent_general_section',
@@ -53,7 +53,7 @@ function wpbtsc_register_settings(){
 
     add_settings_field(
         'wpbtsc_default_status',
-        __( 'Default status of the content', 'submitcontent' ),
+        __( 'Default status of the content', 'submit-content' ),
         'wbptsc_default_status_callback',
         'submitcontent',
         'wpbt_submitcontent_general_section',
@@ -65,7 +65,7 @@ function wpbtsc_register_settings(){
 
     add_settings_field(
         'wpbtsc_send_admin_email',
-        __( 'Send email to admin whenever content is submitted', 'submitcontent' ),
+        __( 'Send email to admin whenever content is submitted', 'submit-content' ),
         'wpbtsc_email_callback',
         'submitcontent',
         'wpbt_submitcontent_general_section',
@@ -77,7 +77,7 @@ function wpbtsc_register_settings(){
 
     add_settings_field(
         'wpbtsc_requires_login',
-        __( 'Only loggedin users can submit', 'submitcontent' ),
+        __( 'Only loggedin users can submit', 'submit-content' ),
         'wpbtsc_requires_login_callback',
         'submitcontent',
         'wpbt_submitcontent_general_section',
@@ -89,7 +89,7 @@ function wpbtsc_register_settings(){
 
     add_settings_field(
         'wpbtsc_posttitle_length',
-        __( 'Minimum post title length', 'submitcontent' ),
+        __( 'Minimum post title length', 'submit-content' ),
         'wpbtsc_posttitle_length_callback',
         'submitcontent',
         'wpbt_submitcontent_general_section',
@@ -101,7 +101,7 @@ function wpbtsc_register_settings(){
 
     add_settings_field(
         'wpbtsc_content_length',
-        __( 'Minimum post content length', 'submitcontent' ),
+        __( 'Minimum post content length', 'submit-content' ),
         'wpbtsc_content_length_callback',
         'submitcontent',
         'wpbt_submitcontent_general_section',
@@ -113,7 +113,7 @@ function wpbtsc_register_settings(){
 
     add_settings_field(
         'wpbtsc_max_image_size',
-        __( 'Maximum allowed image size (in Mb)', 'submitcontent' ),
+        __( 'Maximum allowed image size (in Mb)', 'submit-content' ),
         'wpbtsc_max_image_size_callback',
         'submitcontent',
         'wpbt_submitcontent_general_section',
@@ -126,7 +126,7 @@ function wpbtsc_register_settings(){
     // security fields
     add_settings_field(
         'wpbtsc_recaptcha_sitekey',
-        __( 'Enter reCAPTCHA v3 site key', 'submitcontent' ),
+        __( 'Enter reCAPTCHA v3 site key', 'submit-content' ),
         'wpbtsc_sitekey_callback',
         'submitcontent',
         'wpbt_submitcontent_security_section',
@@ -138,7 +138,7 @@ function wpbtsc_register_settings(){
 
     add_settings_field(
         'wpbtsc_recaptcha_secretkey',
-        __( 'Enter reCAPTCHA v3 secret key', 'submitcontent' ),
+        __( 'Enter reCAPTCHA v3 secret key', 'submit-content' ),
         'wpbtsc_secretkey_callback',
         'submitcontent',
         'wpbt_submitcontent_security_section',
@@ -151,7 +151,7 @@ function wpbtsc_register_settings(){
     // email section fields
     add_settings_field(
         'wpbtsc_email_override',
-        __( 'Send email to (default is admin email)', 'submitcontent' ),
+        __( 'Send email to (default is admin email)', 'submit-content' ),
         'wpbtsc_email_override_callback',
         'submitcontent',
         'wpbtsc_email_section',
@@ -163,7 +163,7 @@ function wpbtsc_register_settings(){
 
     add_settings_field(
         'wpbtsc_email_template',
-        __( 'Email template', 'submitcontent' ),
+        __( 'Email template', 'submit-content' ),
         'wpbtsc_email_template_callback',
         'submitcontent',
         'wpbtsc_email_section',

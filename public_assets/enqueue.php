@@ -21,7 +21,7 @@ function wpbtsc_public_scripts(){
     // script and variables
     $jsObject = [
         'ajax_url' => admin_url( 'admin-ajax.php' ),
-        'error_heading' => sprintf( '<h4>%s!</h4>', __( 'please fix following errors', 'submitcontent' ) )
+        'error_heading' => sprintf( '<h4>%s!</h4>', esc_html__( 'please fix following errors', 'submit-content' ) )
     ];
     $wpbtsc_options = get_option( 'submitcontent_options' );
 

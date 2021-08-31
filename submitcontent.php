@@ -7,7 +7,7 @@
  * License:     GPLv2 or later
  * License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Version: 0.1
- * Text Domain: submitcontent
+ * Text Domain: submit-content
  * Domain Path: /languages
  * Requires at least: 4.9
  * Requires PHP: 5.2.4
@@ -70,6 +70,9 @@ register_deactivation_hook( __FILE__, 'wpbtsc_deactivate' );
 /**
  * Plugin hooks
  */
+
+// plugin textdomain
+add_action( 'init', 'wpbtsc_load_plugin_textdomain' );
 
 // administrative menu & settings page hooks
 add_action( 'admin_menu', 'wpbtsc_register_menu' );

@@ -142,10 +142,10 @@ let submitContentApp = {
         } else if( response.type == 'error' ){
             submitContentApp.createResponseElement( response );
         }
-        jQuery( '.notice-dismiss' ).click( submitContentApp.removeResponseElement );
+        jQuery( 'button.notice-dismiss' ).click( submitContentApp.removeResponseElement );
     },
     removeResponseElement: function(){
-        jQuery( this ).parent( '.is-dismissible' ).remove();
+        jQuery( this ).closest( '.is-dismissible' ).remove();
     },
     complete: function(){
         jQuery( submitContentApp.data.button ).removeAttr( 'disabled' );

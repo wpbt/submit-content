@@ -20,11 +20,11 @@ function wpbtsc_compatibility_check_and_install_defaults(){
      * install default options
      */
     $email_template = sprintf(
-        "%s,\n\n\n{user_name} %s: {post_title}.\n%s: {post_edit_url}\n\n\n%s,\n{site_name}",
-        __( 'Dear Admin', 'submitcontent' ),
-        __( 'has submitted a post titled', 'submitcontent' ),
-        __( 'Please moderate the post at', 'submitcontent' ),
-        __( 'Regards', 'submitcontent' )
+        __( '%s,\n\n\n{user_name} %s: {post_title}.\n%s: {post_edit_url}\n\n\n%s,\n{site_name}', 'submit-content' ),
+        'Dear Admin',
+        'has submitted a post titled',
+        'Please moderate the post at',
+        'Regards'
     );
     $defaults = [
         'wpbtsc_saveas' => 'post',

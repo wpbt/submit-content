@@ -26,7 +26,7 @@ function wpbtsc_shortcode( $atts ){
     
     ob_start();
     
-    if( ! $atts['id'] ) return sprintf( '<p>%s</p>', __( 'invalid shortcode', 'submitcontent' ) );
+    if( ! $atts['id'] ) return sprintf( '<p>%s</p>', __( 'invalid shortcode', 'submit-content' ) );
 
     $options = $wpdb->get_row( 
                         $wpdb->prepare( 
@@ -34,7 +34,7 @@ function wpbtsc_shortcode( $atts ){
                             $atts['id']
                         )
                     );
-    if( ! $options ) return sprintf( '<p>%s</p>', __( 'invalid shortcode id provided', 'submitcontent' ) );
+    if( ! $options ) return sprintf( '<p>%s</p>', __( 'invalid shortcode id provided', 'submit-content' ) );
     $options = maybe_unserialize( $options->options );
     
     wpbtsc_output_form( $options, $atts['id'] );

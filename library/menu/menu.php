@@ -77,7 +77,7 @@ function wpbtsc_form_settings_page(){
     // exit if user can not manage options!
     if( ! current_user_can( 'manage_options' ) ) exit;
 
-    printf( '<h1>%s</h1>', __( get_admin_page_title(), 'submitcontent' ) );
+    printf( '<h1>%s</h1>', esc_html__( get_admin_page_title(), 'submit-content' ) );
 
     $sc_options = get_option( 'submitcontent_options' );
     $wpbtsc_saveas = $sc_options['wpbtsc_saveas'];
@@ -168,7 +168,7 @@ function wpbtsc_shortcodes_page(){
     // exit if user can not manage options!
     if( ! current_user_can( 'manage_options' ) ) exit;
 
-    printf( '<h1>%s</h1>', __( get_admin_page_title(), 'submitcontent' ) );
+    printf( '<h1>%s</h1>', esc_html__( get_admin_page_title(), 'submit-content' ) );
 
     /**
      * Querying the database for displaying shortcodes.
@@ -181,10 +181,10 @@ function wpbtsc_shortcodes_page(){
         <table class="sc-table">
             <thead>
                 <tr>
-                    <th><?php _e( 'S.N.', 'submitcontent' ); ?></th>
-                    <th><?php _e( 'Shortcode', 'submitcontent' ); ?></th>
-                    <th><?php _e( 'Options', 'submitcontent' ); ?></th>
-                    <th><?php _e( 'Action', 'submitcontent' ); ?></th>
+                    <th><?php _e( 'S.N.', 'submit-content' ); ?></th>
+                    <th><?php _e( 'Shortcode', 'submit-content' ); ?></th>
+                    <th><?php _e( 'Options', 'submit-content' ); ?></th>
+                    <th><?php _e( 'Action', 'submit-content' ); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -195,7 +195,7 @@ function wpbtsc_shortcodes_page(){
                             $options = maybe_unserialize( $shortcode->options );
                             ?>
                                 <tr id="<?php echo esc_attr( $shortcode->id ); ?>">
-                                    <td class="sc-sn"><?php _e( $count, 'submitcontent' ); ?></td>
+                                    <td class="sc-sn"><?php _e( $count, 'submit-content' ); ?></td>
                                     <td class="wpbtsc-copy"><?php echo $shortcode->shortcode_name; ?></td>
                                     <td><?php wpbtsc_generate_options( $options ); ?></td>
                                     <td>
@@ -204,7 +204,7 @@ function wpbtsc_shortcodes_page(){
                                             class="wpbt-delete-sc button button-primary"
                                             href="#" scid="<?php echo esc_attr( $shortcode->id ); ?>"
                                         >
-                                            <?php _e( 'Delete', 'submitcontent' ); ?>
+                                            <?php _e( 'Delete', 'submit-content' ); ?>
                                         </a>
                                     </td>
                                 </tr> 
@@ -215,10 +215,10 @@ function wpbtsc_shortcodes_page(){
                         ?>
                             <tr class="no-shortcodes">
                                 <td colspan="4">
-                                    <p><?php _e( 'You haven\'t created any shortcodes yet!', 'submitcontent' ); ?></p>
+                                    <p><?php _e( 'You haven\'t created any shortcodes yet!', 'submit-content' ); ?></p>
                                     <p>
-                                        <?php _e( 'to create shortcodes, visit: ', 'submitcontent' ); ?>
-                                        <a href="<?php menu_page_url( 'sc-form-settings', true ); ?>"><?php _e( 'Create Shortcodes', 'submitcontent' ); ?></a>
+                                        <?php _e( 'to create shortcodes, visit: ', 'submit-content' ); ?>
+                                        <a href="<?php menu_page_url( 'sc-form-settings', true ); ?>"><?php _e( 'Create Shortcodes', 'submit-content' ); ?></a>
                                     </p>
                                 </td>
                             </tr>

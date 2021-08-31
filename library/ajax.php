@@ -80,7 +80,7 @@ function wpbtsc_delete_shortcode_callback(){
     if( ! wp_verify_nonce( $_POST['securityKey'], 'wpbt_delete_sc' ) ){
         $response = [
             'type' => 'error',
-            'data' => __( 'invalid nonce!', 'submitcontent' )
+            'data' => __( 'invalid nonce!', 'submit-content' )
         ];
         wp_send_json( $response );
     } 
@@ -91,7 +91,7 @@ function wpbtsc_delete_shortcode_callback(){
     $row_id = ( $_POST['id'] ) ? $_POST['id'] : '';
 
     if( ! $row_id ){
-        $response = [ 'type' => 'error', 'data' => __( 'empty shortcode id', 'submitcontent' ) ];
+        $response = [ 'type' => 'error', 'data' => __( 'empty shortcode id', 'submit-content' ) ];
         wp_send_json( $response );
     }
 
@@ -104,10 +104,10 @@ function wpbtsc_delete_shortcode_callback(){
         $menuUrl = get_admin_url() . 'admin.php?page=sc-form-settings';
         $tableEmptyMessage = "<tr class='no-shortcodes'>
                                 <td colspan='4'>
-                                    <p>". __( 'You haven\'t created any shortcodes yet!', 'submitcontent' ) . "</p>
+                                    <p>". __( 'You haven\'t created any shortcodes yet!', 'submit-content' ) . "</p>
                                     <p>".
-                                        __( 'to create shortcodes, visit: ', 'submitcontent' )
-                                        ."<a href='" . esc_url( $menuUrl ) ."'>". __( 'Create Shortcodes', 'submitcontent' ) ."</a>
+                                        __( 'to create shortcodes, visit: ', 'submit-content' )
+                                        ."<a href='" . esc_url( $menuUrl ) ."'>". __( 'Create Shortcodes', 'submit-content' ) ."</a>
                                     </p>
                                 </td>
                             </tr>";
@@ -115,7 +115,7 @@ function wpbtsc_delete_shortcode_callback(){
             'type' => 'success',
             'data' => [
                 'rowid' => $row_id,
-                'message' => __( 'shortcode deleted successfully', 'submitcontent' ),
+                'message' => __( 'shortcode deleted successfully', 'submit-content' ),
                 'tableEmpty' => $tableEmptyMessage
             ]
         ];
@@ -148,7 +148,7 @@ function wpbtsc_form_submission(){
     $post_id = wp_insert_post( $post_array, true );
 
     if( ! is_wp_error( $post_id ) ){
-        $success_message = __( 'content submitted successfully!', 'submitcontent' );
+        $success_message = __( 'content submitted successfully!', 'submit-content' );
         if( is_null( $result['data']['featured_image'] ) ){
             // form doesn't have featured image field case!
             $response = [
@@ -183,7 +183,7 @@ function wpbtsc_form_submission(){
                     }
                 } else {
                     $response = [
-                        'data' => __( 'featured image not set', 'submitcontent' ),
+                        'data' => __( 'featured image is required', 'submit-content' ),
                         'type' => 'error',
                         'form_id' => $_POST['form_id'],
                     ];
