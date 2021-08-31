@@ -748,3 +748,26 @@ function wpbtsc_create_taxonomy_array( $tax_input, $key, $val, $get_by ){
     $tax_input[$key] = $ids;
     return $tax_input;
 }
+
+
+/**
+ * Checks if the shortcode with passed options exists or not
+ * 
+ * @param string $shortcode_options
+ * 
+ * @return bool
+ */
+
+function wpbtsc_check_duplicate_shortcode( $shortcode_options ){
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'submitcontent';
+
+    $result = $wpdb->query(
+        $wpdb->prepare(
+            "SELECT id FROM $table_name WHERE options=%s",
+            $shortcode_options
+        )
+    );
+    return $result;
+}

@@ -33,7 +33,15 @@ function wpbtsc_generate_shortcode_callback(){
     if( ! is_serialized( $result['data'] ) ){
         $shortcode_options = maybe_serialize( $result['data'] );
     }
-    
+
+    $duplicate = wpbtsc_check_duplicate_shortcode( $shortcode_options );
+    if( $duplicate ){
+        $response = [
+            'data' => $shortcode_name,
+            'type' => 'warning'
+        ];
+        wp_send_json( $response );
+    }
     $shortcode_name = '[submitcontent id="'. $id .'"]';
     $result = $wpdb->query( 
                     $wpdb->prepare(

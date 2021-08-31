@@ -137,21 +137,25 @@ let submitContentApp = {
         jQuery( div ).insertBefore( submitContentApp.data.form );
     },
     success: function( response ){
+        if( response.type == 'warning' ){
+            submitContentApp.createResponseElement( response, scJSOBJ.duplicateText );
+        }
         if( response.type == 'success' ){
             submitContentApp.createResponseElement( response, scJSOBJ.updateText );
-        } else if( response.type == 'error' ){
+        }
+        if( response.type == 'error' ){
             submitContentApp.createResponseElement( response );
         }
-        jQuery( 'button.notice-dismiss' ).click( submitContentApp.removeResponseElement );
-    },
-    removeResponseElement: function(){
-        jQuery( this ).closest( '.is-dismissible' ).remove();
     },
     complete: function(){
         jQuery( submitContentApp.data.button ).removeAttr( 'disabled' );
         jQuery( 'html, body' ).animate({
             scrollTop: 0
         }, 750 );
+        jQuery( 'button.notice-dismiss' ).click( submitContentApp.removeResponseElement );
+    },
+    removeResponseElement: function(){
+        jQuery( this ).closest( '.is-dismissible' ).remove();
     }
 };
 
