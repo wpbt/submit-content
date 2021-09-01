@@ -3,14 +3,18 @@
  * Plugin Name: Submit Content
  * Author: Bharat Thapa
  * Author URI: https://bharatt.com.np
- * Description: Submit posts, custom pots, from frontend.
- * License:     GPLv2 or later
- * License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * Contributors: bharatthapa
+ * Description: Submit posts and custom pots, from anywhere on your website.
+ * Tags: frontend post, public post, user post, submit custom post
  * Version: 0.1
+ * Stable tag: 0.1
  * Text Domain: submit-content
  * Domain Path: /languages
  * Requires at least: 4.9
+ * Tested up to: 5.8
  * Requires PHP: 5.2.4
+ * License: GPLv2 or later
+ * License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU
  * General Public License version 2, as published by the Free Software Foundation. You may NOT assume

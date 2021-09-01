@@ -530,12 +530,12 @@ function wpbtsc_output_form( $options, $form_id ){
 
                     <?php 
                         foreach( $options['category'] as $category ){
-                            printf( '<p>%s: </s>', esc_html__( $category['name'], 'submit-content' ) );
                             $terms = get_terms([
                                 'taxonomy' => $category['slug'],
                                 'hide_empty' => false
                             ]);
-                            if( ! empty( $terms ) ){
+                            if( ! empty( $terms ) && ! is_wp_error( $terms ) ){
+                                printf( '<p>%s: </s>', esc_html__( $category['name'], 'submit-content' ) );
                                 printf( '<input type="hidden" name="%s[]" value="">', $category['slug'] );
                                 foreach( $terms as $term ){
                                     ?>
@@ -551,8 +551,6 @@ function wpbtsc_output_form( $options, $form_id ){
                                         </div>
                                     <?php
                                 }
-                            } else {
-                                printf( '<p>%s</p>', esc_html__( 'no data available at the moment', 'submit-content' ) );
                             }
                         }
                     ?>
@@ -562,12 +560,13 @@ function wpbtsc_output_form( $options, $form_id ){
                 ?>
                         <?php 
                             foreach( $options['tag'] as $tag ){
-                                printf( '<p>%s: </s>', esc_html__( $tag['name'], 'submit-content' ) );
+                                unset( $terms );
                                 $terms = get_terms([
                                     'taxonomy' => $tag['slug'],
                                     'hide_empty' => false
                                 ]);
-                                if( ! empty( $terms ) ){
+                                if( ! empty( $terms ) && ! is_wp_error( $terms ) ){
+                                    printf( '<p>%s: </s>', esc_html__( $tag['name'], 'submit-content' ) );
                                     printf( '<input type="hidden" name="%s[]" value="">', $tag['slug'] );
                                     foreach( $terms as $term ){
                                         ?>
@@ -582,8 +581,6 @@ function wpbtsc_output_form( $options, $form_id ){
                                             </div>
                                         <?php
                                     }
-                                } else {
-                                    printf( '<p>%s</p>', esc_html__( 'no data available at the moment', 'submit-content' ) );
                                 }
                             }
                         ?>
@@ -684,7 +681,6 @@ function wpbtsc_send_email( $post_id, $post_title ){
         $user_name = '';
         $body = $sc_options['wpbtsc_email_template'];
         $site_name = get_bloginfo( 'name' );
-        $headers = [];
 
         if( is_user_logged_in() ){
             $current_user = wp_get_current_user();         
@@ -708,8 +704,8 @@ function wpbtsc_send_email( $post_id, $post_title ){
 
         $message_body = str_replace( $token_ids, $token_values, $body );
         $subject = __( 'Submit Content', 'submit-content' );
-        $headers[] = 'From: '. $site_name .' <'. $admin_email .'>';
-        wp_mail( $to, $subject, $message_body, $headers );
+        $subject = apply_filters( 'wpbtsc_mail_subject', $subject );
+        wp_mail( $to, $subject, $message_body );
     }
 }
 
