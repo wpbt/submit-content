@@ -6,8 +6,8 @@
  * Contributors: bharatthapa
  * Description: Submit posts and custom pots, from anywhere on your website.
  * Tags: frontend post, public post, submit custom post
- * Version: 0.1
- * Stable tag: 0.1
+ * Version: 1.0
+ * Stable tag: 1.0
  * Text Domain: submit-content
  * Domain Path: /languages
  * Requires at least: 4.9
@@ -45,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * - Plugin URL
  */
 
-define( 'SUBMIT_CONTENT_VERSION', 0.1 );
+define( 'SUBMIT_CONTENT_VERSION', '1.0' );
 define( 'SUBMIT_CONTENT_DIRECTORY', plugin_dir_path( __FILE__ ) );
 define( 'SUBMIT_CONTENT_DIRECTORY_URL', plugin_dir_url( __FILE__ ) );
 
