@@ -11,8 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 function wpbtsc_register_menu(){
 
     add_menu_page(
-        __( 'Submit Content Settings', 'submitcontent' ),
-        __( 'Submit Content', 'submitcontent' ),
+        __( 'Submit Content Settings', 'submit-content' ),
+        __( 'Submit Content', 'submit-content' ),
         'manage_options',
         'submitcontent',
         'wpbtsc_settings_page',
@@ -21,8 +21,8 @@ function wpbtsc_register_menu(){
 
     add_submenu_page(
         'submitcontent',
-        __( 'Submit Content Form Settings', 'submitcontent' ),
-        __( 'Form Settings', 'submitcontent' ),
+        __( 'Submit Content Form Settings', 'submit-content' ),
+        __( 'Form Settings', 'submit-content' ),
         'manage_options',
         'sc-form-settings',
         'wpbtsc_form_settings_page'
@@ -30,8 +30,8 @@ function wpbtsc_register_menu(){
 
     add_submenu_page(
         'submitcontent',
-        __( 'Manage Shortcodes', 'submitcontent' ),
-        __( 'Shortcodes', 'submitcontent' ),
+        __( 'Manage Shortcodes', 'submit-content' ),
+        __( 'Shortcodes', 'submit-content' ),
         'manage_options',
         'sc-shortcodes',
         'wpbtsc_shortcodes_page'
@@ -49,13 +49,13 @@ function wpbtsc_settings_page(){
     // exit if user can not manage options!
     if( ! current_user_can( 'manage_options' ) ) exit;
 
-    printf( '<h1>%s</h1>', __( get_admin_page_title(), 'submitcontent' ) );
+    echo '<h1>'. sprintf( __( '%s', 'submit-content' ), get_admin_page_title() ) .'</h1>';
 
     if( isset( $_GET['settings-updated'] ) ){
         add_settings_error( 
             'submitcontent',
             'submitcontent',
-            __( 'options updated', 'submitcontent' ),
+            __( 'options updated', 'submit-content' ),
             'success' 
         );
     }
@@ -66,7 +66,7 @@ function wpbtsc_settings_page(){
             <?php
                 settings_fields( 'submitcontent_options' );
                 do_settings_sections( 'submitcontent' );
-                submit_button( __( 'Save Settings', 'submitcontent' ) );
+                submit_button( __( 'Save Settings', 'submit-content' ) );
             ?>
         </form>
     <?php
@@ -77,7 +77,7 @@ function wpbtsc_form_settings_page(){
     // exit if user can not manage options!
     if( ! current_user_can( 'manage_options' ) ) exit;
 
-    printf( '<h1>%s</h1>', esc_html__( get_admin_page_title(), 'submit-content' ) );
+    echo '<h1>'. sprintf( __( '%s', 'submit-content' ), get_admin_page_title() ) .'</h1>';
 
     $sc_options = get_option( 'submitcontent_options' );
     $wpbtsc_saveas = $sc_options['wpbtsc_saveas'];
@@ -157,7 +157,7 @@ function wpbtsc_form_settings_page(){
             </table>
 
             <p class="submit">
-                <input class="button button-primary" type="submit" name="wpbt_sc_shortcode" value="<?php esc_attr_e( 'Generate Shortcode', 'submitcontent' ); ?>">
+                <input class="button button-primary" type="submit" name="wpbt_sc_shortcode" value="<?php esc_attr_e( 'Generate Shortcode', 'submit-content' ); ?>">
             </p>
         </form>
     <?php
@@ -168,7 +168,7 @@ function wpbtsc_shortcodes_page(){
     // exit if user can not manage options!
     if( ! current_user_can( 'manage_options' ) ) exit;
 
-    printf( '<h1>%s</h1>', esc_html__( get_admin_page_title(), 'submit-content' ) );
+    echo '<h1>'. sprintf( __( '%s', 'submit-content' ), get_admin_page_title() ) .'</h1>';
 
     /**
      * Querying the database for displaying shortcodes.
@@ -212,17 +212,17 @@ function wpbtsc_shortcodes_page(){
                             $count++;
                         }
                     else:
-                        ?>
-                            <tr class="no-shortcodes">
-                                <td colspan="4">
-                                    <p><?php _e( 'You haven\'t created any shortcodes yet!', 'submit-content' ); ?></p>
-                                    <p>
-                                        <?php _e( 'to create shortcodes, visit: ', 'submit-content' ); ?>
-                                        <a href="<?php menu_page_url( 'sc-form-settings', true ); ?>"><?php _e( 'Create Shortcodes', 'submit-content' ); ?></a>
-                                    </p>
-                                </td>
-                            </tr>
-                        <?php
+                        printf( "<tr class='no-shortcodes'>
+                                    <td colspan='4'>
+                                        <p>%s</p>
+                                        <p>%s: <a href='%s'>%s</a></p>
+                                    </td>
+                                </tr>",
+                                __( 'you haven\'t created any shortcodes yet!', 'submit-content' ),
+                                __( 'to create shortcodes, visit', 'submit-content' ),
+                                menu_page_url( 'sc-form-settings', false ),
+                                __( 'create shortcodes', 'submit-content' )
+                            );
                     endif;
                 ?>
             </tbody>

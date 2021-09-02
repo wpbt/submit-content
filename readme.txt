@@ -4,7 +4,7 @@ Author: Bharat Thapa
 Author URI: https://bharatt.com.np
 Contributors: bharatthapa
 Description: Submit posts and custom pots, from anywhere on your website.
-Tags: frontend post, public post, user post, submit custom post
+Tags: frontend post, public post, submit custom post
 Version: 0.1
 Stable tag: 0.1
 Text Domain: submit-content
@@ -62,7 +62,7 @@ __User Data:__ Submit Content enables users to submit post content. It collects 
 
 __Cookies:__ No cookies are used for any purpose in this plugin.
 
-__Services:__ This plugin provides an option to enable Google reCaptcha, which is provided by Google as a third-party service. For details on privacy and more, please refer to official documentation for [Google reCaptcha](https://developers.google.com/recaptcha/). No other outside services or locations are accessed/used by this plugin.
+__Services:__ This plugin provides an option to enable Google reCaptcha, which is provided by Google as a third-party service. For details on privacy and more, please refer to official documentation for [Google reCAPTCHA](https://developers.google.com/recaptcha/). No other outside services or locations are accessed/used by this plugin.
 
 
 
@@ -133,7 +133,7 @@ By default, the submitted content will be saved as a post type 'post' with a sta
 
 **Featured image is not uploading**
 
-* Make sure your host allows uploading of images with size set in plugin settings page.  
+* Make sure your host allows uploading of images with size that is set in the plugin settings page.
 
 
 **Can visitors also submit the content?**

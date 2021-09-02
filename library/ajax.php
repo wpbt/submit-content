@@ -109,16 +109,17 @@ function wpbtsc_delete_shortcode_callback(){
         [ '%d' ]
     );
     if( $result ){
-        $menuUrl = get_admin_url() . 'admin.php?page=sc-form-settings';
-        $tableEmptyMessage = "<tr class='no-shortcodes'>
-                                <td colspan='4'>
-                                    <p>". __( 'You haven\'t created any shortcodes yet!', 'submit-content' ) . "</p>
-                                    <p>".
-                                        __( 'to create shortcodes, visit: ', 'submit-content' )
-                                        ."<a href='" . esc_url( $menuUrl ) ."'>". __( 'Create Shortcodes', 'submit-content' ) ."</a>
-                                    </p>
-                                </td>
-                            </tr>";
+        $tableEmptyMessage = sprintf( "<tr class='no-shortcodes'>
+                                            <td colspan='4'>
+                                                <p>%s</p>
+                                                <p>%s: <a href='%s'>%s</a></p>
+                                            </td>
+                                       </tr>",
+                                        __( 'you haven\'t created any shortcodes yet!', 'submit-content' ),
+                                        __( 'to create shortcodes, visit', 'submit-content' ),
+                                        admin_url( 'admin.php?page=sc-form-settings' ),
+                                        __( 'create shortcodes', 'submit-content' )
+                            );
         $response = [
             'type' => 'success',
             'data' => [

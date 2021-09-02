@@ -5,7 +5,7 @@
  * Author URI: https://bharatt.com.np
  * Contributors: bharatthapa
  * Description: Submit posts and custom pots, from anywhere on your website.
- * Tags: frontend post, public post, user post, submit custom post
+ * Tags: frontend post, public post, submit custom post
  * Version: 0.1
  * Stable tag: 0.1
  * Text Domain: submit-content

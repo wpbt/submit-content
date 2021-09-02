@@ -112,9 +112,9 @@ function wpbtsc_validate_admin_form( $form ){
 
     // create variales.
     $form_title = ( $form['options']['add_form_heading'] ) ? $form['options']['add_form_heading'] : '';
-    $for_title_text = ( $form['options']['add_form_heading_text'] ) ? $form['options']['add_form_heading_text'] : '';
+    $for_title_text = ( $form['options']['add_form_heading_text'] ) ? sanitize_text_field( $form['options']['add_form_heading_text'] ) : '';
     $form_description = ( $form['options']['add_form_description'] ) ? $form['options']['add_form_description'] : '';
-    $form_description_text = ( $form['options']['add_form_description_text'] ) ? $form['options']['add_form_description_text'] : '';
+    $form_description_text = ( $form['options']['add_form_description_text'] ) ? sanitize_textarea_field( $form['options']['add_form_description_text'] ) : '';
 
     $post_title = ( $form['options']['add_post_title'] ) ? $form['options']['add_post_title'] : '';
     $data['add_post_content'] = ( $form['options']['add_post_content'] ) ? $form['options']['add_post_content'] : '';
@@ -126,7 +126,7 @@ function wpbtsc_validate_admin_form( $form ){
             $errors['add_form_heading_text'] = __( 'missing form heading', 'submit-content' );
         } else {
             $data['add_form_heading'] = '1';
-            $data['add_form_heading_text'] = __( sanitize_text_field( $for_title_text ), 'submit-content' );
+            $data['add_form_heading_text'] = __( $for_title_text, 'submit-content' );
         }
     } else {
         $data['add_form_heading'] = '';
@@ -139,7 +139,7 @@ function wpbtsc_validate_admin_form( $form ){
             $errors['add_form_description_text'] = __( 'missing form description', 'submit-content' );
         } else {
             $data['add_form_description'] = '1';
-            $data['add_form_description_text'] = __( sanitize_textarea_field( $form_description_text ), 'submit-content' );
+            $data['add_form_description_text'] = __( $form_description_text, 'submit-content' );
         }
     } else {
         $data['add_form_description'] = '';
@@ -353,8 +353,8 @@ function wpbtsc_generate_options( $options ){
         echo '<ul>';
         if( $form_title ){
             ?>
-                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Add form title', 'submit-content' ), __( 'yes', 'submitcontent' ) ); ?></li>
-                <li><?php printf( esc_html__( 'Form title: %s', 'submit-content' ), $form_title_text ); ?></li>
+                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Add form title', 'submit-content' ), __( 'yes', 'submit-content' ) ); ?></li>
+                <li><?php printf( __( 'Form title: %s', 'submit-content' ), $form_title_text ); ?></li>
             <?php
         } else {
             ?>
@@ -364,38 +364,38 @@ function wpbtsc_generate_options( $options ){
 
         if( $form_description ){
             ?>
-                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', esc_html__( 'Add form description', 'submit-content' ), esc_html__( 'yes', 'submit-content' ) ); ?></li>
+                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Add form description', 'submit-content' ), __( 'yes', 'submit-content' ) ); ?></li>
                 <li><?php printf( __( 'Form description: %s', 'submit-content' ), $form_description_text ); ?></li>
             <?php
         } else {
             ?>
-                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', esc_html__( 'Add form description', 'submit-content' ), esc_html__( 'no', 'submit-content' ) ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Add form description', 'submit-content' ), __( 'no', 'submit-content' ) ); ?></li>
             <?php 
         }
 
         if( $post_title ){
             ?>
-                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', esc_html__( 'Allow post title', 'submit-content' ), esc_html__( 'yes', 'submit-content' ) ); ?></li>
+                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Allow post title', 'submit-content' ), __( 'yes', 'submit-content' ) ); ?></li>
             <?php
         }
 
         if( $post_content ){
             ?>
-                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', esc_html__( 'Allow post content', 'submit-content' ), esc_html__( 'yes', 'submit-content' ) ); ?></li>
+                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Allow post content', 'submit-content' ), __( 'yes', 'submit-content' ) ); ?></li>
             <?php
         } else {
             ?>
-                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', esc_html__( 'Allow post content', 'submit-content' ), esc_html__( 'no', 'submit-content' ) ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Allow post content', 'submit-content' ), __( 'no', 'submit-content' ) ); ?></li>
             <?php 
         }
 
         if( $featured_img ){
             ?>
-                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', esc_html__( 'Set featured image', 'submit-content' ), esc_html__( 'yes', 'submit-content' ) ); ?></li>
+                <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Set featured image', 'submit-content' ), __( 'yes', 'submit-content' ) ); ?></li>
             <?php
         } else {
             ?>
-                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', esc_html__( 'Set featured image', 'submit-content' ), esc_html__( 'no', 'submit-content' ) ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Set featured image', 'submit-content' ), __( 'no', 'submit-content' ) ); ?></li>
             <?php 
         }
 
@@ -412,7 +412,7 @@ function wpbtsc_generate_options( $options ){
             echo '</ul>';
         } else {
             ?>
-                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', esc_html__( 'Allowed category', 'submit-content' ), esc_html__( 'none', 'submit-content' ) ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Allowed category', 'submit-content' ), __( 'none', 'submit-content' ) ); ?></li>
             <?php 
         }
 
@@ -429,7 +429,7 @@ function wpbtsc_generate_options( $options ){
             echo '</ul>';
         } else {
             ?>
-                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', esc_html__( 'Allowed tag(s)', 'submit-content' ), esc_html__( 'none', 'submit-content' ) ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Allowed tag(s)', 'submit-content' ), __( 'none', 'submit-content' ) ); ?></li>
             <?php 
         }
         echo '</ul>';
@@ -474,16 +474,13 @@ function wpbtsc_output_form( $options, $form_id ){
     $form_id = 'sc-form-' . $form_id;
 
     ?>
-        
         <div class="sc-form">
             <?php
-                // form title
                 if( $form_title && $form_title_text ):
-                    printf( '<h2>%s</h2>', esc_html__( $form_title_text, 'submit-content' ) );
+                    printf( '<h2>%s</h2>', __( $form_title_text, 'submit-content' ) );
                 endif;
-                // form description (short)
                 if( $form_description && $form_description_text  ):
-                    printf( '<p>%s</p>', esc_html__( $form_description_text, 'submit-content' ) );
+                    printf( '<p>%s</p>', __( $form_description_text, 'submit-content' ) );
                 endif;
             ?>
             <form action="" id="<?php echo $form_id; ?>" class="wpbtsc-form" method="post" <?php echo $form_type; ?>>
@@ -523,19 +520,14 @@ function wpbtsc_output_form( $options, $form_id ){
                 <?php
                     endif;
                     if( isset( $options['category'] ) && !empty( $options['category'] ) ):
-                ?>
-                    <?php
-                        printf( '<p>%s:</p>', esc_html__( 'Select taxonomies for the post', 'submit-content' ) );
-                    ?>
-
-                    <?php 
+                        printf( '<p>%s:</p>', __( 'Select taxonomies for the post', 'submit-content' ) );
                         foreach( $options['category'] as $category ){
                             $terms = get_terms([
                                 'taxonomy' => $category['slug'],
                                 'hide_empty' => false
                             ]);
                             if( ! empty( $terms ) && ! is_wp_error( $terms ) ){
-                                printf( '<p>%s: </s>', esc_html__( $category['name'], 'submit-content' ) );
+                                printf( '<p>%s: </s>', __( $category['name'], 'submit-content' ) );
                                 printf( '<input type="hidden" name="%s[]" value="">', $category['slug'] );
                                 foreach( $terms as $term ){
                                     ?>
@@ -553,39 +545,33 @@ function wpbtsc_output_form( $options, $form_id ){
                                 }
                             }
                         }
-                    ?>
-                <?php
                     endif;
                     if( isset( $options['tag'] ) && !empty( $options['tag'] ) ):
-                ?>
-                        <?php 
-                            foreach( $options['tag'] as $tag ){
-                                unset( $terms );
-                                $terms = get_terms([
-                                    'taxonomy' => $tag['slug'],
-                                    'hide_empty' => false
-                                ]);
-                                if( ! empty( $terms ) && ! is_wp_error( $terms ) ){
-                                    printf( '<p>%s: </s>', esc_html__( $tag['name'], 'submit-content' ) );
-                                    printf( '<input type="hidden" name="%s[]" value="">', $tag['slug'] );
-                                    foreach( $terms as $term ){
-                                        ?>
-                                            <div>
-                                                <input
-                                                    type="checkbox"
-                                                    id="<?php echo $term->slug; ?>"
-                                                    name="<?php echo $tag['slug']; ?>[]"
-                                                    value="<?php echo $term->slug; ?>"
-                                                >
-                                                <label for="<?php echo $term->slug; ?>"> <?php _e( $term->name, 'submit-content' ); ?></label>
-                                            </div>
-                                        <?php
-                                    }
+                        foreach( $options['tag'] as $tag ){
+                            unset( $terms );
+                            $terms = get_terms([
+                                'taxonomy' => $tag['slug'],
+                                'hide_empty' => false
+                            ]);
+                            if( ! empty( $terms ) && ! is_wp_error( $terms ) ){
+                                printf( '<p>%s: </s>', __( $tag['name'], 'submit-content' ) );
+                                printf( '<input type="hidden" name="%s[]" value="">', $tag['slug'] );
+                                foreach( $terms as $term ){
+                                    ?>
+                                        <div>
+                                            <input
+                                                type="checkbox"
+                                                id="<?php echo $term->slug; ?>"
+                                                name="<?php echo $tag['slug']; ?>[]"
+                                                value="<?php echo $term->slug; ?>"
+                                            >
+                                            <label for="<?php echo $term->slug; ?>"> <?php _e( $term->name, 'submit-content' ); ?></label>
+                                        </div>
+                                    <?php
                                 }
                             }
-                        ?>
-                    <?php
-                        endif;
+                        }
+                    endif;
                     ?>
                 <p>
                     <input

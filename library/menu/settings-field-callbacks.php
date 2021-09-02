@@ -107,8 +107,8 @@ function wpbtsc_max_image_size_callback( $args ){
 function wpbtsc_security_section_callback(){
     printf(
         '<p><strong>%s: %s</strong></p>',
-        esc_html__( 'Note', 'submit-content' ),
-        esc_html__( 'To implement Google\'s v3 reCAPTCHA service, enter both site key and secret key', 'submit-content' ),
+        __( 'Note', 'submit-content' ),
+        __( 'To implement Google\'s v3 reCAPTCHA service, enter both site key and secret key', 'submit-content' ),
     );
 }
 
@@ -119,11 +119,7 @@ function wpbtsc_security_section_callback(){
 function wpbtsc_sitekey_callback( $args ){
     $options = get_option( 'submitcontent_options' );
 
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
+    $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
     ?>
         <input id="<?php echo $args['id']; ?>" type="text" name="submitcontent_options[<?php echo $args['id']; ?>]" value="<?php echo trim( $value ); ?>">
     <?php
@@ -132,11 +128,7 @@ function wpbtsc_sitekey_callback( $args ){
 function wpbtsc_secretkey_callback( $args ){
     $options = get_option( 'submitcontent_options' );
 
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
+    $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
     ?>
         <input id="<?php echo $args['id']; ?>" type="text" name="submitcontent_options[<?php echo $args['id']; ?>]" value="<?php echo trim( $value ); ?>">
     <?php
@@ -149,11 +141,7 @@ function wpbtsc_secretkey_callback( $args ){
 function wpbtsc_email_override_callback( $args ){
     $options = get_option( 'submitcontent_options' );
 
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
+    $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
     ?>
         <input id="<?php echo $args['id']; ?>" type="text" name="submitcontent_options[<?php echo $args['id']; ?>]" value="<?php echo trim( $value ); ?>">
     <?php
@@ -162,13 +150,9 @@ function wpbtsc_email_override_callback( $args ){
 function wpbtsc_email_template_callback( $args ){
     $options = get_option( 'submitcontent_options' );
 
-    if( !empty( $options ) && isset( $options[$args['id']] ) ){
-        $value = $options[$args['id']];
-    } else {
-        $value = '';
-    }
+    $value = ( $options[$args['id']] ) ? $options[$args['id']] : '';
     ?>
-        <textarea id="<?php echo $args['id']; ?>" name="submitcontent_options[<?php echo $args['id']; ?>]" id="" cols="50" rows="12"><?php echo esc_html( $value ); ?></textarea>
+        <textarea id="<?php echo $args['id']; ?>" name="submitcontent_options[<?php echo $args['id']; ?>]" id="" cols="50" rows="12"><?php echo esc_textarea( $value ); ?></textarea>
         <p><?php _e( 'Available tags:', 'submit-content' ); ?></p>
         <span>{user_name}, {post_title}, {post_edit_url}, {site_name}</span>
         <p><strong><?php _e( 'Note: Leaving email template empty will disable email.', 'submit-content' ); ?></strong></p>
