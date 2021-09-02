@@ -44,6 +44,7 @@ At a glance, this plugin allows the following:
 * Display forms anywhere via shortcode or template tag
 * You choose which fields to display on the form
 * Receive email notification alerts for submitted posts
+* AJAX for better user experience
 
 
 ### Form Features ###
@@ -51,6 +52,7 @@ At a glance, this plugin allows the following:
 * Google reCAPTCHA: v3 (hidden recaptcha)
 * Stops spam via input validation, captcha, and hidden field
 * Option to require users to be logged in to use the form
+* AJAX for better user experience
 
 
 *Submit Content is simple to use and built with clean, secure code via the WordPress APIs!*
