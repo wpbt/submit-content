@@ -485,7 +485,7 @@ function wpbtsc_output_form( $options, $form_id ){
             ?>
             <form action="" id="<?php echo esc_attr( $form_id ); ?>" class="wpbtsc-form" method="post" <?php echo esc_attr( $form_type ); ?>>
                 <input type="hidden" name="sc_security_id" value="<?php echo $security_key; ?>">
-                <input type="hidden" name="form_id" value="<?php echo esc_attr( intval( $form_id ) ); ?>">
+                <input type="hidden" name="form_id" value="<?php echo esc_attr( $form_id ); ?>">
                 <div>
                     <label for="wpbtsc_posttitle">
                         <?php _e( 'Enter post title', 'submit-content' ); ?>

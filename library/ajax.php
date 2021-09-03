@@ -144,7 +144,7 @@ function wpbtsc_form_submission(){
     ] );
     
     // handle errors!
-    $form_id = intval( $_POST['form_id'] );
+    $form_id = esc_attr( $_POST['form_id'] );
     if( ! empty( $result['errors'] ) ){
         $response = [
             'data' => $result['errors'],
