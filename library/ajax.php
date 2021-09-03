@@ -144,11 +144,12 @@ function wpbtsc_form_submission(){
     ] );
     
     // handle errors!
+    $form_id = intval( $_POST['form_id'] );
     if( ! empty( $result['errors'] ) ){
         $response = [
             'data' => $result['errors'],
             'type' => 'error',
-            'form_id' => $_POST['form_id'],
+            'form_id' => $form_id,
         ];
         wp_send_json( $response );
     }
@@ -163,7 +164,7 @@ function wpbtsc_form_submission(){
             $response = [
                 'data' => $success_message,
                 'type' => 'success',
-                'form_id' => $_POST['form_id'],
+                'form_id' => $form_id,
             ];
             $wpbtsc_options = get_option( 'submitcontent_options' );
             if( $wpbtsc_options['wpbtsc_send_admin_email'] ){
@@ -184,7 +185,7 @@ function wpbtsc_form_submission(){
                     $response = [
                         'data' => $success_message,
                         'type' => 'success',
-                        'form_id' => $_POST['form_id'],
+                        'form_id' => $form_id,
                     ];
                     $wpbtsc_options = get_option( 'submitcontent_options' );
                     if( $wpbtsc_options['wpbtsc_send_admin_email'] ){
@@ -194,14 +195,14 @@ function wpbtsc_form_submission(){
                     $response = [
                         'data' => __( 'featured image is required', 'submit-content' ),
                         'type' => 'error',
-                        'form_id' => $_POST['form_id'],
+                        'form_id' => $form_id,
                     ];
                 }
             } else {
                 $response = [
                     'data' => $attachment_id->get_error_message(),
                     'type' => 'error',
-                    'form_id' => $_POST['form_id'],
+                    'form_id' => $form_id,
                 ];
             }
         }
@@ -209,7 +210,7 @@ function wpbtsc_form_submission(){
         $response = [
             'data' => $post_id->get_error_message(),
             'type' => 'error',
-            'form_id' => $_POST['form_id'],
+            'form_id' => $form_id,
         ];
     }
     wp_send_json( $response );

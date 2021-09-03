@@ -477,15 +477,15 @@ function wpbtsc_output_form( $options, $form_id ){
         <div class="sc-form">
             <?php
                 if( $form_title && $form_title_text ):
-                    printf( '<h2>%s</h2>', __( $form_title_text, 'submit-content' ) );
+                    echo '<h2>'. sprintf( __( '%s', 'submit-content' ), $form_title_text ) .'</h2>';
                 endif;
                 if( $form_description && $form_description_text  ):
-                    printf( '<p>%s</p>', __( $form_description_text, 'submit-content' ) );
+                    echo '<p>'. sprintf( __( '%s', 'submit-content' ), $form_description_text ) .'</p>';
                 endif;
             ?>
-            <form action="" id="<?php echo $form_id; ?>" class="wpbtsc-form" method="post" <?php echo $form_type; ?>>
+            <form action="" id="<?php echo esc_attr( $form_id ); ?>" class="wpbtsc-form" method="post" <?php echo esc_attr( $form_type ); ?>>
                 <input type="hidden" name="sc_security_id" value="<?php echo $security_key; ?>">
-                <input type="hidden" name="form_id" value="<?php echo $form_id; ?>">
+                <input type="hidden" name="form_id" value="<?php echo esc_attr( intval( $form_id ) ); ?>">
                 <div>
                     <label for="wpbtsc_posttitle">
                         <?php _e( 'Enter post title', 'submit-content' ); ?>
@@ -520,26 +520,26 @@ function wpbtsc_output_form( $options, $form_id ){
                 <?php
                     endif;
                     if( isset( $options['category'] ) && !empty( $options['category'] ) ):
-                        printf( '<p>%s:</p>', __( 'Select taxonomies for the post', 'submit-content' ) );
+                        echo '<p>'. sprintf( __( 'Select taxonomies for the post', 'submit-content' ) ) .'</p>';
                         foreach( $options['category'] as $category ){
                             $terms = get_terms([
                                 'taxonomy' => $category['slug'],
                                 'hide_empty' => false
                             ]);
                             if( ! empty( $terms ) && ! is_wp_error( $terms ) ){
-                                printf( '<p>%s: </s>', __( $category['name'], 'submit-content' ) );
-                                printf( '<input type="hidden" name="%s[]" value="">', $category['slug'] );
+                                echo '<p>'. sprintf( __( '%s', 'submit-content' ), $category['name'] ) .'</p>';
+                                printf( '<input type="hidden" name="%s[]" value="">', esc_attr( $category['slug'] ) );
                                 foreach( $terms as $term ){
                                     ?>
                                         <div>
                                             <input 
                                                 type="checkbox"
-                                                id="<?php echo $term->slug; ?>"
-                                                name="<?php echo $category['slug']; ?>[]"
-                                                value="<?php echo $term->term_id; ?>"
-                                                parent="<?php echo $term->parent; ?>"
+                                                id="<?php echo esc_attr( $term->slug ); ?>"
+                                                name="<?php echo esc_attr( $category['slug'] ); ?>[]"
+                                                value="<?php echo esc_attr( $term->term_id ); ?>"
+                                                parent="<?php echo esc_attr( $term->parent ); ?>"
                                             >
-                                            <label for="<?php echo $term->slug; ?>"> <?php _e( $term->name, 'submit-content' ); ?></label>
+                                            <label for="<?php echo esc_attr( $term->slug ); ?>"> <?php _e( $term->name, 'submit-content' ); ?></label>
                                         </div>
                                     <?php
                                 }
@@ -554,18 +554,18 @@ function wpbtsc_output_form( $options, $form_id ){
                                 'hide_empty' => false
                             ]);
                             if( ! empty( $terms ) && ! is_wp_error( $terms ) ){
-                                printf( '<p>%s: </s>', __( $tag['name'], 'submit-content' ) );
-                                printf( '<input type="hidden" name="%s[]" value="">', $tag['slug'] );
+                                echo '<p>'. sprintf( __( '%s', 'submit-content' ), $tag['name'] ) .'</p>';
+                                printf( '<input type="hidden" name="%s[]" value="">', esc_attr( $tag['slug'] ) );
                                 foreach( $terms as $term ){
                                     ?>
                                         <div>
                                             <input
                                                 type="checkbox"
-                                                id="<?php echo $term->slug; ?>"
-                                                name="<?php echo $tag['slug']; ?>[]"
-                                                value="<?php echo $term->slug; ?>"
+                                                id="<?php echo esc_attr( $term->slug ); ?>"
+                                                name="<?php echo esc_attr( $tag['slug'] ); ?>[]"
+                                                value="<?php echo esc_attr( $term->slug ); ?>"
                                             >
-                                            <label for="<?php echo $term->slug; ?>"> <?php _e( $term->name, 'submit-content' ); ?></label>
+                                            <label for="<?php echo esc_attr( $term->slug ); ?>"> <?php _e( $term->name, 'submit-content' ); ?></label>
                                         </div>
                                     <?php
                                 }
