@@ -165,5 +165,5 @@ Yes, there is an additional email field available in plugin settings page to ena
 
 == Changelog ==
 
-= 0.1 =
+= 1.0 =
 Initial release.
