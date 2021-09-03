@@ -477,14 +477,14 @@ function wpbtsc_output_form( $options, $form_id ){
         <div class="sc-form">
             <?php
                 if( $form_title && $form_title_text ):
-                    echo '<h2>'. sprintf( __( '%s', 'submit-content' ), $form_title_text ) .'</h2>';
+                    echo '<h2>'. sprintf( __( '%s', 'submit-content' ), esc_html( $form_title_text ) ) .'</h2>';
                 endif;
                 if( $form_description && $form_description_text  ):
-                    echo '<p>'. sprintf( __( '%s', 'submit-content' ), $form_description_text ) .'</p>';
+                    echo '<p>'. sprintf( __( '%s', 'submit-content' ), esc_html( $form_description_text ) ) .'</p>';
                 endif;
             ?>
             <form action="" id="<?php echo esc_attr( $form_id ); ?>" class="wpbtsc-form" method="post" <?php echo esc_attr( $form_type ); ?>>
-                <input type="hidden" name="sc_security_id" value="<?php echo $security_key; ?>">
+                <input type="hidden" name="sc_security_id" value="<?php echo esc_attr( $security_key ); ?>">
                 <input type="hidden" name="form_id" value="<?php echo esc_attr( $form_id ); ?>">
                 <div>
                     <label for="wpbtsc_posttitle">
@@ -527,7 +527,7 @@ function wpbtsc_output_form( $options, $form_id ){
                                 'hide_empty' => false
                             ]);
                             if( ! empty( $terms ) && ! is_wp_error( $terms ) ){
-                                echo '<p>'. sprintf( __( '%s', 'submit-content' ), $category['name'] ) .'</p>';
+                                echo '<p>'. sprintf( __( '%s', 'submit-content' ), esc_html( $category['name'] ) ) .'</p>';
                                 printf( '<input type="hidden" name="%s[]" value="">', esc_attr( $category['slug'] ) );
                                 foreach( $terms as $term ){
                                     ?>
@@ -539,7 +539,7 @@ function wpbtsc_output_form( $options, $form_id ){
                                                 value="<?php echo esc_attr( $term->term_id ); ?>"
                                                 parent="<?php echo esc_attr( $term->parent ); ?>"
                                             >
-                                            <label for="<?php echo esc_attr( $term->slug ); ?>"> <?php _e( $term->name, 'submit-content' ); ?></label>
+                                            <label for="<?php echo esc_attr( $term->slug ); ?>"> <?php esc_html_e( $term->name, 'submit-content' ); ?></label>
                                         </div>
                                     <?php
                                 }
@@ -554,7 +554,7 @@ function wpbtsc_output_form( $options, $form_id ){
                                 'hide_empty' => false
                             ]);
                             if( ! empty( $terms ) && ! is_wp_error( $terms ) ){
-                                echo '<p>'. sprintf( __( '%s', 'submit-content' ), $tag['name'] ) .'</p>';
+                                echo '<p>'. sprintf( __( '%s', 'submit-content' ), esc_html( $tag['name'] ) ) .'</p>';
                                 printf( '<input type="hidden" name="%s[]" value="">', esc_attr( $tag['slug'] ) );
                                 foreach( $terms as $term ){
                                     ?>
@@ -565,7 +565,7 @@ function wpbtsc_output_form( $options, $form_id ){
                                                 name="<?php echo esc_attr( $tag['slug'] ); ?>[]"
                                                 value="<?php echo esc_attr( $term->slug ); ?>"
                                             >
-                                            <label for="<?php echo esc_attr( $term->slug ); ?>"> <?php _e( $term->name, 'submit-content' ); ?></label>
+                                            <label for="<?php echo esc_attr( $term->slug ); ?>"> <?php esc_html_e( $term->name, 'submit-content' ); ?></label>
                                         </div>
                                     <?php
                                 }

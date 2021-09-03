@@ -96,7 +96,7 @@ function wpbtsc_delete_shortcode_callback(){
     // delete the record!
 
     $table_name = $wpdb->prefix . 'submitcontent';
-    $row_id = ( $_POST['id'] ) ? $_POST['id'] : '';
+    $row_id = ( $_POST['id'] ) ? intval( $_POST['id'] ) : '';
 
     if( ! $row_id ){
         $response = [ 'type' => 'error', 'data' => __( 'empty shortcode id', 'submit-content' ) ];
@@ -142,9 +142,8 @@ function wpbtsc_form_submission(){
         'wpbtsc_featured_img' => $_FILES['wpbtsc_featured_img'],
         'form_data' => $_POST
     ] );
-    
     // handle errors!
-    $form_id = esc_attr( $_POST['form_id'] );
+    $form_id = strval( $_POST['form_id'] );
     if( ! empty( $result['errors'] ) ){
         $response = [
             'data' => $result['errors'],
