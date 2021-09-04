@@ -1,7 +1,6 @@
 <?php
-
 /**
- * functions used thourghout the plugin!
+ * Functions used thourghout the plugin!
  */
 
 /**
@@ -27,14 +26,14 @@ function wpbtsc_load_plugin_textdomain(){
 /**
  * Generate and display an input field for the form
  * 
- * @param string $type  form field type 
- * @param string $name form field name 
- * @param string $title form field title
- * @param string $value form field value
- * @param array $taxonomy multiple form fields
+ * @param string $type     form field type 
+ * @param string $name     form field name 
+ * @param string $title    form field title
+ * @param string $value    form field value
+ * @param  array $taxonomy     multiple form fields
+ * 
  * @return void  
  */
-
 function wpbtsc_generate_input_field( $type, $name, $title, $value = '', $taxonomy = NULL ){
     if( $type == 'textarea' ){
         echo "
@@ -48,7 +47,7 @@ function wpbtsc_generate_input_field( $type, $name, $title, $value = '', $taxono
             </tr>
         ";
     } elseif( $type == 'notice' ){
-        $message = $title . ' not supported for selected post type!';
+        $message = sprintf('%s not supported for selected post type!', $message);
         echo "
             <tr>
                 <th scope='row'>". esc_html__( $title, 'submit-content' ) ."</th>
@@ -63,7 +62,7 @@ function wpbtsc_generate_input_field( $type, $name, $title, $value = '', $taxono
             <th scope='row'><label for='". esc_attr( $value ) ."'>". esc_html__( $title, 'submit-content' ) ."</label></th>
                 <td>
                     <label for='". esc_attr( $name ) ."'>
-                    <input name='". esc_attr( $taxonomy['type'] ) ."' type='$type' id='". esc_attr( $value ) ."' value='". esc_attr( $value ) ."' label='". esc_attr( $name ) ."' />
+                    <input name='". esc_attr( $taxonomy['type'] ) ."' type='". esc_attr( $type ) ."' id='". esc_attr( $value ) ."' value='". esc_attr( $value ) ."' label='". esc_attr( $name ) ."' />
                     </label>
                 </td>
             </tr>
@@ -74,7 +73,7 @@ function wpbtsc_generate_input_field( $type, $name, $title, $value = '', $taxono
             <th scope='row'><label for='". esc_attr( $name ) ."'>". esc_html__( $title, 'submit-content' ) ."</label></th>
                 <td>
                     <label for='". esc_attr( $name ) ."'>
-                    <input name='". esc_attr( $name ) ."' type='$type' id='". esc_attr( $name ) ."' value='". esc_attr( $value ) ."' />
+                    <input name='". esc_attr( $name ) ."' type='". esc_attr( $type ) ."' id='". esc_attr( $name ) ."' value='". esc_attr( $value ) ."' />
                     </label>
                 </td>
             </tr>
@@ -292,7 +291,7 @@ function wpbtsc_validate_public_form( $form ){
             $allowed_file_types = apply_filters( 'wpbtsc_supported_filetypes', $supported_file_types );
             // size
             if( $image_name && $image_size ){
-                $filesize_mb = fdiv( $image_size, pow( 1024, 2 ) );
+                $filesize_mb = $image_size / pow( 1024, 2 );
                 if( $filesize_mb > $wpbtsc_options['wpbtsc_max_image_size'] ){
                     $errors['file_size'] = sprintf( __( 'file should be smaller than or equal to %01.1f Mb', 'submit-content' ), $wpbtsc_options['wpbtsc_max_image_size'] );
                 }

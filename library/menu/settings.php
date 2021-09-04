@@ -216,7 +216,7 @@ function wpbtsc_validate( $input ){
     $filter_options = [
         'options' => [
             'default' => $wpbtsc_options['wpbtsc_max_image_size'],
-            'min_range' => 1
+            'min_range' => 0
         ]
     ];
     $input['wpbtsc_max_image_size'] = filter_var( $input['wpbtsc_max_image_size'], FILTER_VALIDATE_FLOAT, $filter_options );
