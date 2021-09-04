@@ -21,7 +21,7 @@ function wpbtsc_public_scripts(){
     // script and variables
     $jsObject = [
         'ajax_url' => admin_url( 'admin-ajax.php' ),
-        'error_heading' => sprintf( '<h4>%s!</h4>', esc_html__( 'please fix following errors', 'submit-content' ) )
+        'error_heading' => sprintf( esc_html__( '<h4>%s!</h4>', 'submit-content' ), 'please fix following errors' )
     ];
     $wpbtsc_options = get_option( 'submitcontent_options' );
 
@@ -30,8 +30,8 @@ function wpbtsc_public_scripts(){
     // a global variable and script enqueu if reCAPTCHA service is enabled!
     if( $wpbtsc_options['wpbtsc_recaptcha_sitekey'] && $wpbtsc_options['wpbtsc_recaptcha_secretkey'] ){
 
-        $url = 'https://www.google.com/recaptcha/api.js?render=' . trim( $wpbtsc_options['wpbtsc_recaptcha_sitekey'] );
-        $jsObject['site_key'] = trim( $wpbtsc_options['wpbtsc_recaptcha_sitekey'] );
+        $url = 'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $wpbtsc_options['wpbtsc_recaptcha_sitekey'] );
+        $jsObject['site_key'] = esc_attr( $wpbtsc_options['wpbtsc_recaptcha_sitekey'] );
 
         wp_register_script( 'wpbtsc-recaptcha', esc_url( $url ), [], '', true );
         wp_enqueue_script( 'wpbtsc-recaptcha' );

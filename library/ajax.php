@@ -138,12 +138,13 @@ function wpbtsc_delete_shortcode_callback(){
  */
 
 function wpbtsc_form_submission(){
-    $result = wpbtsc_validate_public_form( [
+    $form_input = [
         'wpbtsc_featured_img' => $_FILES['wpbtsc_featured_img'],
         'form_data' => $_POST
-    ] );
+    ];
+    $result = wpbtsc_validate_public_form( $form_input );
     // handle errors!
-    $form_id = strval( $_POST['form_id'] );
+    $form_id = sanitize_title( $_POST['form_id'] );
     if( ! empty( $result['errors'] ) ){
         $response = [
             'data' => $result['errors'],

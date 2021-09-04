@@ -198,7 +198,7 @@ function wpbtsc_validate_public_form( $form ){
     }
 
     // validate reCAPTCHA
-    $token = ( $form['form_data']['wpbtsc_token'] ) ? trim( $form['form_data']['wpbtsc_token'] ) : '';
+    $token = ( $form['form_data']['wpbtsc_token'] ) ? esc_attr( $form['form_data']['wpbtsc_token'] ) : '';
 
     if( $token ){
         $secret_key = $wpbtsc_options['wpbtsc_recaptcha_secretkey'];
@@ -457,7 +457,7 @@ function wpbtsc_output_form( $options, $form_id ){
             $message
         );
     }
-    
+
     $form_title = ( $options['add_form_heading'] ) ? $options['add_form_heading'] : '';
     $form_title_text = ( $options['add_form_heading_text'] ) ? $options['add_form_heading_text'] : '';
 
