@@ -147,14 +147,14 @@ function wpbtsc_validate_admin_form( $form ){
 
     // category
     if( isset( $form['category'] ) && ! empty(  $form['category'] ) ){
-        $data['category'] = $form['category'];
+        $data['category'] = wpbtsc_sanitize_taxonomy_data( $form['category'] );
     } else {
         $data['category'] = [];
     }
 
     // tag
     if( isset( $form['tag'] ) && ! empty(  $form['tag'] ) ){
-        $data['tag'] = $form['tag'];
+        $data['tag'] = wpbtsc_sanitize_taxonomy_data( $form['tag'] );
     } else {
         $data['tag'] = [];
     }
@@ -173,14 +173,14 @@ function wpbtsc_validate_admin_form( $form ){
  * @return array @response Contains errors and data as keys
  */
 
-function wpbtsc_validate_public_form( $form ){
+function wpbtsc_validate_public_form( $post = NULL, $file = NULL ){
 
     $errors = [];
     $data = [];
     $wpbtsc_options = get_option( 'submitcontent_options' );
 
     // nonce validation
-    if( ! wp_verify_nonce( $form['form_data']['sc_security_id'], 'wpbtsc_form_input' ) ){
+    if( ! wp_verify_nonce( $post['sc_security_id'], 'wpbtsc_form_input' ) ){
         $errors['invalid_nonce'] = __( 'invalid nonce', 'submit-content' );
         return [
             'errors' => $errors,
@@ -189,7 +189,7 @@ function wpbtsc_validate_public_form( $form ){
     }
 
     // validate reCAPTCHA
-    $token = ( $form['form_data']['wpbtsc_token'] ) ? esc_attr( $form['form_data']['wpbtsc_token'] ) : '';
+    $token = ( $post['wpbtsc_token'] ) ? esc_attr( $post['wpbtsc_token'] ) : '';
 
     if( $token ){
         $secret_key = $wpbtsc_options['wpbtsc_recaptcha_secretkey'];
@@ -218,11 +218,11 @@ function wpbtsc_validate_public_form( $form ){
         }
     }
 
-    $post_title = ( $form['form_data']['wpbtsc_posttitle'] ) ? sanitize_text_field( $form['form_data']['wpbtsc_posttitle'] ) : '';
-    $post_content = ( $form['form_data']['wpbtsc_postcontent'] ) ? sanitize_textarea_field( $form['form_data']['wpbtsc_postcontent'] ) : '';
+    $post_title = ( $post['wpbtsc_posttitle'] ) ? sanitize_text_field( $post['wpbtsc_posttitle'] ) : '';
+    $post_content = ( $post['wpbtsc_postcontent'] ) ? sanitize_textarea_field( $post['wpbtsc_postcontent'] ) : '';
 
     // title and content
-    if( array_key_exists( 'wpbtsc_posttitle', $form['form_data'] ) ){
+    if( array_key_exists( 'wpbtsc_posttitle', $post ) ){
         if( $post_title ){
             if( strlen( trim( $post_title ) ) < $wpbtsc_options['wpbtsc_posttitle_length'] ){
                 $errors['post_title'] = sprintf( __( 'post title should be at least %d characters long', 'submit-content' ), $wpbtsc_options['wpbtsc_posttitle_length'] );
@@ -233,7 +233,7 @@ function wpbtsc_validate_public_form( $form ){
             $errors['post_title'] = __( 'post title is required', 'submit-content' );
         }
     }
-    if( array_key_exists( 'wpbtsc_postcontent', $form['form_data'] ) ){
+    if( array_key_exists( 'wpbtsc_postcontent', $post ) ){
         if( $post_content ){
             if( strlen( trim( $post_content ) ) < $wpbtsc_options['wpbtsc_content_length'] ){
                 $errors['post_content'] = sprintf( __( 'post content should be at least %d characters long', 'submit-content' ), $wpbtsc_options['wpbtsc_content_length'] );
@@ -246,29 +246,39 @@ function wpbtsc_validate_public_form( $form ){
     }
 
     // categories and tags
-    foreach( $form['form_data'] as $key => $value ){
+    unset( $tax );
+    unset( $key );
+    unset( $value );
+    unset( $sanitized_key );
+    unset( $sanitized_val );
+    foreach( $post as $key => $value ){
         if( gettype( $value ) == 'array' ){
-            $data[$key] = $value;
+            $sanitized_val = [];
+            $sanitized_key = sanitize_text_field( $key );
+            if( !empty( $value ) ){
+                foreach( $value as $tax ){
+                    if( $tax ) array_push( $sanitized_val, sanitize_text_field( $tax ) );
+                }
+            }
+            $data[$sanitized_key] = $sanitized_val;
         }
     }
     /**
      * file (image) handling
      */
-    if ( is_null( $form['wpbtsc_featured_img'] ) ){
+    if ( is_null( $file ) ){
         return [
             'errors' => $errors,
             'data' => $data
         ];
     } else {
-        $image_info = $form['wpbtsc_featured_img'];
-        $image_upload_error = $image_info['error'];
-        if( $image_upload_error == '1' ){
+        if( isset( $file['error'] ) && ( $file['error'] == '1' ) ){
             $errors['file_size'] = sprintf( __( 'this host does not allow file of the current size. Please reduce the file size to %01.1f Mb', 'submit-content' ), $wpbtsc_options['wpbtsc_max_image_size'] );
         } else {
-            $image_name = ( $image_info['name'] ) ? sanitize_file_name( $image_info['name'] ) : '';
-            $image_type = ( $image_info['type'] ) ? $image_info['type'] : '';
-            $temp_image_location = ( $image_info['tmp_name'] ) ? $image_info['tmp_name'] : '';
-            $image_size = ( $image_info['size'] ) ? $image_info['size'] : '';
+            $image_name = ( $file['name'] ) ? sanitize_file_name( $file['name'] ) : '';
+            $image_type = ( $file['type'] ) ? sanitize_text_field( $file['type'] ) : '';
+            $temp_image_location = ( $file['tmp_name'] ) ? sanitize_file_name( $file['tmp_name'] ) : '';
+            $image_size = ( $file['size'] ) ? (int) sanitize_text_field( $file['size'] ) : '';
             $supported_file_types = [ 
                 'jpg',
                 'jpeg',
@@ -291,13 +301,10 @@ function wpbtsc_validate_public_form( $form ){
             // name and type
             if( $image_name ){
                 $is_mime_allowed = wp_check_filetype( $image_name );
-                if(
-                    isset( $is_mime_allowed['ext'] ) &&
-                    in_array( strtolower( $is_mime_allowed['ext'] ), $allowed_file_types
-                )
-                ){
+                if( isset( $is_mime_allowed['ext'] ) &&
+                    in_array( strtolower( $is_mime_allowed['ext'] ), $allowed_file_types ) ) {
                     $data['featured_image'] = [
-                        'error' => $image_info['error'],
+                        'error' => $file['error'],
                         'name' => $image_name,
                         'size' => $image_size,
                         'tmp_name' => $temp_image_location,
@@ -743,4 +750,35 @@ function wpbtsc_check_duplicate_shortcode( $shortcode_options ){
         )
     );
     return $result;
+}
+
+
+/**
+ * Sanitizes taxonomy data
+ * 
+ * @param array $taxonomy Raw taxonomy input
+ * 
+ * @return array Sanitized taxonomy data
+ */
+
+function wpbtsc_sanitize_taxonomy_data( $taxonomy ){
+        $sanitized_taxonomy = [];
+        foreach( $taxonomy as $tax ){
+            $sanitized_keys = [];
+            $sanitized_values = [];
+            $keys = array_keys( $tax );
+            $values = array_values( $tax );
+            // sanitize keys
+            foreach( $keys as $k ){
+                array_push( $sanitized_keys, sanitize_text_field( $k ) );
+            }
+            // sanitize values
+            foreach( $values as $v ){
+                array_push( $sanitized_values, sanitize_text_field( $v ) );
+            }
+            // combine keys and values
+            $item = array_combine( $sanitized_keys, $sanitized_values );
+            array_push( $sanitized_taxonomy, $item );
+        }
+    return $sanitized_taxonomy;
 }

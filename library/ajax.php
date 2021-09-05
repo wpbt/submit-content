@@ -142,13 +142,14 @@ function wpbtsc_delete_shortcode_callback(){
  */
 
 function wpbtsc_form_submission(){
-    $form_input = [
-        'wpbtsc_featured_img' => $_FILES['wpbtsc_featured_img'],
-        'form_data' => $_POST
-    ];
-    $result = wpbtsc_validate_public_form( $form_input );
+    
+    if( isset( $_POST ) || isset( $_FILES['wpbtsc_featured_img'] ) ){
+        $result = wpbtsc_validate_public_form( $_POST, $_FILES['wpbtsc_featured_img'] );
+    } else {
+        $result['errors'] = __( 'no data available!', 'submit-content' );
+    }
     // handle errors!
-    $form_id = sanitize_title( $_POST['form_id'] );
+    $form_id = sanitize_text_field( $_POST['form_id'] );
     if( ! empty( $result['errors'] ) ){
         $response = [
             'data' => $result['errors'],
