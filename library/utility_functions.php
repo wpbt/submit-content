@@ -41,7 +41,7 @@ function wpbtsc_generate_input_field( $type, $name, $title, $value = '', $taxono
                 <th scope='row'><label for='". esc_attr( $name ) ."'>". esc_html__( $title, 'submit-content' ) ."</label></th>
                 <td>
                     <label for='". esc_attr( $name ) ."'>
-                        <textarea name='". esc_attr( $name ) ."' id='". esc_attr( $name ) ."' rows='6' cols='40'>". esc_attr( $value ) ."</textarea> 
+                        <textarea name='". esc_attr( $name ) ."' id='". esc_attr( $name ) ."' rows='6' cols='40'>". esc_textarea( $value ) ."</textarea> 
                     </label>
                 </td>
             </tr>
