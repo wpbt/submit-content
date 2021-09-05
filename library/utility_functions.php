@@ -93,15 +93,7 @@ function wpbtsc_validate_admin_form( $form ){
     $errors = [];
     $data = [];
 
-    if( empty( $form ) || empty( $form['options'] ) ) {
-        $errors['empty_data'] = __( 'no data passed', 'submit-content' );
-        return [
-            'errors' => $errors,
-            'data' => $data
-        ];
-    }
-    
-    if( ! wp_verify_nonce( $form['options']['wpbt_sc_nonce'], 'wpbtsc' ) ){
+    if( ! wp_verify_nonce( $form['wpbt_sc_nonce'], 'wpbtsc' ) ){
         $errors['invalid_nonce'] = __( 'invalid nonce', 'submit-content' );
         return [
             'errors' => $errors,
@@ -110,22 +102,22 @@ function wpbtsc_validate_admin_form( $form ){
     }
 
     // create variales.
-    $form_title = ( $form['options']['add_form_heading'] ) ? $form['options']['add_form_heading'] : '';
-    $for_title_text = ( $form['options']['add_form_heading_text'] ) ? sanitize_text_field( $form['options']['add_form_heading_text'] ) : '';
-    $form_description = ( $form['options']['add_form_description'] ) ? $form['options']['add_form_description'] : '';
-    $form_description_text = ( $form['options']['add_form_description_text'] ) ? sanitize_textarea_field( $form['options']['add_form_description_text'] ) : '';
+    $form_title = ( $form['add_form_heading'] ) ? (int) sanitize_text_field( $form['add_form_heading'] ) : '';
+    $form_title_text = ( $form['add_form_heading_text'] ) ? sanitize_text_field( $form['add_form_heading_text'] ) : '';
+    $form_description = ( $form['add_form_description'] ) ? (int) sanitize_text_field( $form['add_form_description'] ) : '';
+    $form_description_text = ( $form['add_form_description_text'] ) ? sanitize_textarea_field( $form['add_form_description_text'] ) : '';
 
-    $post_title = ( $form['options']['add_post_title'] ) ? $form['options']['add_post_title'] : '';
-    $data['add_post_content'] = ( $form['options']['add_post_content'] ) ? $form['options']['add_post_content'] : '';
-    $data['add_post_featured_image'] = ( $form['options']['add_post_featured_image'] ) ? $form['options']['add_post_featured_image'] : '';
+    $post_title = ( $form['add_post_title'] ) ? (int) sanitize_text_field( $form['add_post_title'] ) : '';
+    $data['add_post_content'] = ( $form['add_post_content'] ) ? (int) sanitize_text_field( $form['add_post_content'] ) : '';
+    $data['add_post_featured_image'] = ( $form['add_post_featured_image'] ) ? (int) sanitize_text_field( $form['add_post_featured_image'] ) : '';
 
     // validate and sanitize form heading
     if( $form_title == 1 ){
-        if( ! $for_title_text ){
+        if( ! $form_title_text ){
             $errors['add_form_heading_text'] = __( 'missing form heading', 'submit-content' );
         } else {
             $data['add_form_heading'] = '1';
-            $data['add_form_heading_text'] = __( $for_title_text, 'submit-content' );
+            $data['add_form_heading_text'] = __( $form_title_text, 'submit-content' );
         }
     } else {
         $data['add_form_heading'] = '';
@@ -154,15 +146,15 @@ function wpbtsc_validate_admin_form( $form ){
     }
 
     // category
-    if( isset( $form['options']['category'] ) && ! empty(  $form['options']['category'] ) ){
-        $data['category'] = $form['options']['category'];
+    if( isset( $form['category'] ) && ! empty(  $form['category'] ) ){
+        $data['category'] = $form['category'];
     } else {
         $data['category'] = [];
     }
 
     // tag
-    if( isset( $form['options']['tag'] ) && ! empty(  $form['options']['tag'] ) ){
-        $data['tag'] = $form['options']['tag'];
+    if( isset( $form['tag'] ) && ! empty(  $form['tag'] ) ){
+        $data['tag'] = $form['tag'];
     } else {
         $data['tag'] = [];
     }

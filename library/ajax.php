@@ -14,7 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function wpbtsc_generate_shortcode_callback(){
     global $wpdb;
-    $result = wpbtsc_validate_admin_form( $_POST );
+    if( isset( $_POST['options'] ) ){
+        $result = wpbtsc_validate_admin_form( $_POST['options'] );
+    } else {
+        $result['errors'] = __( 'no options available!', 'submit-content' );
+    }
 
     // handle errors!
     if( ! empty( $result['errors'] ) ){
