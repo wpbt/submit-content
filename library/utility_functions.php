@@ -274,6 +274,9 @@ function wpbtsc_validate_public_form( $post = NULL, $file = NULL ){
     } else {
         if( isset( $file['error'] ) && ( $file['error'] == '1' ) ){
             $errors['file_size'] = sprintf( __( 'this host does not allow file of the current size. Please reduce the file size to %01.1f Mb', 'submit-content' ), $wpbtsc_options['wpbtsc_max_image_size'] );
+            if( $file['error'] != '0' && $file['error'] != '1' ){
+                $errors['file_issue'] = sprintf( __( 'problem uploading file to the host!', 'submit-content' ) );
+            }
         } else {
             $image_name = ( $file['name'] ) ? sanitize_file_name( $file['name'] ) : '';
             $image_type = ( $file['type'] ) ? sanitize_text_field( $file['type'] ) : '';
