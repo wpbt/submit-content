@@ -38,7 +38,7 @@ function wpbtsc_generate_input_field( $type, $name, $title, $value = '', $taxono
     if( $type == 'textarea' ){
         echo "
             <tr class='". esc_attr( $name ) ."'>
-                <th scope='row'><label for='". esc_attr( $name ) ."'>". esc_html__( $title, 'submit-content' ) ."</label></th>
+                <th scope='row'><label for='". esc_attr( $name ) ."'>". esc_html( $title ) ."</label></th>
                 <td>
                     <label for='". esc_attr( $name ) ."'>
                         <textarea name='". esc_attr( $name ) ."' id='". esc_attr( $name ) ."' rows='6' cols='40'>". esc_textarea( $value ) ."</textarea> 
@@ -47,19 +47,19 @@ function wpbtsc_generate_input_field( $type, $name, $title, $value = '', $taxono
             </tr>
         ";
     } elseif( $type == 'notice' ){
-        $message = sprintf('%s not supported for selected post type!', $message);
+        $message = sprintf('%s %s', $message, __( 'not supported for selected post type!', 'submit-content' ) );
         echo "
             <tr>
-                <th scope='row'>". esc_html__( $title, 'submit-content' ) ."</th>
+                <th scope='row'>". esc_html( $title ) ."</th>
                 <td>
-                    <p>". esc_html__( $message, 'submit-content' ) ."</p>
+                    <p>". esc_html( $message ) ."</p>
                 </td>
             </tr>
         ";
     } elseif( $taxonomy ) {
         echo "
             <tr class='". esc_attr( $name ) ."'>
-            <th scope='row'><label for='". esc_attr( $value ) ."'>". esc_html__( $title, 'submit-content' ) ."</label></th>
+            <th scope='row'><label for='". esc_attr( $value ) ."'>". esc_html( $title ) ."</label></th>
                 <td>
                     <label for='". esc_attr( $name ) ."'>
                     <input name='". esc_attr( $taxonomy['type'] ) ."' type='". esc_attr( $type ) ."' id='". esc_attr( $value ) ."' value='". esc_attr( $value ) ."' label='". esc_attr( $name ) ."' />
@@ -70,7 +70,7 @@ function wpbtsc_generate_input_field( $type, $name, $title, $value = '', $taxono
     } else {
         echo "
             <tr class='". esc_attr( $name ) ."'>
-            <th scope='row'><label for='". esc_attr( $name ) ."'>". esc_html__( $title, 'submit-content' ) ."</label></th>
+            <th scope='row'><label for='". esc_attr( $name ) ."'>". esc_html( $title ) ."</label></th>
                 <td>
                     <label for='". esc_attr( $name ) ."'>
                     <input name='". esc_attr( $name ) ."' type='". esc_attr( $type ) ."' id='". esc_attr( $name ) ."' value='". esc_attr( $value ) ."' />
@@ -117,7 +117,7 @@ function wpbtsc_validate_admin_form( $form ){
             $errors['add_form_heading_text'] = __( 'missing form heading', 'submit-content' );
         } else {
             $data['add_form_heading'] = '1';
-            $data['add_form_heading_text'] = __( $form_title_text, 'submit-content' );
+            $data['add_form_heading_text'] = $form_title_text;
         }
     } else {
         $data['add_form_heading'] = '';
@@ -130,7 +130,7 @@ function wpbtsc_validate_admin_form( $form ){
             $errors['add_form_description_text'] = __( 'missing form description', 'submit-content' );
         } else {
             $data['add_form_description'] = '1';
-            $data['add_form_description_text'] = __( $form_description_text, 'submit-content' );
+            $data['add_form_description_text'] = $form_description_text;
         }
     } else {
         $data['add_form_description'] = '';
@@ -180,7 +180,8 @@ function wpbtsc_validate_public_form( $post = NULL, $file = NULL ){
     $wpbtsc_options = get_option( 'submitcontent_options' );
 
     // nonce validation
-    if( ! wp_verify_nonce( $post['sc_security_id'], 'wpbtsc_form_input' ) ){
+    
+    if( ! isset( $post['sc_security_id'] ) && ! wp_verify_nonce( $post['sc_security_id'], 'wpbtsc_form_input' ) ){
         $errors['invalid_nonce'] = __( 'invalid nonce', 'submit-content' );
         return [
             'errors' => $errors,
@@ -189,31 +190,29 @@ function wpbtsc_validate_public_form( $post = NULL, $file = NULL ){
     }
 
     // validate reCAPTCHA
-    $token = ( $post['wpbtsc_token'] ) ? esc_attr( $post['wpbtsc_token'] ) : '';
+    $token = ( $post['wpbtsc_token'] ) ? sanitize_text_field( $post['wpbtsc_token'] ) : '';
 
     if( $token ){
-        $secret_key = $wpbtsc_options['wpbtsc_recaptcha_secretkey'];
-        $user_address = $_SERVER['REMOTE_ADDR'];
-        $recaptcha_verify_url = 'https://www.google.com/recaptcha/api/siteverify';
+        $secret_key = sanitize_text_field( $wpbtsc_options['wpbtsc_recaptcha_secretkey'] );
         $args = [
             'body' => [
                 'secret' => $secret_key,
                 'response' => $token,
-                'remoteip' => $user_address,
             ]
         ];
         if( $secret_key ){
-            $recaptcha_response = wp_remote_post( $recaptcha_verify_url, $args );
-            $response_body = wp_remote_retrieve_body( $recaptcha_response );
-            $recaptcha_status = json_decode( $response_body, true );
-            $score = apply_filters( 'wpbtsc_score_threshold', 0.5 );
-
-            if(
-                ! $recaptcha_status['success'] ||
-                ( $recaptcha_status['score'] < $score ) ||
-                ( $recaptcha_status['action'] != 'submitcontent' )
-            ){
-                $errors['recaptcha_status'] = sprintf( __( '%s reCAPTCHA', 'submit-content' ), 'invalid' );
+            $recaptcha_response = wp_remote_post( 'https://www.google.com/recaptcha/api/siteverify', $args );
+            if( ! is_wp_error( $recaptcha_response ) ){
+                $response_body = wp_remote_retrieve_body( $recaptcha_response );
+                if( $response_body ){
+                    $recaptcha_status = json_decode( $response_body, true );
+                    $score = apply_filters( 'wpbtsc_score_threshold', 0.5 );
+                    if( ! empty( $recaptcha_status ) && isset( $recaptcha_status['success'] ) && isset( $recaptcha_status['action'] ) ){
+                        if( ! $recaptcha_status['success'] || ( $recaptcha_status['score'] < $score ) || ( sanitize_text_field( $recaptcha_status['action'] ) != 'submitcontent' ) ){
+                            $errors['recaptcha_status'] = sprintf( __( '%s reCAPTCHA', 'submit-content' ), 'invalid' );
+                        }
+                    }
+                }
             }
         }
     }
@@ -224,10 +223,10 @@ function wpbtsc_validate_public_form( $post = NULL, $file = NULL ){
     // title and content
     if( array_key_exists( 'wpbtsc_posttitle', $post ) ){
         if( $post_title ){
-            if( strlen( trim( $post_title ) ) < $wpbtsc_options['wpbtsc_posttitle_length'] ){
+            if( strlen( trim( $post_title ) ) < (int) sanitize_text_field( $wpbtsc_options['wpbtsc_posttitle_length'] ) ){
                 $errors['post_title'] = sprintf( __( 'post title should be at least %d characters long', 'submit-content' ), $wpbtsc_options['wpbtsc_posttitle_length'] );
             } else {
-                $data['post_title'] = __( $post_title, 'submit-content' );
+                $data['post_title'] = $post_title;
             }
         } else {
             $errors['post_title'] = __( 'post title is required', 'submit-content' );
@@ -235,10 +234,10 @@ function wpbtsc_validate_public_form( $post = NULL, $file = NULL ){
     }
     if( array_key_exists( 'wpbtsc_postcontent', $post ) ){
         if( $post_content ){
-            if( strlen( trim( $post_content ) ) < $wpbtsc_options['wpbtsc_content_length'] ){
+            if( strlen( trim( $post_content ) ) < (int) sanitize_text_field( $wpbtsc_options['wpbtsc_content_length'] ) ){
                 $errors['post_content'] = sprintf( __( 'post content should be at least %d characters long', 'submit-content' ), $wpbtsc_options['wpbtsc_content_length'] );
             } else {
-                $data['post_content'] = __( $post_content, 'submit-content' );
+                $data['post_content'] = $post_content;
             }
         } else {
             $errors['post_content'] = __( 'post content is required', 'submit-content' );
@@ -297,7 +296,7 @@ function wpbtsc_validate_public_form( $post = NULL, $file = NULL ){
             // size
             if( $image_name && $image_size ){
                 $filesize_mb = $image_size / pow( 1024, 2 );
-                if( $filesize_mb > $wpbtsc_options['wpbtsc_max_image_size'] ){
+                if( $filesize_mb > (float) sanitize_text_field( $wpbtsc_options['wpbtsc_max_image_size'] ) ){
                     $errors['file_size'] = sprintf( __( 'file should be smaller than or equal to %01.1f Mb', 'submit-content' ), $wpbtsc_options['wpbtsc_max_image_size'] );
                 }
             }
@@ -341,21 +340,21 @@ function wpbtsc_validate_public_form( $post = NULL, $file = NULL ){
 function wpbtsc_generate_options( $options ){
     if( $options && ! empty( $options ) ){
 
-        $form_title = ( $options['add_form_heading'] ) ? $options['add_form_heading'] : '';
-        $form_title_text = ( $options['add_form_heading_text'] ) ? $options['add_form_heading_text'] : '';
+        $form_title = ( $options['add_form_heading'] ) ? (int) esc_html( $options['add_form_heading'] ) : '';
+        $form_title_text = ( $options['add_form_heading_text'] ) ? esc_html( $options['add_form_heading_text'] ) : '';
 
-        $form_description = ( $options['add_form_description'] ) ? $options['add_form_description'] : '';
-        $form_description_text = ( $options['add_form_description_text'] ) ? $options['add_form_description_text'] : '';
+        $form_description = ( $options['add_form_description'] ) ? ( int ) esc_html( $options['add_form_description'] ) : '';
+        $form_description_text = ( $options['add_form_description_text'] ) ? esc_textarea( $options['add_form_description_text'] ) : '';
 
-        $post_title = ( $options['add_post_title'] ) ? $options['add_post_title'] : '';
-        $post_content = ( $options['add_post_content'] ) ? $options['add_post_content'] : '';
-        $featured_img = ( $options['add_post_featured_image'] ) ? $options['add_post_featured_image'] : '';
+        $post_title = ( $options['add_post_title'] ) ? (int) esc_html( $options['add_post_title'] ) : '';
+        $post_content = ( $options['add_post_content'] ) ? (int) esc_html( $options['add_post_content'] ) : '';
+        $featured_img = ( $options['add_post_featured_image'] ) ? (int) esc_html( $options['add_post_featured_image'] ) : '';
 
         echo '<ul>';
         if( $form_title ){
             ?>
                 <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Add form title', 'submit-content' ), __( 'yes', 'submit-content' ) ); ?></li>
-                <li><?php printf( __( 'Form title: %s', 'submit-content' ), $form_title_text ); ?></li>
+                <li><?php printf( '%s: %s', __( 'Form title', 'submit-content' ), $form_title_text ); ?></li>
             <?php
         } else {
             ?>
@@ -366,7 +365,7 @@ function wpbtsc_generate_options( $options ){
         if( $form_description ){
             ?>
                 <li><?php printf( '%s: <span class="sc-success-badge">%s</span>', __( 'Add form description', 'submit-content' ), __( 'yes', 'submit-content' ) ); ?></li>
-                <li><?php printf( __( 'Form description: %s', 'submit-content' ), $form_description_text ); ?></li>
+                <li><?php printf( '%s: %s', __( 'Form description', 'submit-content' ), $form_description_text ); ?></li>
             <?php
         } else {
             ?>
@@ -401,13 +400,14 @@ function wpbtsc_generate_options( $options ){
         }
 
         if( isset( $options['category'] ) && !empty( $options['category'] ) ){
+            $category_count = count( $options['category'] );
             ?>
-                <li><?php _e( 'Allowed category:', 'submit-content' ); ?></li>
+                <li><?php printf( _n( 'Allowed category (%d)', 'Allowed categories (%d)', $category_count, 'submit-content' ), $category_count ); ?></li>
             <?php 
             echo '<ul>';
             foreach( $options['category'] as $category ){
                 ?>
-                    <li><?php _e( $category['name'], 'submit-content' ); ?></li>
+                    <li><?php esc_html( $category['name'] ); ?></li>
                 <?php
             }
             echo '</ul>';
@@ -418,19 +418,20 @@ function wpbtsc_generate_options( $options ){
         }
 
         if( isset( $options['tag'] ) && !empty( $options['tag'] ) ){
+            $tag_count = count( $options['tag'] );
             ?>
-                <li><?php _e( 'Allowed tag(s):', 'submit-content' ); ?></li>
+                <li><?php printf( _n( 'Allowed tag (%d)', 'Allowed tags (%d)', $tag_count, 'submit-content' ), $tag_count ); ?></li>
             <?php 
             echo '<ul>';
             foreach( $options['tag'] as $tag ){
                 ?>
-                    <li><?php _e( $tag['name'], 'submit-content' ); ?></li>
+                    <li><?php esc_html( $tag['name'] ); ?></li>
                 <?php
             }
             echo '</ul>';
         } else {
             ?>
-                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Allowed tag(s)', 'submit-content' ), __( 'none', 'submit-content' ) ); ?></li>
+                <li><?php printf( '%s: <span class="sc-error-badge">%s</span>', __( 'Allowed tag', 'submit-content' ), __( 'none', 'submit-content' ) ); ?></li>
             <?php 
         }
         echo '</ul>';
@@ -459,15 +460,15 @@ function wpbtsc_output_form( $options, $form_id ){
         );
     }
 
-    $form_title = ( $options['add_form_heading'] ) ? $options['add_form_heading'] : '';
-    $form_title_text = ( $options['add_form_heading_text'] ) ? $options['add_form_heading_text'] : '';
+    $form_title = ( $options['add_form_heading'] ) ? intval( $options['add_form_heading'] ) : '';
+    $form_title_text = ( $options['add_form_heading_text'] ) ? sanitize_text_field( $options['add_form_heading_text'] ) : '';
 
-    $form_description = ( $options['add_form_description'] ) ? $options['add_form_description'] : '';
-    $form_description_text = ( $options['add_form_description_text'] ) ? $options['add_form_description_text'] : '';
+    $form_description = ( $options['add_form_description'] ) ? intval( $options['add_form_description'] ) : '';
+    $form_description_text = ( $options['add_form_description_text'] ) ? sanitize_textarea_field( $options['add_form_description_text'] ) : '';
 
-    $post_title = ( $options['add_post_title'] ) ? $options['add_post_title'] : '';
-    $post_content = ( $options['add_post_content'] ) ? $options['add_post_content'] : '';
-    $featured_img = ( $options['add_post_featured_image'] ) ? $options['add_post_featured_image'] : '';
+    $post_title = ( $options['add_post_title'] ) ? intval( $options['add_post_title'] ) : '';
+    $post_content = ( $options['add_post_content'] ) ? intval( $options['add_post_content'] ) : '';
+    $featured_img = ( $options['add_post_featured_image'] ) ? intval( $options['add_post_featured_image'] ) : '';
 
     $form_type = ( $featured_img ) ? 'enctype="multipart/form-data"' : '';
 
@@ -478,10 +479,10 @@ function wpbtsc_output_form( $options, $form_id ){
         <div class="sc-form">
             <?php
                 if( $form_title && $form_title_text ):
-                    echo '<h2>'. sprintf( __( '%s', 'submit-content' ), esc_html( $form_title_text ) ) .'</h2>';
+                    echo '<h2>'. esc_html( $form_title_text ) .'</h2>';
                 endif;
                 if( $form_description && $form_description_text  ):
-                    echo '<p>'. sprintf( __( '%s', 'submit-content' ), esc_html( $form_description_text ) ) .'</p>';
+                    echo '<p>'. esc_html( $form_description_text ) .'</p>';
                 endif;
             ?>
             <form action="" id="<?php echo esc_attr( $form_id ); ?>" class="wpbtsc-form" method="post" <?php echo esc_attr( $form_type ); ?>>
@@ -521,14 +522,14 @@ function wpbtsc_output_form( $options, $form_id ){
                 <?php
                     endif;
                     if( isset( $options['category'] ) && !empty( $options['category'] ) ):
-                        echo '<p>'. sprintf( __( 'Select taxonomies for the post', 'submit-content' ) ) .'</p>';
+                        echo '<p>'. __( 'Select taxonomies for the post', 'submit-content' ) .'</p>';
                         foreach( $options['category'] as $category ){
                             $terms = get_terms([
-                                'taxonomy' => $category['slug'],
+                                'taxonomy' => sanitize_text_field( $category['slug'] ),
                                 'hide_empty' => false
                             ]);
                             if( ! empty( $terms ) && ! is_wp_error( $terms ) ){
-                                echo '<p>'. sprintf( __( '%s', 'submit-content' ), esc_html( $category['name'] ) ) .'</p>';
+                                echo '<p>'. esc_html( $category['name'] ) .'</p>';
                                 printf( '<input type="hidden" name="%s[]" value="">', esc_attr( $category['slug'] ) );
                                 foreach( $terms as $term ){
                                     ?>
@@ -540,7 +541,7 @@ function wpbtsc_output_form( $options, $form_id ){
                                                 value="<?php echo esc_attr( $term->term_id ); ?>"
                                                 parent="<?php echo esc_attr( $term->parent ); ?>"
                                             >
-                                            <label for="<?php echo esc_attr( $term->slug ); ?>"> <?php esc_html_e( $term->name, 'submit-content' ); ?></label>
+                                            <label for="<?php echo esc_attr( $term->slug ); ?>"> <?php echo esc_html( $term->name ); ?></label>
                                         </div>
                                     <?php
                                 }
@@ -551,11 +552,11 @@ function wpbtsc_output_form( $options, $form_id ){
                         foreach( $options['tag'] as $tag ){
                             unset( $terms );
                             $terms = get_terms([
-                                'taxonomy' => $tag['slug'],
+                                'taxonomy' => sanitize_text_field( $tag['slug'] ),
                                 'hide_empty' => false
                             ]);
                             if( ! empty( $terms ) && ! is_wp_error( $terms ) ){
-                                echo '<p>'. sprintf( __( '%s', 'submit-content' ), esc_html( $tag['name'] ) ) .'</p>';
+                                echo '<p>'. esc_html( $tag['name'] ) .'</p>';
                                 printf( '<input type="hidden" name="%s[]" value="">', esc_attr( $tag['slug'] ) );
                                 foreach( $terms as $term ){
                                     ?>
@@ -566,7 +567,7 @@ function wpbtsc_output_form( $options, $form_id ){
                                                 name="<?php echo esc_attr( $tag['slug'] ); ?>[]"
                                                 value="<?php echo esc_attr( $term->slug ); ?>"
                                             >
-                                            <label for="<?php echo esc_attr( $term->slug ); ?>"> <?php esc_html_e( $term->name, 'submit-content' ); ?></label>
+                                            <label for="<?php echo esc_attr( $term->slug ); ?>"> <?php echo esc_html( $term->name ); ?></label>
                                         </div>
                                     <?php
                                 }
@@ -627,7 +628,7 @@ function wpbtsc_create_posts_array( $data ){
         'tax_input' => []
     ];
 
-    if( $data['post_content'] ){
+    if( isset( $data['post_content'] ) && $data['post_content'] ){
         $post_array['post_content'] = $data['post_content'];
     }
     
