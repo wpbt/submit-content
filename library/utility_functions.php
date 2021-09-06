@@ -407,7 +407,7 @@ function wpbtsc_generate_options( $options ){
             echo '<ul>';
             foreach( $options['category'] as $category ){
                 ?>
-                    <li><?php esc_html( $category['name'] ); ?></li>
+                    <li><?php echo esc_html( $category['name'] ); ?></li>
                 <?php
             }
             echo '</ul>';
@@ -425,7 +425,7 @@ function wpbtsc_generate_options( $options ){
             echo '<ul>';
             foreach( $options['tag'] as $tag ){
                 ?>
-                    <li><?php esc_html( $tag['name'] ); ?></li>
+                    <li><?php echo esc_html( $tag['name'] ); ?></li>
                 <?php
             }
             echo '</ul>';
