@@ -193,7 +193,7 @@ function wpbtsc_shortcodes_page(){
                             $options = maybe_unserialize( $shortcode->options );
                             ?>
                                 <tr id="<?php echo esc_attr( $shortcode->id ); ?>">
-                                    <td class="sc-sn"><?php esc_html( $count ); ?></td>
+                                    <td class="sc-sn"><?php echo esc_html( $count ); ?></td>
                                     <td class="wpbtsc-copy"><?php echo esc_html( $shortcode->shortcode_name ); ?></td>
                                     <td><?php wpbtsc_generate_options( $options ); ?></td>
                                     <td>
