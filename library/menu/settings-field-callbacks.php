@@ -118,7 +118,6 @@ function wpbtsc_security_section_callback(){
 
 function wpbtsc_sitekey_callback( $args ){
     $options = get_option( 'submitcontent_options' );
-
     $value = ( $options[$args['id']] ) ? esc_attr( $options[$args['id']] ) : '';
     ?>
         <input id="<?php echo esc_attr( $args['id'] ); ?>" type="text" name="submitcontent_options[<?php echo esc_attr( $args['id'] ); ?>]" value="<?php echo trim( $value ); ?>">
@@ -127,7 +126,6 @@ function wpbtsc_sitekey_callback( $args ){
 
 function wpbtsc_secretkey_callback( $args ){
     $options = get_option( 'submitcontent_options' );
-
     $value = ( $options[$args['id']] ) ? esc_attr( $options[$args['id']] ) : '';
     ?>
         <input id="<?php echo esc_attr( $args['id'] ); ?>" type="text" name="submitcontent_options[<?php echo esc_attr( $args['id'] ); ?>]" value="<?php echo trim( $value ); ?>">
@@ -140,7 +138,6 @@ function wpbtsc_secretkey_callback( $args ){
 
 function wpbtsc_email_override_callback( $args ){
     $options = get_option( 'submitcontent_options' );
-
     $value = ( $options[$args['id']] ) ? esc_attr( $options[$args['id']] ) : '';
     ?>
         <input id="<?php echo esc_attr( $args['id'] ); ?>" type="text" name="submitcontent_options[<?php echo esc_attr( $args['id'] ); ?>]" value="<?php echo trim( $value ); ?>">
@@ -149,7 +146,6 @@ function wpbtsc_email_override_callback( $args ){
 
 function wpbtsc_email_template_callback( $args ){
     $options = get_option( 'submitcontent_options' );
-
     $value = ( $options[$args['id']] ) ? esc_attr( $options[$args['id']] ) : '';
     ?>
         <textarea id="<?php echo esc_attr( $args['id'] ); ?>" name="submitcontent_options[<?php echo esc_attr( $args['id'] ); ?>]" id="" cols="50" rows="12"><?php echo esc_textarea( $value ); ?></textarea>
