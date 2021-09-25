@@ -4,14 +4,14 @@
  * Author: Bharat Thapa
  * Author URI: https://bharatt.com.np
  * Contributors: bharatthapa
- * Description: Submit posts and custom pots, from anywhere on your website.
- * Tags: frontend post, public post, submit custom post
- * Version: 1.0
- * Stable tag: 1.0
+ * Description: Submit posts and custom pots from anywhere on your website.
+ * Tags: user post, frontend post, public post, submit custom post, submit post, visitor post, submit content
+ * Version: 1.1
+ * Stable tag: 1.1
  * Text Domain: submit-content
  * Domain Path: /languages
  * Requires at least: 4.9
- * Tested up to: 5.8
+ * Tested up to: 5.8.1
  * Requires PHP: 5.2.4
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -45,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * - Plugin URL
  */
 
-define( 'SUBMIT_CONTENT_VERSION', '1.0' );
+define( 'SUBMIT_CONTENT_VERSION', '1.1' );
 define( 'SUBMIT_CONTENT_DIRECTORY', plugin_dir_path( __FILE__ ) );
 define( 'SUBMIT_CONTENT_DIRECTORY_URL', plugin_dir_url( __FILE__ ) );
 

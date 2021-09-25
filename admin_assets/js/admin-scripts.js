@@ -12,7 +12,9 @@ let submitContentApp = {
             button: jQuery( '#wpbt-sc-generator' ).find( 'input[type="submit"]' ),
             action: 'sc_generate_shortcode',
             ajaxURL: scJSOBJ.ajax_url,
-            options: {},
+            options: {
+                save_content_as: jQuery( '#save_content_as option:selected' ).val()
+            },
         };
         submitContentApp.handleSecurity( jQuery( submitContentApp.data.form ).find( 'input#wpbt_sc_nonce' ) );
         jQuery( submitContentApp.data.form ).find( ':input' ).change( submitContentApp.handleInput );
@@ -49,6 +51,11 @@ let submitContentApp = {
                     submitContentApp.updateOptions( inputKey, value );
                 }
                 jQuery( 'tr.' + inputKey + '_text' ).toggle();
+                break;
+            case 'select-one':
+            case 'select':
+                value = jQuery( this ).val();
+                submitContentApp.updateOptions( inputKey, value, false );
                 break;
             case 'text':
                 value = jQuery( this ).val();

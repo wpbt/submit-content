@@ -16,3 +16,8 @@
   padding: 1rem;
   margin: 1rem 0;
 }
+
+.wpbtsc-rich-ediitor .mce-container button {
+  background-color: #fff !important;
+  color: inherit !important;
+}

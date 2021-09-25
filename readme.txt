@@ -3,14 +3,14 @@ Plugin Name: Submit Content
 Author: Bharat Thapa
 Author URI: https://bharatt.com.np
 Contributors: bharatthapa
-Description: Submit posts and custom pots, from anywhere on your website.
-Tags: frontend post, public post, submit custom post
-Version: 1.0
-Stable tag: 1.0
+Description: Submit posts and custom pots from anywhere on your website.
+Tags: user post, frontend post, public post, submit custom post, submit post, visitor post, submit content
+Version: 1.1
+Stable tag: 1.1
 Text Domain: submit-content
 Domain Path: /languages
 Requires at least: 4.9
-Tested up to: 5.8
+Tested up to: 5.8.1
 Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -35,7 +35,7 @@ At a glance, this plugin allows the following:
 * You can choose what form fields to show in the frontend from plugin settings page.
 * Use the shortcode tag in post, page or widget to allow users to submit content.
 
-`[submitcontent id="1"]`
+    [submitcontent id="1"]
 
 
 ### Core Features ###
@@ -45,6 +45,7 @@ At a glance, this plugin allows the following:
 * You choose which fields to display on the form
 * Receive email notification alerts for submitted posts
 * AJAX for better user experience
+* Rich Text Editor experience in the frontend form
 
 
 ### Form Features ###
@@ -53,6 +54,7 @@ At a glance, this plugin allows the following:
 * Stops spam via input validation, captcha, and hidden field
 * Option to require users to be logged in to use the form
 * AJAX for better user experience
+* Rich Text Editor experience in the frontend form
 
 
 *Submit Content is simple to use and built with clean, secure code via the WordPress APIs!*
@@ -164,6 +166,10 @@ Yes, there is an additional email field available in plugin settings page to ena
 
 
 == Changelog ==
+
+= 1.1 =
+Rich text editor added
+Each shortcode is now able to save to different types of posts or custom posts
 
 = 1.0 =
 Initial release.

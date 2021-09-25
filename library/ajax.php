@@ -144,10 +144,10 @@ function wpbtsc_delete_shortcode_callback(){
  */
 
 function wpbtsc_form_submission(){
-    
     if( isset( $_POST ) || isset( $_FILES['wpbtsc_featured_img'] ) ){
         $result = wpbtsc_validate_public_form( $_POST, $_FILES['wpbtsc_featured_img'] );
     } else {
+        $result = [];
         $result['errors'] = __( 'no data available!', 'submit-content' );
     }
     // handle errors!

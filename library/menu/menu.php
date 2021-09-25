@@ -101,6 +101,7 @@ function wpbtsc_form_settings_page(){
             array_push( $tags, $tag_arr );
         }
     }
+    $post_types = get_post_types( [ 'public' => true, '_builtin' => false ], 'names', 'and' );
 
     ?>
         <form action="" method="post" id="wpbt-sc-generator">
@@ -109,6 +110,7 @@ function wpbtsc_form_settings_page(){
                     <?php
                         // generate security field!
                         wpbtsc_generate_input_field( 'hidden', 'wpbt_sc_nonce', '', wp_create_nonce( 'wpbtsc' ) );
+                        wpbtsc_generate_input_field( 'select', 'save_content_as', __( 'Save content as', 'submit-content' ), $wpbtsc_saveas );
                         wpbtsc_generate_input_field( 'checkbox', 'add_form_heading', __( 'Form heading', 'submit-content' ), 1 );
                         wpbtsc_generate_input_field( 'text', 'add_form_heading_text', __( 'Heading text', 'submit-content' ), '' );
                         wpbtsc_generate_input_field( 'checkbox', 'add_form_description', __( 'Form description', 'submit-content' ), 1 );
@@ -136,7 +138,7 @@ function wpbtsc_form_settings_page(){
                             foreach( $categories as $category ){
                                 $name = $category['name'];
                                 $slug = $category['slug'];
-                                $content = sprintf( '%s %s %s',__( 'Allow users to add', 'submit-content' ), $wpbtsc_saveas, $name );
+                                $content = sprintf( '%s %s %s',__( 'Allow users to select', 'submit-content' ), $wpbtsc_saveas, $name );
                                 wpbtsc_generate_input_field( 'checkbox', $name, $content, $slug,  [ 'type' => 'category' ] );
                             }
                         }
@@ -145,7 +147,7 @@ function wpbtsc_form_settings_page(){
                             foreach( $tags as $tag ){
                                 $name = $tag['name'];
                                 $slug = $tag['slug'];
-                                $content = sprintf( '%s %s %s', __( 'Allow users to add', 'submit-content' ), $wpbtsc_saveas, $name );
+                                $content = sprintf( '%s %s %s', __( 'Allow users to select', 'submit-content' ), $wpbtsc_saveas, $name );
                                 wpbtsc_generate_input_field( 'checkbox', $name, $content, $slug,  [ 'type' => 'tag' ] );
                             }
                         }
