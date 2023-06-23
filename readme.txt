@@ -10,7 +10,7 @@ Stable tag: 1.1
 Text Domain: submit-content
 Domain Path: /languages
 Requires at least: 4.9
-Tested up to: 5.9
+Tested up to: 6.2.2
 Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
